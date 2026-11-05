@@ -33,8 +33,6 @@
         .btn:hover { background: var(--surface-hover); }
         .btn-primary { background: var(--accent); color: var(--accent-text); border: 1px solid var(--accent); }
         .btn-primary:hover { background: #e0e0e0; border-color: #e0e0e0; }
-        .btn-danger { color: var(--danger); border-color: rgba(255, 69, 58, 0.3); background: rgba(255, 69, 58, 0.05); }
-        .btn-danger:hover { background: rgba(255, 69, 58, 0.1); }
         
         .input, .select { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 12px 16px; border-radius: 6px; font-size: 14px; transition: 0.2s; }
         .input:focus, .select:focus { outline: none; border-color: #444; }
@@ -92,14 +90,11 @@
         td { padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
         .t-val { font-weight: 500; text-align: right; }
 
-        /* Suppliers & Competitors */
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
         .list-item:last-child { border-bottom: none; }
         .sup-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #555; border-radius: 50%; outline: none; cursor: pointer; position: relative; }
         .sup-radio:checked { border-color: var(--accent); }
         .sup-radio:checked::after { content: ''; position: absolute; top: 3px; left: 3px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
-
-        /* Market Bar */
         .market-bar-bg { width: 100%; height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; margin-top: 8px; }
         .market-bar-fill { height: 100%; background: var(--info); border-radius: 4px; }
     </style>
@@ -125,10 +120,7 @@
         <div class="brand-subtitle">Business OS</div>
         <div style="display: flex; gap: 16px; margin-bottom: 24px;">
             <button class="btn btn-primary" onclick="changeScreen('screen-setup')">Nova Holding</button>
-            <button class="btn" id="btn-load" style="display: none;" onclick="carregarJogo()">Continuar</button>
         </div>
-        <!-- Botão de emergência para limpar base de dados antiga -->
-        <button class="btn btn-danger" style="font-size: 11px; border:none; background:transparent; opacity:0.4;" onclick="limparSistema()">[ Limpar Base de Dados ]</button>
     </div>
 
     <!-- TELA: SETUP -->
@@ -237,15 +229,11 @@
                         <div class="panel">
                             <div class="panel-title">Fornecedores Globais (Contratos)</div>
                             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Selecione quem irá fabricar os componentes base, embalagem e cuidar da logística (Frete) da sua marca.</p>
-                            
-                            <div id="ui-fornecedores">
-                                <!-- Preenchido dinamicamente -->
-                            </div>
+                            <div id="ui-fornecedores"></div>
                         </div>
 
                         <div class="panel">
                             <div class="panel-title">Ordem de Produção</div>
-                            
                             <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                     <span style="color: var(--text-muted); font-size: 13px;">Fornecedor Selecionado:</span>
@@ -265,7 +253,6 @@
                                     <strong class="c-red" id="ui-op-total" style="font-size: 16px;">-</strong>
                                 </div>
                             </div>
-                            
                             <button class="btn btn-primary" style="width: 100%;" onclick="emitirOrdemProducao()">Pagar e Produzir Lote</button>
                         </div>
                     </div>
@@ -274,17 +261,14 @@
                 <!-- TAB: MERCADO & CONCORRÊNCIA -->
                 <div id="tab-market" class="tab">
                     <h1 class="page-title">Mercado e Concorrência</h1>
-                    
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title">Estratégia de Precificação</div>
                             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Defina o preço de venda da sua marca. Analise os concorrentes ao lado para não ficar fora do mercado.</p>
-                            
                             <div class="form-group">
                                 <label class="form-label">Preço ao Consumidor (Unitário)</label>
                                 <input type="number" id="ui-preco" class="input" value="0" oninput="calcularMargem()">
                             </div>
-                            
                             <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                                     <span style="font-size: 12px; color: var(--text-muted);">Custo por Unidade (CPV):</span>
@@ -299,9 +283,7 @@
 
                         <div class="panel">
                             <div class="panel-title">Análise de Competidores (Market Share)</div>
-                            <div id="ui-concorrentes">
-                                <!-- Preenchido dinamicamente -->
-                            </div>
+                            <div id="ui-concorrentes"></div>
                         </div>
                     </div>
                 </div>
@@ -341,11 +323,9 @@
                     <div class="panel" style="text-align: center; padding: 60px 20px;">
                         <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;" id="ui-valuation">0</h2>
                         <div style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation (Valor de Mercado Estimado)</div>
-                        
                         <p style="font-size: 14px; color: #aaa; max-width: 500px; margin: 0 auto 30px;">
                             A sua empresa ainda é de capital fechado (Private). Para realizar uma Oferta Pública Inicial (IPO) e listar as suas ações na bolsa, o Valuation da empresa precisa ultrapassar a marca de <strong><span id="ui-ipo-meta">0</span></strong>.
                         </p>
-                        
                         <button class="btn btn-disabled" style="padding: 16px 32px; font-size: 16px;">Realizar IPO (Em Breve)</button>
                     </div>
                 </div>
@@ -388,7 +368,6 @@
 
     <script>
         const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
-        const currencySymbols = { 'USD': '$', 'EUR': '€', 'BRL': 'R$' };
 
         const sectors = {
             'tech': {
@@ -452,26 +431,22 @@
         function parseToUSD(localValue) { return localValue / exchangeRates[state.moeda]; }
         function toLocal(usdValue) { return usdValue * exchangeRates[state.moeda]; }
 
-        function limparSistema() {
-            localStorage.clear();
-            location.reload();
-        }
-
         function gerarEstadoNovo(ceo, comp, cur, sec) {
-            const capInicialUSD = 100000;
-            const pfInicialUSD = 10000;
-
             return {
-                version: 8, // Controlo rigoroso de versão
                 ceo, empresa: comp, moeda: cur, setor: sec, mes: 1, ano: 1,
                 fornecedorId: 'f2', 
                 precoVendaUSD: sectors[sec].concorrentes[1].precoBase,
-                pj: { caixa: capInicialUSD, divida: 0, estoque: 0, extrato: [] },
-                pf: { caixa: pfInicialUSD, salario: 5000, bens: [], extrato: [] },
+                pj: { caixa: 100000, divida: 0, estoque: 0, extrato: [] },
+                pf: { caixa: 10000, salario: 5000, bens: [], extrato: [] },
                 emails: [
                     { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa', corpo: `A holding ${comp} foi registada. O setor de ${sectors[sec].nome} é competitivo. Verifique fornecedores e preços.`, lido: false }
                 ]
             };
+        }
+
+        function changeScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
         function iniciarNovoJogo() {
@@ -482,7 +457,6 @@
 
             if(!ceo || !comp) return alert("Preencha todos os dados.");
             state = gerarEstadoNovo(ceo, comp, cur, sec);
-            salvarJogo();
             montarJogo();
         }
 
@@ -683,7 +657,6 @@
 
             state.mes++; if (state.mes > 12) { state.mes = 1; state.ano++; }
             atualizarUI();
-            salvarJogo();
         }
 
         const lojaPF = [{n: 'Relógio de Luxo', v: 25000}, {n: 'Carro Desportivo', v: 150000}, {n: 'Mansão (Sede)', v: 2500000}];
@@ -700,7 +673,6 @@
                 state.pf.caixa -= v; state.pf.bens.push({n, v});
                 addExtrato('pf', `Aquisição: ${n}`, -v);
                 atualizarUI();
-                salvarJogo();
             } else { alert("Saldo PF Insuficiente."); }
         }
 
@@ -725,7 +697,6 @@
             state.emails[i].lido = true;
             document.getElementById(`mail-body-${i}`).style.display = 'block';
             renderEmails();
-            salvarJogo();
         }
 
         function switchTab(id, el) {
@@ -734,31 +705,6 @@
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
         }
-
-        function checkSave() {
-            const saved = localStorage.getItem('corp_save');
-            if (saved) { document.getElementById('btn-load').style.display = 'inline-flex'; }
-        }
-        function carregarJogo() {
-            try {
-                const saved = localStorage.getItem('corp_save');
-                if (saved) {
-                    state = JSON.parse(saved);
-                    // Verificação rigorosa de versão para impedir bloqueios com saves antigos
-                    if (state.version !== 8) throw new Error("Save antigo");
-                    montarJogo();
-                }
-            } catch (e) {
-                alert("Erro de Sistema: O seu progresso antigo é de uma versão desatualizada. A memória será limpa automaticamente para iniciar a nova versão.");
-                limparSistema();
-            }
-        }
-        function salvarJogo() {
-            if(!state) return;
-            localStorage.setItem('corp_save', JSON.stringify(state));
-        }
-
-        checkSave();
     </script>
 </body>
 </html>
