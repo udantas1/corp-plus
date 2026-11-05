@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corp+ | Business Simulator</title>
+    <title>Corp+ | Global Business Simulator</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -18,25 +18,23 @@
             --accent-text: #000000;
             --danger: #ff453a;
             --success: #30d158;
+            --info: #0a84ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
         body { background-color: var(--bg); color: var(--text-main); height: 100vh; width: 100vw; overflow: hidden; font-size: 14px; }
 
-        /* SISTEMA DE TELAS */
         .screen { display: none !important; width: 100%; height: 100%; }
         .screen.active { display: flex !important; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* COMPONENTES BASE (Minimalistas) */
+        /* UI Elements */
         .btn { background: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .btn:hover { background: var(--surface-hover); }
         .btn-primary { background: var(--accent); color: var(--accent-text); border: 1px solid var(--accent); }
         .btn-primary:hover { background: #e0e0e0; border-color: #e0e0e0; }
         .btn-danger { color: var(--danger); border-color: rgba(255, 69, 58, 0.3); background: rgba(255, 69, 58, 0.05); }
         .btn-danger:hover { background: rgba(255, 69, 58, 0.1); }
-        .btn-disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
         
         .input, .select { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 12px 16px; border-radius: 6px; font-size: 14px; transition: 0.2s; }
         .input:focus, .select:focus { outline: none; border-color: #444; }
@@ -45,112 +43,96 @@
 
         svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
-        /* TELA START */
+        /* Layout */
         #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; }
         .brand-title { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; }
         .brand-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 0.5px; }
-
-        /* TELA SETUP */
         .setup-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; width: 100%; max-width: 440px; }
 
-        /* WORKSPACE */
+        /* Workspace */
         #screen-game { flex-direction: row; }
-        
-        /* SIDEBAR */
         .sidebar { width: 260px; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; }
         .sb-header { padding: 0 12px; margin-bottom: 30px; }
         .sb-brand { font-size: 20px; font-weight: 700; letter-spacing: -1px; margin-bottom: 4px; }
-        .sb-company { font-size: 12px; color: var(--text-muted); }
+        .sb-company { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
 
         .menu-section { font-size: 10px; text-transform: uppercase; color: #555; font-weight: 600; margin: 20px 0 8px 12px; letter-spacing: 1px; }
-        .menu-item { padding: 10px 12px; margin-bottom: 4px; border-radius: 6px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; transition: 0.2s; font-size: 13px; font-weight: 500; }
-        .menu-item .m-left { display: flex; align-items: center; gap: 10px; }
+        .menu-item { padding: 10px 12px; margin-bottom: 4px; border-radius: 6px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 10px; transition: 0.2s; font-size: 13px; font-weight: 500; }
         .menu-item:hover { background: var(--surface); color: var(--text-main); }
         .menu-item.active { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); }
         
-        .badge-count { background: var(--accent); color: var(--accent-text); font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; display: none; }
-        .badge-count.show { display: inline-block; }
+        .badge-count { background: var(--accent); color: var(--accent-text); font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; margin-left: auto; }
 
-        /* MAIN CONTENT */
         .workspace { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
         .topbar { height: 64px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; }
         
         .content { padding: 32px; overflow-y: auto; flex: 1; }
         .tab { display: none !important; animation: fadeIn 0.3s ease; }
         .tab.active { display: block !important; }
-
         .page-title { font-size: 24px; font-weight: 600; margin-bottom: 24px; letter-spacing: -0.5px; }
 
-        /* GRIDS & CARDS */
+        /* Grids & Cards */
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 24px; }
         
         .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
-        .card-header { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; font-weight: 500; }
+        .card-header { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; font-weight: 500; display: flex; justify-content: space-between; }
         .card-value { font-size: 28px; font-weight: 600; margin-bottom: 4px; letter-spacing: -1px; }
         .card-sub { font-size: 12px; color: var(--text-muted); }
         
         .c-green { color: var(--success); }
         .c-red { color: var(--danger); }
+        .c-info { color: var(--info); }
 
         .panel { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
         .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
-        /* TABLE */
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 500; }
-        td { padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 13px; color: #ddd; }
+        th { text-align: left; padding: 12px; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 500; text-transform: uppercase; }
+        td { padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
         .t-val { font-weight: 500; text-align: right; }
 
-        /* INBOX (EMAIL) */
-        .email-list { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .email-item { padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; background: var(--surface); }
-        .email-item:last-child { border-bottom: none; }
-        .email-item:hover { background: var(--surface-hover); }
-        .email-item.unread { background: var(--bg); border-left: 2px solid var(--accent); }
-        .e-header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; color: var(--text-muted); }
-        .e-title { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
-        .e-body { font-size: 13px; color: #999; line-height: 1.5; display: none; padding-top: 12px; margin-top: 12px; border-top: 1px dashed var(--border); }
-        .email-item.open .e-body { display: block; }
+        /* Suppliers & Competitors */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
+        .list-item:last-child { border-bottom: none; }
+        .sup-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #555; border-radius: 50%; outline: none; cursor: pointer; position: relative; }
+        .sup-radio:checked { border-color: var(--accent); }
+        .sup-radio:checked::after { content: ''; position: absolute; top: 3px; left: 3px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
 
-        /* ASSETS */
-        .asset-list { margin-top: 12px; }
-        .asset-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
-        .asset-item:last-child { border-bottom: none; }
+        /* Market Bar */
+        .market-bar-bg { width: 100%; height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .market-bar-fill { height: 100%; background: var(--info); border-radius: 4px; }
     </style>
 </head>
 <body>
 
-    <!-- Ícones SVG Reutilizáveis (Definidos invisíveis) -->
+    <!-- SVGs -->
     <svg style="display:none;">
         <defs>
+            <g id="ic-truck"><path d="M1 3h15v13H1z"></path><path d="M16 8h4l3 3v5h-7V8z"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></g>
+            <g id="ic-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></g>
             <g id="ic-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></g>
             <g id="ic-mail"><path d="M4 7l8 5 8-5"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect></g>
             <g id="ic-dollar"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></g>
             <g id="ic-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g>
-            <g id="ic-save"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></g>
-            <g id="ic-package"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></g>
-            <g id="ic-trending"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></g>
-            <g id="ic-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></g>
-            <g id="ic-trash"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></g>
+            <g id="ic-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></g>
         </defs>
     </svg>
 
-    <!-- TELA 1: START -->
+    <!-- TELA: START -->
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
-        <div class="brand-subtitle">Operating System</div>
-        
+        <div class="brand-subtitle">Simulação Econômica Global</div>
         <div style="display: flex; gap: 16px;">
-            <button class="btn btn-primary" onclick="changeScreen('screen-setup')">Novo Jogo</button>
-            <button class="btn" id="btn-load" style="display: none;" onclick="carregarJogo()">Continuar Sessão</button>
+            <button class="btn btn-primary" onclick="changeScreen('screen-setup')">Nova Holding</button>
+            <button class="btn" id="btn-load" style="display: none;" onclick="carregarJogo()">Continuar</button>
         </div>
     </div>
 
-    <!-- TELA 2: SETUP -->
+    <!-- TELA: SETUP -->
     <div id="screen-setup" class="screen">
         <div class="setup-box">
-            <h2 style="font-size: 20px; margin-bottom: 24px;">Configuração Corporativa</h2>
+            <h2 style="font-size: 20px; margin-bottom: 24px;">Registro de Operações</h2>
             
             <div class="form-group">
                 <label class="form-label">Nome do Titular (CEO)</label>
@@ -158,158 +140,192 @@
             </div>
             
             <div class="form-group">
-                <label class="form-label">Razão Social da Empresa</label>
+                <label class="form-label">Razão Social (Holding/PJ)</label>
                 <input type="text" id="setup-comp" class="input" placeholder="Ex: Campos Group" autocomplete="off">
             </div>
 
-            <div class="grid-2" style="margin-bottom: 0;">
-                <div class="form-group">
-                    <label class="form-label">Moeda Base</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div>
+                    <label class="form-label">Câmbio Base</label>
                     <select id="setup-cur" class="select">
-                        <option value="BRL">BRL (Real)</option>
-                        <option value="USD">USD (Dólar)</option>
-                        <option value="EUR">EUR (Euro)</option>
+                        <option value="USD">Dólar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="BRL" selected>Real (BRL)</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Setor Inicial</label>
+                <div>
+                    <label class="form-label">Setor de Atuação</label>
                     <select id="setup-sec" class="select">
-                        <option value="tech">Tecnologia</option>
-                        <option value="fashion">Moda de Luxo</option>
-                        <option value="food">Gastronomia</option>
+                        <option value="tech">Tecnologia (Smartphones)</option>
+                        <option value="fashion">Moda de Luxo (Grife)</option>
+                        <option value="food">Gastronomia (Fast Food)</option>
                     </select>
                 </div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="iniciarNovoJogo()">Registrar Operação</button>
-            <button class="btn" style="width: 100%; margin-top: 8px; border: none;" onclick="changeScreen('screen-start')">Voltar</button>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="iniciarNovoJogo()">Formalizar Empresa</button>
         </div>
     </div>
 
-    <!-- TELA 3: WORKSPACE -->
+    <!-- TELA: WORKSPACE -->
     <div id="screen-game" class="screen">
         
+        <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sb-header">
                 <div class="sb-brand">CORP+</div>
-                <div class="sb-company" id="ui-sb-comp">Company Name</div>
+                <div class="sb-company" id="ui-sb-comp">COMPANY NAME</div>
             </div>
 
-            <div class="menu-section">Corporativo (PJ)</div>
-            <div class="menu-item active" onclick="switchTab('tab-ops', this)">
-                <div class="m-left"><svg><use href="#ic-briefcase"/></svg> Operações</div>
-            </div>
-            <div class="menu-item" onclick="switchTab('tab-fin', this)">
-                <div class="m-left"><svg><use href="#ic-dollar"/></svg> Financeiro</div>
-            </div>
+            <div class="menu-section">Operacional</div>
+            <div class="menu-item active" onclick="switchTab('tab-ops', this)"><svg><use href="#ic-truck"/></svg> Suprimentos e Produção</div>
+            <div class="menu-item" onclick="switchTab('tab-market', this)"><svg><use href="#ic-globe"/></svg> Mercado e Concorrência</div>
+            
+            <div class="menu-section">Financeiro (PJ)</div>
+            <div class="menu-item" onclick="switchTab('tab-fin', this)"><svg><use href="#ic-dollar"/></svg> Tesouraria</div>
+            <div class="menu-item" onclick="switchTab('tab-stock', this)"><svg><use href="#ic-activity"/></svg> Bolsa de Valores</div>
             
             <div class="menu-section">Comunicações</div>
             <div class="menu-item" onclick="switchTab('tab-mail', this)">
-                <div class="m-left"><svg><use href="#ic-mail"/></svg> Caixa de Entrada</div>
-                <span class="badge-count" id="ui-email-badge">0</span>
+                <svg><use href="#ic-mail"/></svg> Caixa de Entrada
+                <span class="badge-count" id="ui-email-badge" style="display:none;">0</span>
             </div>
 
-            <div class="menu-section">Privado (PF)</div>
-            <div class="menu-item" onclick="switchTab('tab-ceo', this)">
-                <div class="m-left"><svg><use href="#ic-user"/></svg> Área do Titular</div>
-            </div>
+            <div class="menu-section">Patrimônio Privado</div>
+            <div class="menu-item" onclick="switchTab('tab-ceo', this)"><svg><use href="#ic-user"/></svg> Vida de CEO (PF)</div>
         </div>
 
         <div class="workspace">
             <div class="topbar">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <button class="btn" onclick="salvarJogo()"><svg><use href="#ic-save"/></svg> Salvar Estado</button>
-                    <button class="btn btn-danger" style="border:none;" onclick="resetarJogo()"><svg><use href="#ic-trash"/></svg></button>
-                    <span id="save-status" style="font-size: 11px; color: var(--text-muted); margin-left: 8px;"></span>
-                </div>
-                
+                <div style="font-size: 12px; color: var(--text-muted);" id="ui-cambio-info">Moeda Base: BRL</div>
                 <div style="display: flex; align-items: center; gap: 24px;">
                     <div style="text-align: right;">
-                        <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Ciclo Vigente</div>
+                        <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Fechamento de Ciclo</div>
                         <div style="font-size: 14px; font-weight: 600;" id="ui-data">Ano 1 / Mês 1</div>
                     </div>
-                    <button class="btn btn-primary" onclick="avancarCiclo()"><svg><use href="#ic-clock"/></svg> Avançar Mês</button>
+                    <button class="btn btn-primary" onclick="avancarCiclo()">Avançar Mês ➔</button>
                 </div>
             </div>
 
             <div class="content">
                 
-                <!-- TAB: OPERAÇÕES -->
+                <!-- TAB: SUPRIMENTOS E PRODUÇÃO -->
                 <div id="tab-ops" class="tab active">
-                    <h1 class="page-title">Operações & Mercado</h1>
+                    <h1 class="page-title">Produção e Cadeia de Suprimentos</h1>
                     
                     <div class="grid-3">
                         <div class="card">
-                            <div class="card-header">Liquidez Empresarial</div>
-                            <div class="card-value c-green" id="ui-caixa-pj">$ 0</div>
-                            <div class="card-sub">Despesa fixa: <span id="ui-custo-fixo">$ 0</span>/mês</div>
+                            <div class="card-header">Liquidez (PJ)</div>
+                            <div class="card-value c-green" id="ui-caixa-pj">0</div>
+                            <div class="card-sub">OPEX: <span id="ui-custo-fixo">0</span>/mês</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Estoque Físico</div>
+                            <div class="card-header">Volume de Estoque</div>
                             <div class="card-value" id="ui-estoque">0</div>
-                            <div class="card-sub" id="ui-lbl-produto">Unidades armazenadas</div>
+                            <div class="card-sub" id="ui-lbl-produto">Unidades prontas</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Projeção de Demanda</div>
-                            <div class="card-value" style="font-size: 20px; padding-top: 6px;" id="ui-demanda">Estável</div>
-                            <div class="card-sub" style="margin-top: 8px;">Baseado em variáveis macro.</div>
+                            <div class="card-header">Capacidade Produtiva</div>
+                            <div class="card-value">Lote 500</div>
+                            <div class="card-sub">Unidades por ordem de produção</div>
                         </div>
                     </div>
 
                     <div class="grid-2">
                         <div class="panel">
-                            <div class="panel-title"><svg><use href="#ic-package"/></svg> Logística e Suprimentos</div>
-                            <div style="margin-bottom: 20px; font-size: 13px; color: var(--text-muted);">
-                                Adquira lotes de <span id="ui-lbl-matprima" style="color:#ddd;">matéria-prima</span> para converter em produtos finais prontos para venda.
-                            </div>
+                            <div class="panel-title">Fornecedores Globais (Contratos)</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Selecione quem irá fabricar os componentes base, embalagem e cuidar da logística (Frete) da sua marca.</p>
                             
-                            <div style="display: flex; justify-content: space-between; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 16px;">
-                                <div><div style="font-size: 11px; color: var(--text-muted);">Lote Comercial</div><div style="font-weight: 500;">100 Unidades</div></div>
-                                <div style="text-align: right;"><div style="font-size: 11px; color: var(--text-muted);">Custo</div><div class="c-red" style="font-weight: 500;" id="ui-custo-lote">-$ 0</div></div>
+                            <div id="ui-fornecedores">
+                                <!-- Preenchido dinamicamente -->
                             </div>
-                            <button class="btn" style="width: 100%;" onclick="comprarLote()">Aprovar Faturamento</button>
                         </div>
 
                         <div class="panel">
-                            <div class="panel-title"><svg><use href="#ic-trending"/></svg> Precificação</div>
-                            <div style="margin-bottom: 20px; font-size: 13px; color: var(--text-muted);">
-                                Defina a margem de lucro por unidade de <span id="ui-lbl-produto2" style="color:#ddd;">produto</span>. Preços elevados restringem o volume de vendas.
+                            <div class="panel-title">Ordem de Produção</div>
+                            
+                            <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: var(--text-muted); font-size: 13px;">Fornecedor Selecionado:</span>
+                                    <strong id="ui-op-forn">-</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: var(--text-muted); font-size: 13px;">Custo de Fabricação (Unit.):</span>
+                                    <strong id="ui-op-custounit">-</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: var(--text-muted); font-size: 13px;">Frete + Embalagem (Unit.):</span>
+                                    <strong id="ui-op-frete">-</strong>
+                                </div>
+                                <hr style="border: 0; border-top: 1px dashed var(--border); margin: 12px 0;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: var(--text-muted); font-size: 13px;">Custo Total do Lote (500 un.):</span>
+                                    <strong class="c-red" id="ui-op-total" style="font-size: 16px;">-</strong>
+                                </div>
                             </div>
+                            
+                            <button class="btn btn-primary" style="width: 100%;" onclick="emitirOrdemProducao()">Pagar e Produzir Lote</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: MERCADO & CONCORRÊNCIA -->
+                <div id="tab-market" class="tab">
+                    <h1 class="page-title">Mercado e Concorrência</h1>
+                    
+                    <div class="grid-2">
+                        <div class="panel">
+                            <div class="panel-title">Estratégia de Precificação</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Defina o preço de venda da sua marca. Analise os concorrentes ao lado para não ficar fora do mercado.</p>
+                            
                             <div class="form-group">
-                                <label class="form-label">Preço Final ao Consumidor</label>
-                                <input type="number" id="ui-preco" class="input" value="0">
+                                <label class="form-label">Preço ao Consumidor (Unitário)</label>
+                                <input type="number" id="ui-preco" class="input" value="0" oninput="calcularMargem()">
                             </div>
-                            <div style="font-size: 11px; color: var(--text-muted); padding: 10px; background: rgba(255,255,255,0.02); border-radius: 6px;">
-                                O seu custo de produção unitário é <span id="ui-custo-unitario" style="color:#fff;">$ 0</span>. A venda acontece automaticamente no fechamento do mês.
+                            
+                            <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span style="font-size: 12px; color: var(--text-muted);">Custo por Unidade (CPV):</span>
+                                    <span id="ui-margem-custo" style="font-size: 13px;">$ 0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 12px; color: var(--text-muted);">Lucro Bruto Unitário:</span>
+                                    <span id="ui-margem-lucro" style="font-size: 13px; font-weight: 600;" class="c-green">$ 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-title">Análise de Competidores (Market Share)</div>
+                            <div id="ui-concorrentes">
+                                <!-- Preenchido dinamicamente -->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB: FINANCEIRO -->
+                <!-- TAB: FINANCEIRO PJ -->
                 <div id="tab-fin" class="tab">
-                    <h1 class="page-title">Tesouraria Corporativa</h1>
-                    
+                    <h1 class="page-title">Tesouraria e Dívidas</h1>
                     <div class="grid-2">
                         <div class="card">
-                            <div class="card-header">Passivo Circulante (Dívida)</div>
-                            <div class="card-value c-red" id="ui-divida-pj">$ 0</div>
+                            <div class="card-header">Passivo Circulante (Empréstimos)</div>
+                            <div class="card-value c-red" id="ui-divida-pj">0</div>
                             <div class="card-sub">Custo da dívida: 3.5% ao mês</div>
                         </div>
                         <div class="panel" style="margin:0;">
-                            <div class="panel-title">Operações de Crédito</div>
+                            <div class="panel-title">Crédito Corporativo</div>
                             <div style="display: flex; gap: 12px; margin-bottom: 12px;">
                                 <button class="btn" style="flex:1;" onclick="tomarEmprestimo()">Captar Fundos</button>
-                                <button class="btn btn-primary" style="flex:1;" onclick="amortizarDivida()">Amortizar</button>
+                                <button class="btn btn-primary" style="flex:1;" onclick="amortizarDivida()">Amortizar Passivo</button>
                             </div>
                             <input type="number" id="ui-val-amortizar" class="input" placeholder="Valor p/ Amortizar" style="background: var(--bg);">
                         </div>
                     </div>
-
                     <div class="panel">
-                        <div class="panel-title">Livro Razão (Extrato PJ)</div>
-                        <div style="max-height: 400px; overflow-y: auto; margin: -20px;">
-                            <table style="margin-top: 20px;">
+                        <div class="panel-title">Fluxo de Caixa Operacional (Extrato PJ)</div>
+                        <div style="max-height: 350px; overflow-y: auto; margin: -20px; margin-top: 0;">
+                            <table style="margin-top: 10px;">
                                 <thead><tr><th>Data</th><th>Lançamento</th><th style="text-align: right;">Valor</th></tr></thead>
                                 <tbody id="tb-extrato-pj"></tbody>
                             </table>
@@ -317,44 +333,48 @@
                     </div>
                 </div>
 
-                <!-- TAB: INBOX (EMAIL) -->
-                <div id="tab-mail" class="tab">
-                    <h1 class="page-title">Correio Corporativo</h1>
-                    <div class="email-list" id="ui-email-list">
-                        <!-- Preenchido via JS -->
+                <!-- TAB: BOLSA DE VALORES -->
+                <div id="tab-stock" class="tab">
+                    <h1 class="page-title">Mercado de Capitais (B3 / NYSE)</h1>
+                    <div class="panel" style="text-align: center; padding: 60px 20px;">
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;" id="ui-valuation">0</h2>
+                        <div style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation (Valor de Mercado Estimado)</div>
+                        
+                        <p style="font-size: 14px; color: #aaa; max-width: 500px; margin: 0 auto 30px;">
+                            Sua empresa ainda é de capital fechado (Private). Para realizar uma Oferta Pública Inicial (IPO) e listar suas ações na bolsa, o Valuation da empresa precisa ultrapassar a marca de <strong><span id="ui-ipo-meta">0</span></strong>.
+                        </p>
+                        
+                        <button class="btn btn-disabled" style="padding: 16px 32px; font-size: 16px;">Realizar IPO (Em Breve)</button>
                     </div>
+                </div>
+
+                <!-- TAB: INBOX -->
+                <div id="tab-mail" class="tab">
+                    <h1 class="page-title">Caixa de Entrada</h1>
+                    <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden;" id="ui-email-list"></div>
                 </div>
 
                 <!-- TAB: CEO (PF) -->
                 <div id="tab-ceo" class="tab">
-                    <h1 class="page-title">Gestão de Patrimônio (PF)</h1>
-                    
+                    <h1 class="page-title">Patrimônio Privado do Titular</h1>
                     <div class="grid-2">
                         <div>
                             <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
                                 <div class="card-header">Conta Bancária Privada</div>
-                                <div class="card-value c-green" id="ui-caixa-pf">$ 0</div>
-                                <div class="card-sub">Pró-labore Mensal: <span id="ui-salario-pf">$ 0</span></div>
+                                <div class="card-value c-green" id="ui-caixa-pf">0</div>
+                                <div class="card-sub">Pró-labore Mensal: <span id="ui-salario-pf">0</span></div>
                             </div>
-                            
                             <div class="panel">
-                                <div class="panel-title">Mercado de Luxo</div>
-                                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Gaste os fundos pessoais para adquirir bens e reputação.</div>
-                                <div class="asset-list" id="ui-loja-pf">
-                                    <!-- Renderizado via JS -->
-                                </div>
+                                <div class="panel-title">Mercado de Luxo (Aquisições PF)</div>
+                                <div id="ui-loja-pf"></div>
                             </div>
                         </div>
-
                         <div class="panel">
-                            <div class="panel-title">Ativos Acumulados</div>
+                            <div class="panel-title">Meus Ativos & Status</div>
                             <div id="ui-meus-bens" style="margin-bottom: 24px;"></div>
-                            
                             <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 20px;">Extrato Pessoal</div>
-                            <div style="max-height: 250px; overflow-y: auto; margin: -20px;">
-                                <table style="margin-top: 20px;">
-                                    <tbody id="tb-extrato-pf"></tbody>
-                                </table>
+                            <div style="max-height: 250px; overflow-y: auto; margin: -20px; margin-top: 0;">
+                                <table style="margin-top: 10px;"><tbody id="tb-extrato-pf"></tbody></table>
                             </div>
                         </div>
                     </div>
@@ -365,69 +385,95 @@
     </div>
 
     <script>
-        // CONFIGURAÇÕES BASE DOS SETORES
-        const configs = {
-            'tech': { nome: 'Tecnologia', matPrima: 'Semicondutores', produto: 'Smartphones', custoLote: 8000, precoIdeal: 180, custoFixo: 12000 },
-            'fashion': { nome: 'Moda de Luxo', matPrima: 'Tecidos Premium', produto: 'Peças de Grife', custoLote: 4000, precoIdeal: 100, custoFixo: 6000 },
-            'food': { nome: 'Gastronomia', matPrima: 'Ingredientes Brutos', produto: 'Pratos Premium', custoLote: 2000, precoIdeal: 50, custoFixo: 4000 }
+        // CONFIGURAÇÕES BASE (Valores em USD, serão convertidos via Câmbio)
+        const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
+        const currencySymbols = { 'USD': '$', 'EUR': '€', 'BRL': 'R$' };
+
+        const sectors = {
+            'tech': {
+                nome: 'Smartphones',
+                fornecedores: [
+                    { id: 'f1', nome: 'Shenzhen Micro (Baixo Custo)', custoFab: 120, frete: 20, qualidade: 'Baixa' },
+                    { id: 'f2', nome: 'Taiwan Semi (Padrão)', custoFab: 250, frete: 30, qualidade: 'Média' },
+                    { id: 'f3', nome: 'Silicon Premium (Alta Gama)', custoFab: 450, frete: 45, qualidade: 'Alta' }
+                ],
+                concorrentes: [
+                    { nome: 'Pear Inc.', precoBase: 999, share: 40 },
+                    { nome: 'Samtech', precoBase: 799, share: 35 },
+                    { nome: 'Xiaomeng', precoBase: 399, share: 25 }
+                ],
+                custoFixo: 15000,
+                ipoMeta: 5000000
+            },
+            'fashion': {
+                nome: 'Roupas de Grife',
+                fornecedores: [
+                    { id: 'f1', nome: 'FastTextile Ásia', custoFab: 20, frete: 5, qualidade: 'Baixa' },
+                    { id: 'f2', nome: 'EuroModa Portugal', custoFab: 60, frete: 10, qualidade: 'Média' },
+                    { id: 'f3', nome: 'Milano Artisan (Itália)', custoFab: 150, frete: 15, qualidade: 'Alta' }
+                ],
+                concorrentes: [
+                    { nome: 'Loui V.', precoBase: 1200, share: 30 },
+                    { nome: 'Pradd', precoBase: 800, share: 30 },
+                    { nome: 'Zêra', precoBase: 80, share: 40 }
+                ],
+                custoFixo: 8000,
+                ipoMeta: 2000000
+            },
+            'food': {
+                nome: 'Fast Food',
+                fornecedores: [
+                    { id: 'f1', nome: 'AgroMass', custoFab: 1.5, frete: 0.5, qualidade: 'Baixa' },
+                    { id: 'f2', nome: 'Fazendas Locais', custoFab: 3.5, frete: 1.0, qualidade: 'Média' },
+                    { id: 'f3', nome: 'Orgânicos Premium', custoFab: 8.0, frete: 2.0, qualidade: 'Alta' }
+                ],
+                concorrentes: [
+                    { nome: 'McBurger', precoBase: 8, share: 45 },
+                    { nome: 'Burger Lord', precoBase: 9, share: 35 },
+                    { nome: 'Starbrews', precoBase: 15, share: 20 }
+                ],
+                custoFixo: 5000,
+                ipoMeta: 1000000
+            }
         };
 
-        const formatoMoeda = {
-            'BRL': { loc: 'pt-BR', cur: 'BRL' },
-            'USD': { loc: 'en-US', cur: 'USD' },
-            'EUR': { loc: 'de-DE', cur: 'EUR' }
-        };
+        let state = {};
 
-        // ESTADO GLOBAL INICIAL
-        let state = null;
+        // FORMATAÇÃO MONETÁRIA INTELIGENTE
+        function fmt(usdValue) {
+            if(usdValue === undefined || isNaN(usdValue)) return "0";
+            const converted = usdValue * exchangeRates[state.moeda];
+            
+            // Formatador nativo de moedas do navegador
+            return new Intl.NumberFormat(
+                state.moeda === 'BRL' ? 'pt-BR' : state.moeda === 'EUR' ? 'de-DE' : 'en-US',
+                { style: 'currency', currency: state.moeda }
+            ).format(converted);
+        }
+
+        // Converte valor digitado pelo usuário (na moeda local) de volta para USD (motor interno)
+        function parseToUSD(localValue) {
+            return localValue / exchangeRates[state.moeda];
+        }
+        function toLocal(usdValue) {
+            return usdValue * exchangeRates[state.moeda];
+        }
 
         function gerarEstadoNovo(ceo, comp, cur, sec) {
+            // Valores iniciais em USD
+            const capInicialUSD = 100000;
+            const pfInicialUSD = 10000;
+
             return {
-                ceo: ceo, empresa: comp, moeda: cur, setor: sec,
-                mes: 1, ano: 1,
-                pj: { caixa: 50000, divida: 0, estoque: 0, extrato: [] },
-                pf: { caixa: 5000, salario: 4000, bens: [], extrato: [] },
+                ceo, empresa: comp, moeda: cur, setor: sec, mes: 1, ano: 1,
+                fornecedorId: 'f2', // Padrão
+                precoVendaUSD: sectors[sec].concorrentes[1].precoBase, // Começa com o preço do concorrente médio
+                pj: { caixa: capInicialUSD, divida: 0, estoque: 0, extrato: [] },
+                pf: { caixa: pfInicialUSD, salario: 5000, bens: [], extrato: [] },
                 emails: [
-                    { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa Concluída', corpo: `Prezado(a) ${ceo}, a empresa ${comp} foi registrada com sucesso. Utilize o Capital Social para adquirir ${configs[sec].matPrima}. O seu pró-labore fixo foi definido.`, lido: false }
+                    { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa', corpo: `Sua holding ${comp} foi registrada. O setor de ${sectors[sec].nome} é altamente competitivo. Verifique os fornecedores e defina seu preço.`, lido: false }
                 ]
             };
-        }
-
-        // --- SISTEMA DE SAVE/LOAD ---
-        function checkSave() {
-            const saved = localStorage.getItem('corp_save');
-            if (saved) {
-                document.getElementById('btn-load').style.display = 'inline-flex';
-            }
-        }
-
-        function carregarJogo() {
-            const saved = localStorage.getItem('corp_save');
-            if (saved) {
-                state = JSON.parse(saved);
-                montarJogo();
-            }
-        }
-
-        function salvarJogo() {
-            if(!state) return;
-            localStorage.setItem('corp_save', JSON.stringify(state));
-            const status = document.getElementById('save-status');
-            status.innerText = "Salvo agora";
-            setTimeout(() => status.innerText = "", 2000);
-        }
-
-        function resetarJogo() {
-            if(confirm("Apagar todos os dados e recomeçar?")) {
-                localStorage.removeItem('corp_save');
-                location.reload();
-            }
-        }
-
-        // --- FLUXO DE TELAS ---
-        function changeScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
         }
 
         function iniciarNovoJogo() {
@@ -436,210 +482,268 @@
             const cur = document.getElementById('setup-cur').value;
             const sec = document.getElementById('setup-sec').value;
 
-            if(!ceo || !comp) { alert("Preencha os nomes."); return; }
+            if(!ceo || !comp) return alert("Preencha todos os dados.");
             state = gerarEstadoNovo(ceo, comp, cur, sec);
-            salvarJogo();
             montarJogo();
-        }
-
-        // --- RENDERIZAÇÃO DO JOGO ---
-        function fmt(val) {
-            const f = formatoMoeda[state.moeda];
-            return val.toLocaleString(f.loc, { style: 'currency', currency: f.cur }).replace(/\,00|\.00/, ''); 
-        }
-
-        function addExtrato(tipo, desc, val) {
-            const hist = state[tipo].extrato;
-            hist.unshift({ d: `${state.mes}/${state.ano}`, desc, val });
-            if (hist.length > 30) hist.pop(); // Mantém apenas os últimos 30 registros
-        }
-
-        function addEmail(remetente, titulo, corpo) {
-            state.emails.unshift({ id: Date.now(), remetente, titulo, corpo, lido: false });
-            renderEmails();
         }
 
         function montarJogo() {
             changeScreen('screen-game');
-            const cfg = configs[state.setor];
-            
             document.getElementById('ui-sb-comp').innerText = state.empresa;
-            document.getElementById('ui-lbl-matprima').innerText = cfg.matPrima;
-            document.getElementById('ui-lbl-produto').innerText = cfg.produto;
-            document.getElementById('ui-lbl-produto2').innerText = cfg.produto;
+            document.getElementById('ui-cambio-info').innerText = `Moeda Base: ${state.moeda} (Câmbio Automático)`;
             
-            document.getElementById('ui-custo-fixo').innerText = fmt(cfg.custoFixo);
-            document.getElementById('ui-custo-lote').innerText = `-${fmt(cfg.custoLote)}`;
-            document.getElementById('ui-custo-unitario').innerText = fmt(cfg.custoLote / 100);
-            
-            if(document.getElementById('ui-preco').value == 0) {
-                document.getElementById('ui-preco').value = cfg.precoIdeal;
-            }
+            const cfg = sectors[state.setor];
+            document.getElementById('ui-lbl-produto').innerText = cfg.nome;
+            document.getElementById('ui-preco').value = Math.round(toLocal(state.precoVendaUSD));
 
+            renderFornecedores();
+            renderConcorrentes();
             renderLojaPF();
             atualizarUI();
             renderEmails();
         }
 
+        // --- SISTEMA DE FORNECEDORES E LOGÍSTICA ---
+        function renderFornecedores() {
+            const list = sectors[state.setor].fornecedores;
+            let html = '';
+            list.forEach(f => {
+                const checked = state.fornecedorId === f.id ? 'checked' : '';
+                html += `
+                <label class="list-item" style="cursor:pointer;" onclick="setFornecedor('${f.id}')">
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <input type="radio" name="sup" class="sup-radio" ${checked}>
+                        <div>
+                            <div style="font-weight:600; font-size:13px;">${f.nome}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Qualidade: ${f.qualidade}</div>
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:11px; color:var(--text-muted);">Custo + Frete/un</div>
+                        <div style="font-weight:600;">${fmt(f.custoFab + f.frete)}</div>
+                    </div>
+                </label>`;
+            });
+            document.getElementById('ui-fornecedores').innerHTML = html;
+            atualizarCustoOP();
+        }
+
+        function setFornecedor(id) {
+            state.fornecedorId = id;
+            renderFornecedores();
+        }
+
+        function getFornecedorAtual() {
+            return sectors[state.setor].fornecedores.find(f => f.id === state.fornecedorId);
+        }
+
+        function atualizarCustoOP() {
+            const f = getFornecedorAtual();
+            document.getElementById('ui-op-forn').innerText = f.nome;
+            document.getElementById('ui-op-custounit').innerText = fmt(f.custoFab);
+            document.getElementById('ui-op-frete').innerText = fmt(f.frete);
+            
+            const total = (f.custoFab + f.frete) * 500;
+            document.getElementById('ui-op-total').innerText = fmt(total);
+            calcularMargem();
+        }
+
+        function emitirOrdemProducao() {
+            const f = getFornecedorAtual();
+            const totalCustoUSD = (f.custoFab + f.frete) * 500;
+            
+            if (state.pj.caixa >= totalCustoUSD) {
+                state.pj.caixa -= totalCustoUSD;
+                state.pj.estoque += 500;
+                addExtrato('pj', `OP: Lote 500 un. (${f.nome})`, -totalCustoUSD);
+                atualizarUI();
+            } else { alert(`Liquidez corporativa insuficiente. Necessário: ${fmt(totalCustoUSD)}`); }
+        }
+
+        // --- MERCADO E PRECIFICAÇÃO ---
+        function renderConcorrentes() {
+            const concs = sectors[state.setor].concorrentes;
+            let html = '';
+            concs.forEach(c => {
+                html += `
+                <div style="margin-bottom: 16px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
+                        <span style="font-weight:600;">${c.nome}</span>
+                        <span>${fmt(c.precoBase)}</span>
+                    </div>
+                    <div class="market-bar-bg"><div class="market-bar-fill" style="width: ${c.share}%"></div></div>
+                </div>`;
+            });
+            document.getElementById('ui-concorrentes').innerHTML = html;
+        }
+
+        function calcularMargem() {
+            const precoLocal = parseFloat(document.getElementById('ui-preco').value) || 0;
+            state.precoVendaUSD = parseToUSD(precoLocal);
+            
+            const f = getFornecedorAtual();
+            const custoUniUSD = f.custoFab + f.frete;
+            const lucroUniUSD = state.precoVendaUSD - custoUniUSD;
+
+            document.getElementById('ui-margem-custo').innerText = fmt(custoUniUSD);
+            const lblLucro = document.getElementById('ui-margem-lucro');
+            lblLucro.innerText = fmt(lucroUniUSD);
+            
+            if (lucroUniUSD < 0) { lblLucro.className = 'c-red'; } 
+            else { lblLucro.className = 'c-green'; }
+        }
+
+        // --- ATUALIZAÇÃO UI GERAL ---
         function atualizarUI() {
+            const cfg = sectors[state.setor];
             document.getElementById('ui-data').innerText = `Ano ${state.ano} / Mês ${state.mes}`;
             
-            // PJ
             document.getElementById('ui-caixa-pj').innerText = fmt(state.pj.caixa);
+            document.getElementById('ui-custo-fixo').innerText = fmt(cfg.custoFixo);
             document.getElementById('ui-estoque').innerText = state.pj.estoque;
             document.getElementById('ui-divida-pj').innerText = fmt(state.pj.divida);
             
-            // PF
             document.getElementById('ui-caixa-pf').innerText = fmt(state.pf.caixa);
             document.getElementById('ui-salario-pf').innerText = fmt(state.pf.salario);
 
-            // Tabelas
-            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td>${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3">Sem registros.</td></tr>';
+            // Tabela Extrato
+            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#666;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3">Sem registros.</td></tr>';
             document.getElementById('tb-extrato-pj').innerHTML = buildTb(state.pj.extrato);
             document.getElementById('tb-extrato-pf').innerHTML = buildTb(state.pf.extrato);
 
+            // Valuation
+            const valuation = state.pj.caixa + ((getFornecedorAtual().custoFab * state.pj.estoque)) - state.pj.divida;
+            document.getElementById('ui-valuation').innerText = fmt(valuation * 3); // Multiplo basico
+            document.getElementById('ui-ipo-meta').innerText = fmt(cfg.ipoMeta);
+
             // Bens PF
             const mBens = document.getElementById('ui-meus-bens');
-            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 8px 12px; background: rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:13px;">${b}</div>`).join('') : '<span style="color:#555;font-size:12px;">Nenhum ativo listado.</span>';
+            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:13px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:12px;">Nenhum ativo adquirido.</span>';
         }
 
-        // --- SISTEMA DE EMAIL ---
-        function renderEmails() {
-            const list = document.getElementById('ui-email-list');
-            const unreadCount = state.emails.filter(e => !e.lido).length;
-            
-            const badge = document.getElementById('ui-email-badge');
-            if (unreadCount > 0) { badge.innerText = unreadCount; badge.classList.add('show'); }
-            else { badge.classList.remove('show'); }
-
-            list.innerHTML = state.emails.map((e, index) => `
-                <div class="email-item ${e.lido ? '' : 'unread'}" onclick="toggleEmail(${index})">
-                    <div class="e-header"><span>De: ${e.remetente}</span></div>
-                    <div class="e-title">${e.titulo}</div>
-                    <div class="e-body">${e.corpo}</div>
-                </div>
-            `).join('');
-        }
-
-        function toggleEmail(index) {
-            const els = document.querySelectorAll('.email-item');
-            state.emails[index].lido = true;
-            els[index].classList.toggle('open');
-            els[index].classList.remove('unread');
-            renderEmails(); // Atualiza contador
-            els[index].classList.add('open'); // Mantém aberto após renderizar
-        }
-
-        // --- AÇÕES PJ ---
-        function comprarLote() {
-            const custo = configs[state.setor].custoLote;
-            if (state.pj.caixa >= custo) {
-                state.pj.caixa -= custo;
-                state.pj.estoque += 100;
-                addExtrato('pj', 'Compra de Suprimentos', -custo);
-                atualizarUI();
-            } else { alert("Caixa Corporativo Insuficiente."); }
-        }
-
+        // --- SISTEMAS FINANCEIROS E LOGICA MENSAL ---
         function tomarEmprestimo() {
-            const cap = 20000;
-            state.pj.caixa += cap;
-            state.pj.divida += cap;
-            addExtrato('pj', 'Aporte Bancário (Crédito)', cap);
-            addEmail('Corporate Bank', 'Emissão de Dívida', `Foi creditado o valor de ${fmt(cap)} na conta da empresa. A taxa de juros atual é de 3.5% ao mês.`);
+            const valUSD = 50000;
+            state.pj.caixa += valUSD; state.pj.divida += valUSD;
+            addExtrato('pj', 'Crédito Bancário Emitido', valUSD);
             atualizarUI();
         }
 
         function amortizarDivida() {
-            const val = parseFloat(document.getElementById('ui-val-amortizar').value);
-            if (!val || val <= 0) return;
+            const valLocal = parseFloat(document.getElementById('ui-val-amortizar').value);
+            if (!valLocal || valLocal <= 0) return;
+            const valUSD = parseToUSD(valLocal);
+
             if (state.pj.divida <= 0) return;
-            if (val > state.pj.caixa) return alert("Caixa insuficiente.");
+            if (valUSD > state.pj.caixa) return alert("Liquidez corporativa insuficiente.");
             
-            const abatimento = Math.min(val, state.pj.divida);
-            state.pj.caixa -= abatimento;
-            state.pj.divida -= abatimento;
-            addExtrato('pj', 'Amortização Bancária', -abatimento);
+            const abat = Math.min(valUSD, state.pj.divida);
+            state.pj.caixa -= abat; state.pj.divida -= abat;
+            addExtrato('pj', 'Amortização Bancária', -abat);
             document.getElementById('ui-val-amortizar').value = '';
             atualizarUI();
         }
 
-        // --- AÇÕES PF ---
-        const lojaPF = [
-            { nome: 'Relógio Executivo', base: 12000 },
-            { nome: 'Sedã Importado', base: 85000 },
-            { nome: 'Imóvel Comercial', base: 450000 }
-        ];
+        function addExtrato(tipo, desc, val) {
+            state[tipo].extrato.unshift({ d: `${state.mes}/${state.ano}`, desc, val });
+            if (state[tipo].extrato.length > 30) state[tipo].extrato.pop();
+        }
 
+        // --- PASSAGEM DE TEMPO & MOTOR DE VENDAS ---
+        function avancarCiclo() {
+            const cfg = sectors[state.setor];
+            const f = getFornecedorAtual();
+            
+            // Algoritmo de Demanda Complexo
+            // Compara o preço da empresa com a média dos concorrentes, ajustado pela qualidade do fornecedor
+            const mediaConc = cfg.concorrentes.reduce((a, b) => a + b.precoBase, 0) / 3;
+            let fatorPreco = mediaConc / state.precoVendaUSD; 
+            
+            let modQualidade = 1.0;
+            if(f.qualidade === 'Alta') modQualidade = 1.3;
+            if(f.qualidade === 'Baixa') modQualidade = 0.7;
+
+            let demandaCalculada = Math.floor((300 * fatorPreco * modQualidade) * (0.8 + Math.random()*0.4));
+            
+            // Limitado pelo estoque
+            let vendas = Math.min(demandaCalculada, state.pj.estoque);
+
+            // Atualiza UI de Demanda
+            const uiDem = document.getElementById('ui-demanda');
+            if(demandaCalculada > 400) { uiDem.innerText = "Altíssima"; uiDem.style.color = "var(--success)"; }
+            else if(demandaCalculada < 100) { uiDem.innerText = "Baixa"; uiDem.style.color = "var(--danger)"; }
+            else { uiDem.innerText = "Estável"; uiDem.style.color = "var(--text-main)"; }
+
+            // Faturamento
+            if (vendas > 0) {
+                const recUSD = vendas * state.precoVendaUSD;
+                state.pj.caixa += recUSD; state.pj.estoque -= vendas;
+                addExtrato('pj', `Faturamento (${vendas} un.)`, recUSD);
+            }
+
+            // Custos e Juros
+            state.pj.caixa -= cfg.custoFixo;
+            addExtrato('pj', 'OPEX Mensal', -cfg.custoFixo);
+
+            if (state.pj.divida > 0) {
+                const juros = state.pj.divida * 0.035;
+                state.pj.divida += juros;
+                addExtrato('pj', 'Juros Passivos (3.5%)', -juros);
+            }
+
+            // Pró-labore
+            if (state.pj.caixa >= state.pf.salario) {
+                state.pj.caixa -= state.pf.salario; state.pf.caixa += state.pf.salario;
+                addExtrato('pj', 'Pró-labore Pago', -state.pf.salario);
+                addExtrato('pf', 'Pró-labore Recebido', state.pf.salario);
+            } else {
+                addEmail('CFO', 'Alerta de Falência Técnica', 'Não houve caixa suficiente para cobrir a folha de pagamento corporativa e o seu pró-labore.');
+            }
+
+            state.mes++; if (state.mes > 12) { state.mes = 1; state.ano++; }
+            atualizarUI();
+        }
+
+        // --- LOJA PF ---
+        const lojaPF = [{n: 'Relógio de Luxo', v: 25000}, {n: 'Carro Esportivo', v: 150000}, {n: 'Mansão (Sede)', v: 2500000}];
         function renderLojaPF() {
-            // Ajusta o preço baseado na moeda para dar um "feel" real, mas vamos manter o número fixo para o jogo funcionar matematicamente igual.
-            const list = document.getElementById('ui-loja-pf');
-            list.innerHTML = lojaPF.map(i => `
-                <div class="asset-item">
-                    <div><div style="font-size:13px;font-weight:500;">${i.nome}</div><div style="font-size:11px;color:var(--text-muted);">${fmt(i.base)}</div></div>
-                    <button class="btn" style="padding:6px 12px;font-size:11px;" onclick="comprarPF('${i.nome}', ${i.base})">Adquirir</button>
+            document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
+                <div class="list-item">
+                    <div><div style="font-size:13px;font-weight:500;">${i.n}</div><div style="font-size:11px;color:var(--text-muted);">${fmt(i.v)}</div></div>
+                    <button class="btn" style="padding:6px 12px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Comprar</button>
                 </div>
             `).join('');
         }
-
-        function comprarPF(nome, preco) {
-            if (state.pf.caixa >= preco) {
-                state.pf.caixa -= preco;
-                state.pf.bens.push(nome);
-                addExtrato('pf', `Aquisição: ${nome}`, -preco);
+        function comprarPF(n, v) {
+            if (state.pf.caixa >= v) {
+                state.pf.caixa -= v; state.pf.bens.push({n, v});
+                addExtrato('pf', `Aquisição: ${n}`, -v);
                 atualizarUI();
-            } else { alert("Saldo da Conta Privada insuficiente."); }
+            } else { alert("Saldo PF Insuficiente."); }
         }
 
-        // --- PASSAGEM DE TEMPO ---
-        function avancarCiclo() {
-            const cfg = configs[state.setor];
-            const preco = parseFloat(document.getElementById('ui-preco').value) || cfg.precoIdeal;
+        // --- EMAILS ---
+        function addEmail(r, t, c) {
+            state.emails.unshift({ id: Date.now(), remetente: r, titulo: t, corpo: c, lido: false });
+            renderEmails();
+        }
+        function renderEmails() {
+            const list = document.getElementById('ui-email-list');
+            const naoLidos = state.emails.filter(e => !e.lido).length;
+            const badge = document.getElementById('ui-email-badge');
+            if (naoLidos > 0) { badge.style.display = 'inline-block'; badge.innerText = naoLidos; } else { badge.style.display = 'none'; }
             
-            // Lógica de vendas
-            let demandaTeorica = Math.floor((cfg.precoIdeal / preco) * 150); 
-            // Flutuação de 15%
-            demandaTeorica = Math.floor(demandaTeorica * (0.85 + (Math.random() * 0.3)));
-            
-            let vendas = Math.min(demandaTeorica, state.pj.estoque);
-            if (vendas > 0) {
-                let receita = vendas * preco;
-                state.pj.caixa += receita;
-                state.pj.estoque -= vendas;
-                addExtrato('pj', `Faturamento (${vendas} un.)`, receita);
-            }
-
-            // Custos fixos
-            state.pj.caixa -= cfg.custoFixo;
-            addExtrato('pj', 'Custo Operacional', -cfg.custoFixo);
-
-            // Juros
-            if (state.pj.divida > 0) {
-                let juros = state.pj.divida * 0.035;
-                state.pj.divida += juros;
-                addExtrato('pj', 'Serviço da Dívida', -juros);
-                
-                if(state.pj.divida > state.pj.caixa * 2 && Math.random() > 0.5) {
-                    addEmail('Corporate Bank', 'ALERTA: Alavancagem Alta', 'O risco de crédito da sua empresa está elevado. Recomendamos amortização imediata do passivo circulante.');
-                }
-            }
-
-            // Salário
-            if (state.pj.caixa >= state.pf.salario) {
-                state.pj.caixa -= state.pf.salario;
-                state.pf.caixa += state.pf.salario;
-                addExtrato('pj', 'Pró-labore Pago', -state.pf.salario);
-                addExtrato('pf', 'Recebimento Pró-labore', state.pf.salario);
-            } else {
-                addEmail('RH & Contabilidade', 'Falha no Pagamento', 'O caixa corporativo operou no vermelho este mês. O pagamento do pró-labore do titular foi suspenso.');
-            }
-
-            // Calendário
-            state.mes++;
-            if (state.mes > 12) { state.mes = 1; state.ano++; }
-            
-            atualizarUI();
-            salvarJogo();
+            list.innerHTML = state.emails.map((e, i) => `
+                <div style="padding: 16px; border-bottom: 1px solid var(--border); background: ${e.lido?'transparent':'rgba(255,255,255,0.05)'}; cursor:pointer;" onclick="toggleMail(${i})">
+                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">De: ${e.remetente}</div>
+                    <div style="font-size: 14px; font-weight: 600;">${e.titulo}</div>
+                    <div style="font-size: 13px; color: #999; margin-top: 8px; display: ${e.lido?'block':'none'}; line-height: 1.5;" id="mail-body-${i}">${e.corpo}</div>
+                </div>`).join('');
+        }
+        function toggleMail(i) {
+            state.emails[i].lido = true;
+            document.getElementById(`mail-body-${i}`).style.display = 'block';
+            renderEmails();
         }
 
         function switchTab(id, el) {
@@ -648,9 +752,6 @@
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
         }
-
-        // Inicialização
-        checkSave();
     </script>
 </body>
 </html>
