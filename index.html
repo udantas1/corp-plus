@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,6 +33,8 @@
         .btn:hover { background: var(--surface-hover); }
         .btn-primary { background: var(--accent); color: var(--accent-text); border: 1px solid var(--accent); }
         .btn-primary:hover { background: #e0e0e0; border-color: #e0e0e0; }
+        .btn-danger { color: var(--danger); border-color: rgba(255, 69, 58, 0.3); background: rgba(255, 69, 58, 0.05); }
+        .btn-danger:hover { background: rgba(255, 69, 58, 0.1); }
         
         .input, .select { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 12px 16px; border-radius: 6px; font-size: 14px; transition: 0.2s; }
         .input:focus, .select:focus { outline: none; border-color: #444; }
@@ -95,6 +97,7 @@
         .sup-radio { appearance: none; width: 16px; height: 16px; border: 1px solid #555; border-radius: 50%; outline: none; cursor: pointer; position: relative; }
         .sup-radio:checked { border-color: var(--accent); }
         .sup-radio:checked::after { content: ''; position: absolute; top: 3px; left: 3px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+        
         .market-bar-bg { width: 100%; height: 8px; background: var(--surface); border-radius: 4px; overflow: hidden; margin-top: 8px; }
         .market-bar-fill { height: 100%; background: var(--info); border-radius: 4px; }
     </style>
@@ -106,7 +109,6 @@
         <defs>
             <g id="ic-truck"><path d="M1 3h15v13H1z"></path><path d="M16 8h4l3 3v5h-7V8z"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></g>
             <g id="ic-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></g>
-            <g id="ic-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></g>
             <g id="ic-mail"><path d="M4 7l8 5 8-5"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect></g>
             <g id="ic-dollar"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></g>
             <g id="ic-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g>
@@ -119,7 +121,7 @@
         <div class="brand-title">CORP+</div>
         <div class="brand-subtitle">Business OS</div>
         <div style="display: flex; gap: 16px; margin-bottom: 24px;">
-            <button class="btn btn-primary" onclick="changeScreen('screen-setup')">Nova Holding</button>
+            <button class="btn btn-primary" onclick="changeScreen('screen-setup')">Começar Nova Empresa</button>
         </div>
     </div>
 
@@ -134,30 +136,37 @@
             </div>
             
             <div class="form-group">
-                <label class="form-label">Razão Social (Holding/PJ)</label>
+                <label class="form-label">Nome da Empresa</label>
                 <input type="text" id="setup-comp" class="input" placeholder="Ex: Campos Group" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Moeda Contabilística</label>
+                <select id="setup-cur" class="select">
+                    <option value="BRL" selected>Real (BRL)</option>
+                    <option value="USD">Dólar (USD)</option>
+                    <option value="EUR">Euro (EUR)</option>
+                </select>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
                 <div>
-                    <label class="form-label">Câmbio Base</label>
-                    <select id="setup-cur" class="select">
-                        <option value="USD">Dólar (USD)</option>
-                        <option value="EUR">Euro (EUR)</option>
-                        <option value="BRL" selected>Real (BRL)</option>
+                    <label class="form-label">Setor</label>
+                    <select id="setup-sec" class="select" onchange="updateSubSectors()">
+                        <option value="tech">Tecnologia</option>
+                        <option value="fashion">Moda</option>
+                        <option value="food">Alimentação</option>
                     </select>
                 </div>
                 <div>
-                    <label class="form-label">Setor de Atuação</label>
-                    <select id="setup-sec" class="select">
-                        <option value="tech">Tecnologia (Smartphones)</option>
-                        <option value="fashion">Moda de Luxo (Grife)</option>
-                        <option value="food">Gastronomia (Fast Food)</option>
+                    <label class="form-label">Modelo de Negócio</label>
+                    <select id="setup-model" class="select">
+                        <!-- Preenchido via JS baseado no Setor -->
                     </select>
                 </div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="iniciarNovoJogo()">Formalizar Empresa</button>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 12px;" onclick="iniciarNovoJogo()">Registrar Operação</button>
         </div>
     </div>
 
@@ -172,10 +181,10 @@
             </div>
 
             <div class="menu-section">Operacional</div>
-            <div class="menu-item active" onclick="switchTab('tab-ops', this)"><svg><use href="#ic-truck"/></svg> Suprimentos e Produção</div>
-            <div class="menu-item" onclick="switchTab('tab-market', this)"><svg><use href="#ic-globe"/></svg> Mercado e Concorrência</div>
+            <div class="menu-item active" onclick="switchTab('tab-ops', this)"><svg><use href="#ic-truck"/></svg> Cadeia Produtiva</div>
+            <div class="menu-item" onclick="switchTab('tab-market', this)"><svg><use href="#ic-globe"/></svg> Mercado Global</div>
             
-            <div class="menu-section">Financeiro (PJ)</div>
+            <div class="menu-section">Corporativo</div>
             <div class="menu-item" onclick="switchTab('tab-fin', this)"><svg><use href="#ic-dollar"/></svg> Tesouraria</div>
             <div class="menu-item" onclick="switchTab('tab-stock', this)"><svg><use href="#ic-activity"/></svg> Bolsa de Valores</div>
             
@@ -185,13 +194,13 @@
                 <span class="badge-count" id="ui-email-badge" style="display:none;">0</span>
             </div>
 
-            <div class="menu-section">Património Privado</div>
-            <div class="menu-item" onclick="switchTab('tab-ceo', this)"><svg><use href="#ic-user"/></svg> Vida de CEO (PF)</div>
+            <div class="menu-section">Área Privada</div>
+            <div class="menu-item" onclick="switchTab('tab-ceo', this)"><svg><use href="#ic-user"/></svg> Património do CEO</div>
         </div>
 
         <div class="workspace">
             <div class="topbar">
-                <div style="font-size: 12px; color: var(--text-muted);" id="ui-cambio-info">Moeda Base: BRL</div>
+                <div style="font-size: 12px; color: var(--text-muted);" id="ui-modelo-info">Varejo B2C • Câmbio BRL</div>
                 <div style="display: flex; align-items: center; gap: 24px;">
                     <div style="text-align: right;">
                         <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Fecho de Ciclo</div>
@@ -205,112 +214,122 @@
                 
                 <!-- TAB: SUPRIMENTOS E PRODUÇÃO -->
                 <div id="tab-ops" class="tab active">
-                    <h1 class="page-title">Produção e Cadeia de Suprimentos</h1>
+                    <h1 class="page-title" id="lbl-ops-title">Logística e Suprimentos</h1>
                     
                     <div class="grid-3">
                         <div class="card">
-                            <div class="card-header">Liquidez (PJ)</div>
+                            <div class="card-header">Liquidez da Empresa</div>
                             <div class="card-value c-green" id="ui-caixa-pj">0</div>
-                            <div class="card-sub">OPEX: <span id="ui-custo-fixo">0</span>/mês</div>
+                            <div class="card-sub">Despesa Fixa (OPEX): <span id="ui-custo-fixo">0</span>/mês</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Volume de Estoque</div>
+                            <div class="card-header">Armazém</div>
                             <div class="card-value" id="ui-estoque">0</div>
-                            <div class="card-sub" id="ui-lbl-produto">Unidades prontas</div>
+                            <div class="card-sub" id="ui-lbl-produto">Unidades físicas em stock</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Capacidade Produtiva</div>
-                            <div class="card-value">Lote 500</div>
-                            <div class="card-sub">Unidades por ordem de produção</div>
+                            <div class="card-header">Lote Operacional</div>
+                            <div class="card-value" id="ui-lote-qtd">1.000</div>
+                            <div class="card-sub">Unid. por contrato de compra</div>
                         </div>
                     </div>
 
                     <div class="grid-2">
                         <div class="panel">
-                            <div class="panel-title">Fornecedores Globais (Contratos)</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Selecione quem irá fabricar os componentes base, embalagem e cuidar da logística (Frete) da sua marca.</p>
-                            <div id="ui-fornecedores"></div>
+                            <div class="panel-title" id="lbl-ops-forn">Fornecedores Base</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="lbl-ops-desc">Escolha quem fornece a matéria-prima ou produto acabado para o seu negócio.</p>
+                            
+                            <div id="ui-fornecedores">
+                                <!-- Preenchido dinamicamente -->
+                            </div>
                         </div>
 
                         <div class="panel">
-                            <div class="panel-title">Ordem de Produção</div>
+                            <div class="panel-title">Ordem de Compra / Produção</div>
+                            
                             <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="color: var(--text-muted); font-size: 13px;">Fornecedor Selecionado:</span>
+                                    <span style="color: var(--text-muted); font-size: 13px;">Parceiro Selecionado:</span>
                                     <strong id="ui-op-forn">-</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="color: var(--text-muted); font-size: 13px;">Custo de Fabrico (Unit.):</span>
+                                    <span style="color: var(--text-muted); font-size: 13px;">Custo Unitário (Insumo):</span>
                                     <strong id="ui-op-custounit">-</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="color: var(--text-muted); font-size: 13px;">Frete + Embalagem (Unit.):</span>
+                                    <span style="color: var(--text-muted); font-size: 13px;">Impostos + Logística (Unit.):</span>
                                     <strong id="ui-op-frete">-</strong>
                                 </div>
                                 <hr style="border: 0; border-top: 1px dashed var(--border); margin: 12px 0;">
                                 <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: var(--text-muted); font-size: 13px;">Custo Total do Lote (500 un.):</span>
+                                    <span style="color: var(--text-muted); font-size: 13px;">Fatura Total do Lote:</span>
                                     <strong class="c-red" id="ui-op-total" style="font-size: 16px;">-</strong>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" style="width: 100%;" onclick="emitirOrdemProducao()">Pagar e Produzir Lote</button>
+                            
+                            <button class="btn btn-primary" style="width: 100%;" onclick="emitirOrdemProducao()">Autorizar Pagamento e Receber Lote</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- TAB: MERCADO & CONCORRÊNCIA -->
                 <div id="tab-market" class="tab">
-                    <h1 class="page-title">Mercado e Concorrência</h1>
+                    <h1 class="page-title">Mercado e Vendas</h1>
+                    
                     <div class="grid-2">
                         <div class="panel">
-                            <div class="panel-title">Estratégia de Precificação</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Defina o preço de venda da sua marca. Analise os concorrentes ao lado para não ficar fora do mercado.</p>
+                            <div class="panel-title" id="lbl-market-title">Estratégia de Precificação</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="lbl-market-desc">Defina o preço de venda. Num modelo B2C a procura depende do consumidor. Num modelo B2B, você disputa grandes contratos pelo preço.</p>
+                            
                             <div class="form-group">
-                                <label class="form-label">Preço ao Consumidor (Unitário)</label>
+                                <label class="form-label" id="lbl-market-input">Preço de Venda Unitário</label>
                                 <input type="number" id="ui-preco" class="input" value="0" oninput="calcularMargem()">
                             </div>
+                            
                             <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                    <span style="font-size: 12px; color: var(--text-muted);">Custo por Unidade (CPV):</span>
+                                    <span style="font-size: 12px; color: var(--text-muted);">Custo Base por Unidade:</span>
                                     <span id="ui-margem-custo" style="font-size: 13px;">$ 0</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
-                                    <span style="font-size: 12px; color: var(--text-muted);">Lucro Bruto Unitário:</span>
+                                    <span style="font-size: 12px; color: var(--text-muted);">Margem (Lucro Unitário):</span>
                                     <span id="ui-margem-lucro" style="font-size: 13px; font-weight: 600;" class="c-green">$ 0</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="panel">
-                            <div class="panel-title">Análise de Competidores (Market Share)</div>
-                            <div id="ui-concorrentes"></div>
+                            <div class="panel-title">Grandes Concorrentes do Setor</div>
+                            <div id="ui-concorrentes">
+                                <!-- Preenchido dinamicamente -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- TAB: FINANCEIRO PJ -->
                 <div id="tab-fin" class="tab">
-                    <h1 class="page-title">Tesouraria e Dívidas</h1>
+                    <h1 class="page-title">Tesouraria Corporativa</h1>
                     <div class="grid-2">
                         <div class="card">
-                            <div class="card-header">Passivo Circulante (Empréstimos)</div>
+                            <div class="card-header">Dívida Bancária</div>
                             <div class="card-value c-red" id="ui-divida-pj">0</div>
-                            <div class="card-sub">Custo da dívida: 3.5% ao mês</div>
+                            <div class="card-sub">Custo do capital: 3.5% a.m.</div>
                         </div>
                         <div class="panel" style="margin:0;">
-                            <div class="panel-title">Crédito Corporativo</div>
+                            <div class="panel-title">Operações de Crédito</div>
                             <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-                                <button class="btn" style="flex:1;" onclick="tomarEmprestimo()">Captar Fundos</button>
-                                <button class="btn btn-primary" style="flex:1;" onclick="amortizarDivida()">Amortizar Passivo</button>
+                                <button class="btn" style="flex:1;" onclick="tomarEmprestimo()">Levantar Capital</button>
+                                <button class="btn btn-primary" style="flex:1;" onclick="amortizarDivida()">Amortizar</button>
                             </div>
-                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Valor p/ Amortizar" style="background: var(--bg);">
+                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Valor a Amortizar" style="background: var(--bg);">
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-title">Fluxo de Caixa Operacional (Extrato PJ)</div>
+                        <div class="panel-title">Livro Razão (Extrato da Empresa)</div>
                         <div style="max-height: 350px; overflow-y: auto; margin: -20px; margin-top: 0;">
                             <table style="margin-top: 10px;">
-                                <thead><tr><th>Data</th><th>Lançamento</th><th style="text-align: right;">Valor</th></tr></thead>
+                                <thead><tr><th>Data</th><th>Movimento</th><th style="text-align: right;">Valor</th></tr></thead>
                                 <tbody id="tb-extrato-pj"></tbody>
                             </table>
                         </div>
@@ -319,42 +338,42 @@
 
                 <!-- TAB: BOLSA DE VALORES -->
                 <div id="tab-stock" class="tab">
-                    <h1 class="page-title">Mercado de Capitais (B3 / NYSE)</h1>
+                    <h1 class="page-title">Mercado Financeiro Público</h1>
                     <div class="panel" style="text-align: center; padding: 60px 20px;">
                         <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;" id="ui-valuation">0</h2>
-                        <div style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation (Valor de Mercado Estimado)</div>
+                        <div style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation Atual (Estimativa)</div>
                         <p style="font-size: 14px; color: #aaa; max-width: 500px; margin: 0 auto 30px;">
-                            A sua empresa ainda é de capital fechado (Private). Para realizar uma Oferta Pública Inicial (IPO) e listar as suas ações na bolsa, o Valuation da empresa precisa ultrapassar a marca de <strong><span id="ui-ipo-meta">0</span></strong>.
+                            A sua empresa é de capital fechado. Para abrir o capital num IPO, o seu Valuation deve superar a meta do setor.
                         </p>
-                        <button class="btn btn-disabled" style="padding: 16px 32px; font-size: 16px;">Realizar IPO (Em Breve)</button>
+                        <button class="btn btn-disabled" style="padding: 16px 32px; font-size: 16px;">IPO (Requer expansão futura)</button>
                     </div>
                 </div>
 
                 <!-- TAB: INBOX -->
                 <div id="tab-mail" class="tab">
-                    <h1 class="page-title">Caixa de Entrada</h1>
+                    <h1 class="page-title">Caixa de Entrada Corporativa</h1>
                     <div style="border: 1px solid var(--border); border-radius: 8px; overflow: hidden;" id="ui-email-list"></div>
                 </div>
 
                 <!-- TAB: CEO (PF) -->
                 <div id="tab-ceo" class="tab">
-                    <h1 class="page-title">Património Privado do Titular</h1>
+                    <h1 class="page-title">Área Privada do Titular</h1>
                     <div class="grid-2">
                         <div>
                             <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
-                                <div class="card-header">Conta Bancária Privada</div>
+                                <div class="card-header">Conta Bancária Pessoal</div>
                                 <div class="card-value c-green" id="ui-caixa-pf">0</div>
-                                <div class="card-sub">Pró-labore Mensal: <span id="ui-salario-pf">0</span></div>
+                                <div class="card-sub">Retirada mensal da empresa (Pró-labore): <span id="ui-salario-pf">0</span></div>
                             </div>
                             <div class="panel">
-                                <div class="panel-title">Mercado de Luxo (Aquisições PF)</div>
+                                <div class="panel-title">Aquisição de Património</div>
                                 <div id="ui-loja-pf"></div>
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">Meus Ativos & Status</div>
+                            <div class="panel-title">Bens e Ativos Privados</div>
                             <div id="ui-meus-bens" style="margin-bottom: 24px;"></div>
-                            <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 20px;">Extrato Pessoal</div>
+                            <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 20px;">Extrato da Conta Pessoal</div>
                             <div style="max-height: 250px; overflow-y: auto; margin: -20px; margin-top: 0;">
                                 <table style="margin-top: 10px;"><tbody id="tb-extrato-pf"></tbody></table>
                             </div>
@@ -369,55 +388,90 @@
     <script>
         const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
 
-        const sectors = {
-            'tech': {
-                nome: 'Smartphones',
+        // O GRANDE MOTOR DE MODELOS DE NEGÓCIO
+        const businessModels = {
+            // TECNOLOGIA
+            'tech_retail': {
+                sector: 'tech', type: 'b2c', name: 'Varejo de Eletrónicos (Loja)',
+                loteQtd: 500, inputLbl: 'Lotes Prontos (Distribuidora)', outputLbl: 'Smartphones (Venda ao Consumidor)',
                 fornecedores: [
-                    { id: 'f1', nome: 'Shenzhen Micro (Baixo Custo)', custoFab: 120, frete: 20, qualidade: 'Baixa' },
-                    { id: 'f2', nome: 'Taiwan Semi (Padrão)', custoFab: 250, frete: 30, qualidade: 'Média' },
-                    { id: 'f3', nome: 'Silicon Premium (Alta Gama)', custoFab: 450, frete: 45, qualidade: 'Alta' }
+                    { id: 't_r1', nome: 'GlobalTech Dist.', custo: 200, frete: 20, q: 'Padrão' },
+                    { id: 't_r2', nome: 'Pear Certified Partners', custo: 600, frete: 50, q: 'Premium' }
                 ],
-                concorrentes: [
-                    { nome: 'Pear Inc.', precoBase: 999, share: 40 },
-                    { nome: 'Samtech', precoBase: 799, share: 35 },
-                    { nome: 'Xiaomeng', precoBase: 399, share: 25 }
-                ],
-                custoFixo: 15000,
-                ipoMeta: 5000000
+                concorrentes: [ { nome: 'MegaStore Retail', preco: 400, share: 60 }, { nome: 'TechBuy', preco: 900, share: 40 } ],
+                custoFixo: 8000, precoBase: 500
             },
-            'fashion': {
-                nome: 'Roupas de Grife',
+            'tech_ind': {
+                sector: 'tech', type: 'b2b', name: 'Indústria de Hardware (Fábrica)',
+                loteQtd: 5000, inputLbl: 'Silício e Minérios', outputLbl: 'Componentes e Aparelhos (Venda em Lote)',
                 fornecedores: [
-                    { id: 'f1', nome: 'FastTextile Ásia', custoFab: 20, frete: 5, qualidade: 'Baixa' },
-                    { id: 'f2', nome: 'EuroModa Portugal', custoFab: 60, frete: 10, qualidade: 'Média' },
-                    { id: 'f3', nome: 'Milano Artisan (Itália)', custoFab: 150, frete: 15, qualidade: 'Alta' }
+                    { id: 't_i1', nome: 'Mineração Vale Profundo', custo: 30, frete: 10, q: 'Base' },
+                    { id: 't_i2', nome: 'Taiwan Silicons', custo: 80, frete: 25, q: 'Alta Qualidade' }
                 ],
-                concorrentes: [
-                    { nome: 'Loui V.', precoBase: 1200, share: 30 },
-                    { nome: 'Pradd', precoBase: 800, share: 30 },
-                    { nome: 'Zêra', precoBase: 80, share: 40 }
-                ],
-                custoFixo: 8000,
-                ipoMeta: 2000000
+                concorrentes: [ { nome: 'FoxAssemble Asia', preco: 150, share: 70 }, { nome: 'TaiwaCorp', preco: 250, share: 30 } ],
+                custoFixo: 35000, precoBase: 120
             },
-            'food': {
-                nome: 'Fast Food',
+            // MODA
+            'fashion_retail': {
+                sector: 'fashion', type: 'b2c', name: 'Boutique de Luxo (Loja)',
+                loteQtd: 200, inputLbl: 'Coleções de Grife (Prontas)', outputLbl: 'Peças Exclusivas (Consumidor)',
                 fornecedores: [
-                    { id: 'f1', nome: 'AgroMass', custoFab: 1.5, frete: 0.5, qualidade: 'Baixa' },
-                    { id: 'f2', nome: 'Fazendas Locais', custoFab: 3.5, frete: 1.0, qualidade: 'Média' },
-                    { id: 'f3', nome: 'Orgânicos Premium', custoFab: 8.0, frete: 2.0, qualidade: 'Alta' }
+                    { id: 'f_r1', nome: 'Dist. Roupas Comuns', custo: 40, frete: 5, q: 'Padrão' },
+                    { id: 'f_r2', nome: 'Milano High Fashion', custo: 300, frete: 40, q: 'Luxo' }
                 ],
-                concorrentes: [
-                    { nome: 'McBurger', precoBase: 8, share: 45 },
-                    { nome: 'Burger Lord', precoBase: 9, share: 35 },
-                    { nome: 'Starbrews', precoBase: 15, share: 20 }
+                concorrentes: [ { nome: 'Loui V. Stores', preco: 1500, share: 50 }, { nome: 'Zêra Retail', preco: 120, share: 50 } ],
+                custoFixo: 12000, precoBase: 800
+            },
+            'fashion_ind': {
+                sector: 'fashion', type: 'b2b', name: 'Fábrica Têxtil (Indústria)',
+                loteQtd: 10000, inputLbl: 'Algodão e Fios Sintéticos', outputLbl: 'Rolos de Tecido (Venda p/ Marcas)',
+                fornecedores: [
+                    { id: 'f_i1', nome: 'Agro Algodão Sul', custo: 5, frete: 2, q: 'Base' },
+                    { id: 'f_i2', nome: 'Silk Road (Seda Pura)', custo: 25, frete: 8, q: 'Premium' }
                 ],
-                custoFixo: 5000,
-                ipoMeta: 1000000
+                concorrentes: [ { nome: 'ChinaTextile', preco: 15, share: 80 }, { nome: 'EuroFios', preco: 45, share: 20 } ],
+                custoFixo: 25000, precoBase: 20
+            },
+            // ALIMENTAÇÃO
+            'food_retail': {
+                sector: 'food', type: 'b2c', name: 'Rede de Fast Food (Franquia)',
+                loteQtd: 2000, inputLbl: 'Ingredientes Pré-processados', outputLbl: 'Refeições Servidas',
+                fornecedores: [
+                    { id: 'fd_r1', nome: 'AgroMass Alimentos', custo: 2, frete: 1, q: 'Padrão' },
+                    { id: 'fd_r2', nome: 'Fazendas Locais Orgânicas', custo: 6, frete: 2, q: 'Artesanal' }
+                ],
+                concorrentes: [ { nome: 'McBurger', preco: 10, share: 60 }, { nome: 'Starbrews', preco: 18, share: 40 } ],
+                custoFixo: 15000, precoBase: 12
+            },
+            'food_ind': {
+                sector: 'food', type: 'b2b', name: 'Indústria Alimentícia (Processamento)',
+                loteQtd: 15000, inputLbl: 'Colheita Bruta (Agricultura)', outputLbl: 'Alimentos Enlatados/Embalados (B2B)',
+                fornecedores: [
+                    { id: 'fd_i1', nome: 'Cooperativa Agrícola', custo: 0.5, frete: 0.2, q: 'Base' }
+                ],
+                concorrentes: [ { nome: 'Nestlé FoodCorp', preco: 3, share: 90 } ],
+                custoFixo: 40000, precoBase: 2.5
             }
         };
 
         let state = null;
+
+        function updateSubSectors() {
+            const sec = document.getElementById('setup-sec').value;
+            const modelSelect = document.getElementById('setup-model');
+            modelSelect.innerHTML = '';
+            
+            for (const key in businessModels) {
+                if (businessModels[key].sector === sec) {
+                    const opt = document.createElement('option');
+                    opt.value = key;
+                    opt.innerText = businessModels[key].name;
+                    modelSelect.appendChild(opt);
+                }
+            }
+        }
+        // Initialize once
+        updateSubSectors();
 
         function fmt(usdValue) {
             if(usdValue === undefined || isNaN(usdValue)) return "0";
@@ -431,15 +485,20 @@
         function parseToUSD(localValue) { return localValue / exchangeRates[state.moeda]; }
         function toLocal(usdValue) { return usdValue * exchangeRates[state.moeda]; }
 
-        function gerarEstadoNovo(ceo, comp, cur, sec) {
+        function gerarEstadoNovo(ceo, comp, cur, modId) {
+            const mod = businessModels[modId];
+            // Indústrias precisam de mais caixa inicial
+            const capInicialUSD = mod.type === 'b2b' ? 250000 : 80000;
+            const pfInicialUSD = 10000;
+
             return {
-                ceo, empresa: comp, moeda: cur, setor: sec, mes: 1, ano: 1,
-                fornecedorId: 'f2', 
-                precoVendaUSD: sectors[sec].concorrentes[1].precoBase,
-                pj: { caixa: 100000, divida: 0, estoque: 0, extrato: [] },
-                pf: { caixa: 10000, salario: 5000, bens: [], extrato: [] },
+                ceo, empresa: comp, moeda: cur, modelo: modId, mes: 1, ano: 1,
+                fornecedorId: mod.fornecedores[0].id, 
+                precoVendaUSD: mod.precoBase,
+                pj: { caixa: capInicialUSD, divida: 0, estoque: 0, extrato: [] },
+                pf: { caixa: pfInicialUSD, salario: 5000, bens: [], extrato: [] },
                 emails: [
-                    { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa', corpo: `A holding ${comp} foi registada. O setor de ${sectors[sec].nome} é competitivo. Verifique fornecedores e preços.`, lido: false }
+                    { id: 1, remetente: 'Consultoria Financeira', titulo: 'Nova Operação Registada', corpo: `A empresa ${comp} abriu oficialmente como ${mod.name}. Identificámos que o seu modelo de vendas é ${mod.type.toUpperCase()}. Ajuste a sua estratégia de preços em conformidade.`, lido: false }
                 ]
             };
         }
@@ -453,21 +512,35 @@
             const ceo = document.getElementById('setup-ceo').value.trim();
             const comp = document.getElementById('setup-comp').value.trim();
             const cur = document.getElementById('setup-cur').value;
-            const sec = document.getElementById('setup-sec').value;
+            const mod = document.getElementById('setup-model').value;
 
             if(!ceo || !comp) return alert("Preencha todos os dados.");
-            state = gerarEstadoNovo(ceo, comp, cur, sec);
+            state = gerarEstadoNovo(ceo, comp, cur, mod);
             montarJogo();
         }
 
         function montarJogo() {
             changeScreen('screen-game');
-            document.getElementById('ui-sb-comp').innerText = state.empresa;
-            document.getElementById('ui-cambio-info').innerText = `Moeda Base: ${state.moeda} (Câmbio Automático)`;
+            const mod = businessModels[state.modelo];
             
-            const cfg = sectors[state.setor];
-            document.getElementById('ui-lbl-produto').innerText = cfg.nome;
-            document.getElementById('ui-lbl-produto2').innerText = cfg.nome;
+            document.getElementById('ui-sb-comp').innerText = state.empresa;
+            document.getElementById('ui-modelo-info').innerText = `Modelo: ${mod.type.toUpperCase()} • Câmbio: ${state.moeda}`;
+            
+            document.getElementById('lbl-ops-desc').innerText = `Fornecedores de ${mod.inputLbl}`;
+            document.getElementById('ui-lbl-produto').innerText = mod.outputLbl;
+            document.getElementById('ui-lote-qtd').innerText = mod.loteQtd.toLocaleString();
+            
+            // Adaptar textos B2B / B2C
+            if(mod.type === 'b2b') {
+                document.getElementById('lbl-market-title').innerText = "Contratos Corporativos (B2B)";
+                document.getElementById('lbl-market-desc').innerText = "Defina o preço de venda em lote. Grandes corporações só compram da sua indústria se o preço for estritamente mais barato que a concorrência.";
+                document.getElementById('lbl-market-input').innerText = "Preço Unitário Ofertado no Contrato";
+            } else {
+                document.getElementById('lbl-market-title').innerText = "Varejo ao Consumidor (B2C)";
+                document.getElementById('lbl-market-desc').innerText = "Defina o preço na vitrine. Os consumidores compram influenciados pelo preço e pelo status da marca em relação às grandes lojas.";
+                document.getElementById('lbl-market-input').innerText = "Preço Final na Loja";
+            }
+
             document.getElementById('ui-preco').value = Math.round(toLocal(state.precoVendaUSD));
 
             renderFornecedores();
@@ -478,9 +551,9 @@
         }
 
         function renderFornecedores() {
-            const list = sectors[state.setor].fornecedores;
+            const mod = businessModels[state.modelo];
             let html = '';
-            list.forEach(f => {
+            mod.fornecedores.forEach(f => {
                 const checked = state.fornecedorId === f.id ? 'checked' : '';
                 html += `
                 <label class="list-item" style="cursor:pointer;" onclick="setFornecedor('${f.id}')">
@@ -488,12 +561,12 @@
                         <input type="radio" name="sup" class="sup-radio" ${checked}>
                         <div>
                             <div style="font-weight:600; font-size:13px;">${f.nome}</div>
-                            <div style="font-size:11px; color:var(--text-muted);">Qualidade: ${f.qualidade}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Qualidade: ${f.q}</div>
                         </div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-size:11px; color:var(--text-muted);">Custo + Frete/un</div>
-                        <div style="font-weight:600;">${fmt(f.custoFab + f.frete)}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Custo Base Un.</div>
+                        <div style="font-weight:600;">${fmt(f.custo + f.frete)}</div>
                     </div>
                 </label>`;
             });
@@ -506,40 +579,44 @@
             renderFornecedores();
         }
 
-        function getFornecedorAtual() { return sectors[state.setor].fornecedores.find(f => f.id === state.fornecedorId); }
+        function getFornecedorAtual() { 
+            return businessModels[state.modelo].fornecedores.find(f => f.id === state.fornecedorId); 
+        }
 
         function atualizarCustoOP() {
             const f = getFornecedorAtual();
+            const mod = businessModels[state.modelo];
             document.getElementById('ui-op-forn').innerText = f.nome;
-            document.getElementById('ui-op-custounit').innerText = fmt(f.custoFab);
+            document.getElementById('ui-op-custounit').innerText = fmt(f.custo);
             document.getElementById('ui-op-frete').innerText = fmt(f.frete);
             
-            const total = (f.custoFab + f.frete) * 500;
+            const total = (f.custo + f.frete) * mod.loteQtd;
             document.getElementById('ui-op-total').innerText = fmt(total);
             calcularMargem();
         }
 
         function emitirOrdemProducao() {
             const f = getFornecedorAtual();
-            const totalCustoUSD = (f.custoFab + f.frete) * 500;
+            const mod = businessModels[state.modelo];
+            const totalCustoUSD = (f.custo + f.frete) * mod.loteQtd;
             
             if (state.pj.caixa >= totalCustoUSD) {
                 state.pj.caixa -= totalCustoUSD;
-                state.pj.estoque += 500;
-                addExtrato('pj', `OP: Lote 500 un. (${f.nome})`, -totalCustoUSD);
+                state.pj.estoque += mod.loteQtd;
+                addExtrato('pj', `Despesa de Fornecimento (${mod.loteQtd} un.)`, -totalCustoUSD);
                 atualizarUI();
-            } else { alert(`Liquidez corporativa insuficiente. Necessário: ${fmt(totalCustoUSD)}`); }
+            } else { alert(`Liquidez corporativa insuficiente. Necessita de: ${fmt(totalCustoUSD)}`); }
         }
 
         function renderConcorrentes() {
-            const concs = sectors[state.setor].concorrentes;
+            const mod = businessModels[state.modelo];
             let html = '';
-            concs.forEach(c => {
+            mod.concorrentes.forEach(c => {
                 html += `
                 <div style="margin-bottom: 16px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
                         <span style="font-weight:600;">${c.nome}</span>
-                        <span>${fmt(c.precoBase)}</span>
+                        <span>${fmt(c.preco)}</span>
                     </div>
                     <div class="market-bar-bg"><div class="market-bar-fill" style="width: ${c.share}%"></div></div>
                 </div>`;
@@ -552,7 +629,7 @@
             state.precoVendaUSD = parseToUSD(precoLocal);
             
             const f = getFornecedorAtual();
-            const custoUniUSD = f.custoFab + f.frete;
+            const custoUniUSD = f.custo + f.frete;
             const lucroUniUSD = state.precoVendaUSD - custoUniUSD;
 
             document.getElementById('ui-margem-custo').innerText = fmt(custoUniUSD);
@@ -564,12 +641,12 @@
         }
 
         function atualizarUI() {
-            const cfg = sectors[state.setor];
+            const mod = businessModels[state.modelo];
             document.getElementById('ui-data').innerText = `Ano ${state.ano} / Mês ${state.mes}`;
             
             document.getElementById('ui-caixa-pj').innerText = fmt(state.pj.caixa);
-            document.getElementById('ui-custo-fixo').innerText = fmt(cfg.custoFixo);
-            document.getElementById('ui-estoque').innerText = state.pj.estoque;
+            document.getElementById('ui-custo-fixo').innerText = fmt(mod.custoFixo);
+            document.getElementById('ui-estoque').innerText = state.pj.estoque.toLocaleString();
             document.getElementById('ui-divida-pj').innerText = fmt(state.pj.divida);
             
             document.getElementById('ui-caixa-pf').innerText = fmt(state.pf.caixa);
@@ -579,18 +656,18 @@
             document.getElementById('tb-extrato-pj').innerHTML = buildTb(state.pj.extrato);
             document.getElementById('tb-extrato-pf').innerHTML = buildTb(state.pf.extrato);
 
-            const valuation = state.pj.caixa + ((getFornecedorAtual().custoFab * state.pj.estoque)) - state.pj.divida;
-            document.getElementById('ui-valuation').innerText = fmt(valuation * 3);
-            document.getElementById('ui-ipo-meta').innerText = fmt(cfg.ipoMeta);
+            // Valuation Simples
+            const valuation = state.pj.caixa + ((getFornecedorAtual().custo * state.pj.estoque)) - state.pj.divida;
+            document.getElementById('ui-valuation').innerText = fmt(Math.max(0, valuation * 2.5));
 
             const mBens = document.getElementById('ui-meus-bens');
-            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:13px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:12px;">Nenhum ativo adquirido.</span>';
+            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:13px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:12px;">Nenhum ativo privado.</span>';
         }
 
         function tomarEmprestimo() {
             const valUSD = 50000;
             state.pj.caixa += valUSD; state.pj.divida += valUSD;
-            addExtrato('pj', 'Crédito Bancário Emitido', valUSD);
+            addExtrato('pj', 'Financiamento Bancário Emitido', valUSD);
             atualizarUI();
         }
 
@@ -600,11 +677,11 @@
             const valUSD = parseToUSD(valLocal);
 
             if (state.pj.divida <= 0) return;
-            if (valUSD > state.pj.caixa) return alert("Liquidez corporativa insuficiente.");
+            if (valUSD > state.pj.caixa) return alert("Liquidez empresarial insuficiente.");
             
             const abat = Math.min(valUSD, state.pj.divida);
             state.pj.caixa -= abat; state.pj.divida -= abat;
-            addExtrato('pj', 'Amortização Bancária', -abat);
+            addExtrato('pj', 'Pagamento de Passivo', -abat);
             document.getElementById('ui-val-amortizar').value = '';
             atualizarUI();
         }
@@ -615,65 +692,73 @@
         }
 
         function avancarCiclo() {
-            const cfg = sectors[state.setor];
-            const f = getFornecedorAtual();
+            const mod = businessModels[state.modelo];
             
-            const mediaConc = cfg.concorrentes.reduce((a, b) => a + b.precoBase, 0) / 3;
-            let fatorPreco = mediaConc / state.precoVendaUSD; 
-            
-            let modQualidade = 1.0;
-            if(f.qualidade === 'Alta') modQualidade = 1.3;
-            if(f.qualidade === 'Baixa') modQualidade = 0.7;
+            let vendas = 0;
 
-            let demandaTeorica = Math.floor((300 * fatorPreco * modQualidade) * (0.8 + Math.random()*0.4));
-            let vendas = Math.min(demandaTeorica, state.pj.estoque);
+            // MOTOR DE VENDAS DIFERENCIADO B2B vs B2C
+            if (mod.type === 'b2c') {
+                // Varejo: Vende um pouco de cada vez baseado na elasticidade do preço
+                const mediaConc = mod.concorrentes.reduce((a, b) => a + b.preco, 0) / mod.concorrentes.length;
+                let fatorDemanda = mediaConc / state.precoVendaUSD;
+                let capacidadeMercado = Math.floor(mod.loteQtd * 0.8 * fatorDemanda);
+                vendas = Math.min(capacidadeMercado, state.pj.estoque);
+            } else if (mod.type === 'b2b') {
+                // Indústria: Contratos grandes. Tudo ou Nada.
+                // Se o preço for competitivo em relação às grandes fábricas, fecha o contrato.
+                const melhorPrecoMercado = Math.min(...mod.concorrentes.map(c => c.preco));
+                if (state.precoVendaUSD <= melhorPrecoMercado * 1.1) {
+                    // É competitivo, vende uma grande quantidade
+                    vendas = Math.min(mod.loteQtd * 2, state.pj.estoque);
+                } else {
+                    // Preço fora de mercado, as empresas não compram
+                    vendas = 0;
+                    if(state.pj.estoque > 0) addEmail('Depto. Vendas', 'Sem Contratos Fechados', 'O nosso preço de atacado está muito alto. As marcas preferiram comprar aos nossos concorrentes.');
+                }
+            }
 
             if (vendas > 0) {
                 const recUSD = vendas * state.precoVendaUSD;
                 state.pj.caixa += recUSD; state.pj.estoque -= vendas;
-                addExtrato('pj', `Faturação (${vendas} un.)`, recUSD);
+                addExtrato('pj', `Receita de Operações (${vendas} un.)`, recUSD);
             }
 
-            state.pj.caixa -= cfg.custoFixo;
-            addExtrato('pj', 'OPEX Mensal', -cfg.custoFixo);
+            state.pj.caixa -= mod.custoFixo;
+            addExtrato('pj', 'Despesas Operacionais', -mod.custoFixo);
 
             if (state.pj.divida > 0) {
                 const juros = state.pj.divida * 0.035;
                 state.pj.divida += juros;
-                addExtrato('pj', 'Juros Passivos (3.5%)', -juros);
-                
-                if(state.pj.divida > state.pj.caixa * 2 && Math.random() > 0.5) {
-                    addEmail('Corporate Bank', 'ALERTA: Alavancagem Alta', 'O risco de crédito da sua empresa está elevado. Recomendamos amortização imediata do passivo circulante.');
-                }
+                addExtrato('pj', 'Encargos de Dívida (3.5%)', -juros);
             }
 
             if (state.pj.caixa >= state.pf.salario) {
                 state.pj.caixa -= state.pf.salario; state.pf.caixa += state.pf.salario;
-                addExtrato('pj', 'Pró-labore Pago', -state.pf.salario);
-                addExtrato('pf', 'Recebimento Pró-labore', state.pf.salario);
+                addExtrato('pj', 'Transferência: Pró-labore', -state.pf.salario);
+                addExtrato('pf', 'Pró-labore Recebido', state.pf.salario);
             } else {
-                addEmail('RH & Contabilidade', 'Falha no Pagamento', 'O caixa corporativo operou no vermelho este mês. O pagamento do pró-labore do titular foi suspenso.');
+                addEmail('Recursos Humanos', 'Aviso de Inadimplência', 'A empresa falhou em honrar a folha de pagamento do CEO por falta de liquidez corporativa.');
             }
 
             state.mes++; if (state.mes > 12) { state.mes = 1; state.ano++; }
             atualizarUI();
         }
 
-        const lojaPF = [{n: 'Relógio de Luxo', v: 25000}, {n: 'Carro Desportivo', v: 150000}, {n: 'Mansão (Sede)', v: 2500000}];
+        const lojaPF = [{n: 'Coleção de Relógios', v: 30000}, {n: 'Automóvel Executivo', v: 120000}, {n: 'Mansão (Residência Oficial)', v: 3000000}];
         function renderLojaPF() {
             document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
                 <div class="list-item">
                     <div><div style="font-size:13px;font-weight:500;">${i.n}</div><div style="font-size:11px;color:var(--text-muted);">${fmt(i.v)}</div></div>
-                    <button class="btn" style="padding:6px 12px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Comprar</button>
+                    <button class="btn" style="padding:6px 12px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Aquisição Privada</button>
                 </div>
             `).join('');
         }
         function comprarPF(n, v) {
             if (state.pf.caixa >= v) {
                 state.pf.caixa -= v; state.pf.bens.push({n, v});
-                addExtrato('pf', `Aquisição: ${n}`, -v);
+                addExtrato('pf', `Ativo Fixo: ${n}`, -v);
                 atualizarUI();
-            } else { alert("Saldo PF Insuficiente."); }
+            } else { alert("Saldo da Conta Pessoal Insuficiente."); }
         }
 
         function addEmail(r, t, c) {
