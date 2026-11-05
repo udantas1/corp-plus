@@ -2,7 +2,7 @@
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Corp+ | Business OS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Roboto+Mono:wght@500&display=swap');
@@ -18,24 +18,28 @@
             --accent-text: #000000;
             --danger: #ff453a;
             --success: #32d74b;
+            --warning: #ff9f0a;
             --info: #0a84ff;
             --grid-color: rgba(255,255,255,0.03);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { 
+        /* CORREÇÃO DO BUG MOBILE: Fixa o body e impede o scroll da página inteira */
+        html, body { 
             background-color: var(--bg); 
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
                 linear-gradient(var(--grid-color) 1px, transparent 1px),
                 linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
             background-size: 100% 100%, 30px 30px, 30px 30px;
             color: var(--text-main); 
-            height: 100vh; 
-            width: 100vw; 
+            height: 100%; 
+            width: 100%; 
             overflow: hidden; 
+            position: fixed;
             font-size: 13px; 
+            overscroll-behavior-y: none;
         }
 
         .screen { display: none !important; width: 100%; height: 100%; }
@@ -57,15 +61,15 @@
 
         svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
-        /* Layout - Telas Iniciais */
-        #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-        .brand-title { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 4px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); text-align: center; }
+        /* Telas Iniciais */
+        #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+        .brand-title { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 4px; text-align: center; }
         .brand-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; text-align: center; }
-        .setup-box { background: rgba(12, 12, 12, 0.85); border: 1px solid var(--border); border-radius: 16px; padding: 30px; width: 100%; max-width: 480px; backdrop-filter: blur(10px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); overflow-y: auto; max-height: 90vh; }
+        .setup-box { background: rgba(12, 12, 12, 0.85); border: 1px solid var(--border); border-radius: 16px; padding: 30px; width: 100%; max-width: 480px; backdrop-filter: blur(10px); }
 
         /* Workspace & Sidebar */
         #screen-game { flex-direction: row; position: relative; }
-        .sidebar { width: 270px; background: rgba(5,5,5,0.95); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; backdrop-filter: blur(15px); z-index: 20; height: 100%; transition: left 0.3s ease; }
+        .sidebar { width: 270px; background: rgba(5,5,5,0.95); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; z-index: 20; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0; }
         .sb-header { padding: 0 12px; margin-bottom: 30px; }
         .sb-brand { font-size: 22px; font-weight: 700; letter-spacing: -1px; margin-bottom: 4px; color: var(--info); transition: color 0.3s; }
         .sb-company { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
@@ -78,11 +82,14 @@
 
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 15; backdrop-filter: blur(3px); }
 
-        .workspace { flex: 1; display: flex; flex-direction: column; position: relative; width: 100%; }
-        .topbar { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 5; }
-        .btn-menu { display: none; background: transparent; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; padding: 5px; }
+        .workspace { flex: 1; display: flex; flex-direction: column; height: 100%; width: 100%; overflow: hidden; }
         
-        .content { padding: 24px; overflow-y: auto; flex: 1; scroll-behavior: smooth; }
+        .topbar { height: 70px; flex-shrink: 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 5; }
+        .btn-menu { display: none; background: transparent; border: none; color: var(--text-main); cursor: pointer; padding: 8px; border-radius: 6px; border: 1px solid var(--border); }
+        
+        /* Area de scroll do conteúdo */
+        .content { flex: 1; overflow-y: auto; padding: 24px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-bottom: 80px; }
+        
         .tab { display: none !important; animation: fadeIn 0.3s ease; }
         .tab.active { display: block !important; }
         .page-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; letter-spacing: -0.5px; }
@@ -90,18 +97,19 @@
         /* Grids & Cards */
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
         .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;}
         
-        .card { background: rgba(15,15,15,0.8); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card { background: rgba(15,15,15,0.8); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
         .card-header { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; }
         .card-value { font-size: 24px; font-weight: 600; margin-bottom: 4px; letter-spacing: -1px; }
         .card-sub { font-size: 11px; color: var(--text-muted); }
         
         .c-green { color: var(--success); }
         .c-red { color: var(--danger); }
+        .c-warn { color: var(--warning); }
         .c-info { color: var(--info); transition: color 0.3s; }
 
-        .panel { background: rgba(12,12,12,0.9); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .panel { background: rgba(12,12,12,0.9); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
         .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
 
         table { width: 100%; border-collapse: collapse; }
@@ -131,20 +139,30 @@
         .font-serif { font-family: 'Playfair Display', serif; }
         .font-mono { font-family: 'Roboto Mono', monospace; letter-spacing: -1px; }
 
-        /* RESPONSIVIDADE MOBILE */
-        @media (max-width: 768px) {
-            .btn-menu { display: block; }
+        /* RESPONSIVIDADE MOBILE (Tablets e Telemóveis) */
+        @media (max-width: 900px) {
+            .btn-menu { display: flex; }
             .hide-mobile { display: none !important; }
-            .sidebar { position: absolute; left: -100%; top: 0; }
-            .sidebar.open { left: 0; box-shadow: 5px 0 25px rgba(0,0,0,0.8); }
+            
+            /* Sidebar Oculta */
+            .sidebar { position: absolute; transform: translateX(-100%); top: 0; bottom: 0; left: 0; }
+            .sidebar.open { transform: translateX(0); box-shadow: 5px 0 25px rgba(0,0,0,0.8); }
             .sidebar-overlay.active { display: block; }
+            
+            /* Ajuste de Grelhas para 1 coluna */
             .grid-3, .grid-2, .grid-half { grid-template-columns: 1fr; }
-            .content { padding: 16px; }
+            .content { padding: 16px; padding-bottom: 100px; }
             .topbar { padding: 0 16px; }
-            .setup-box { padding: 24px; border: none; border-radius: 0; background: transparent; box-shadow: none; }
-            #screen-setup { justify-content: flex-start; padding-top: 40px; }
-            .card-value { font-size: 22px; }
+            
+            /* Ajustes no setup */
+            .setup-box { padding: 24px; border: none; background: transparent; box-shadow: none; }
+            #screen-setup { justify-content: flex-start; padding-top: 20px; }
+            
+            /* Redução de Fontes */
+            .card-value { font-size: 24px; }
             .page-title { font-size: 18px; margin-bottom: 16px; }
+            .list-item { flex-direction: column; align-items: stretch; gap: 12px; }
+            .list-item > div:last-child { text-align: left; padding-top: 8px; border-top: 1px solid var(--border); }
         }
     </style>
 </head>
@@ -160,20 +178,21 @@
             <g id="ic-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
             <g id="ic-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></g>
             <g id="ic-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></g>
+            <g id="ic-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></g>
         </defs>
     </svg>
 
     <!-- START -->
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
-        <div class="brand-subtitle">Simulador de Mercado Corporativo</div>
-        <button class="btn btn-primary" style="padding: 16px 36px; font-size: 15px;" onclick="changeScreen('screen-setup')">Fundar Empresa</button>
+        <div class="brand-subtitle">Simulador Executivo</div>
+        <button class="btn btn-primary" style="padding: 16px 36px; font-size: 15px;" onclick="changeScreen('screen-setup')">Fundar Corporação</button>
     </div>
 
     <!-- SETUP -->
     <div id="screen-setup" class="screen">
         <div class="setup-box">
-            <h2 style="font-size: 22px; margin-bottom: 24px; font-weight: 600;">Estatuto Social e Registos</h2>
+            <h2 style="font-size: 22px; margin-bottom: 24px; font-weight: 600;">Estatuto Social</h2>
             
             <div class="form-group">
                 <label class="form-label">Nome do Presidente (Fundador)</label>
@@ -195,7 +214,7 @@
 
             <div class="grid-half" style="margin-bottom: 24px;">
                 <div>
-                    <label class="form-label">Setor de Atuação</label>
+                    <label class="form-label">Setor</label>
                     <select id="setup-sec" class="select" onchange="updateSubSectors()">
                         <option value="tech">Tecnologia</option>
                         <option value="fashion">Moda & Têxtil</option>
@@ -209,7 +228,7 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 14px;" onclick="iniciarNovoJogo()">Registrar e Iniciar Operações</button>
+            <button class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 14px;" onclick="iniciarNovoJogo()">Registrar Empresa</button>
         </div>
     </div>
 
@@ -231,38 +250,40 @@
                 <div class="m-left"><svg><use href="#ic-mail"/></svg> Caixa de Entrada</div>
                 <span class="badge-count" id="ui-email-badge" style="display:none;">0</span>
             </div>
+            <div class="menu-item" onclick="switchTab('tab-rh', this)">
+                <div class="m-left"><svg><use href="#ic-users"/></svg> Diretoria (C-Level)</div>
+            </div>
 
-            <div class="menu-section">Operacional & Vendas</div>
+            <div class="menu-section">Operacional</div>
             <div class="menu-item active" onclick="switchTab('tab-ops', this)"><div class="m-left"><svg><use href="#ic-truck"/></svg> Suprimentos</div></div>
-            <div class="menu-item" onclick="switchTab('tab-market', this)"><div class="m-left"><svg><use href="#ic-globe"/></svg> Estratégia de Mercado</div></div>
+            <div class="menu-item" onclick="switchTab('tab-market', this)"><div class="m-left"><svg><use href="#ic-globe"/></svg> Mercado</div></div>
             
-            <div class="menu-section">Finanças Corporativas</div>
-            <div class="menu-item" onclick="switchTab('tab-fin', this)"><div class="m-left"><svg><use href="#ic-dollar"/></svg> Tesouraria (Caixa PJ)</div></div>
-            <div class="menu-item" onclick="switchTab('tab-stock', this)"><div class="m-left"><svg><use href="#ic-activity"/></svg> Mercado de Capitais</div></div>
+            <div class="menu-section">Finanças</div>
+            <div class="menu-item" onclick="switchTab('tab-fin', this)"><div class="m-left"><svg><use href="#ic-dollar"/></svg> Tesouraria (PJ)</div></div>
             
             <div class="menu-section">Privado & Sede</div>
             <div class="menu-item" onclick="switchTab('tab-brand', this)"><div class="m-left"><svg><use href="#ic-star"/></svg> Branding & Instalações</div></div>
-            <div class="menu-item" onclick="switchTab('tab-ceo', this)"><div class="m-left"><svg><use href="#ic-user"/></svg> Vida de Presidente (PF)</div></div>
+            <div class="menu-item" onclick="switchTab('tab-ceo', this)"><div class="m-left"><svg><use href="#ic-user"/></svg> Património (PF)</div></div>
         </div>
 
         <div class="workspace">
-            <!-- TOPBAR -->
+            <!-- TOPBAR FIXO -->
             <div class="topbar">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <button class="btn-menu" onclick="toggleSidebar()"><svg><use href="#ic-menu"/></svg></button>
-                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px;" id="ui-modelo-info" class="hide-mobile">MODELO • CÂMBIO</div>
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 500;" class="hide-mobile" id="ui-modelo-info">MOD INFO</div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <div style="text-align: right;" class="hide-mobile">
                         <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Fecho Contábil</div>
                         <div style="font-size: 14px; font-weight: 600;" id="ui-data">Ano 1 / Mês 1</div>
                     </div>
-                    <!-- Versão Mobile Data -->
                     <div style="font-size: 12px; font-weight: 600; display: none;" id="ui-data-mobile">A1/M1</div>
                     <button class="btn btn-primary" onclick="avancarCiclo()">Avançar ➔</button>
                 </div>
             </div>
 
+            <!-- AREA COM SCROLL -->
             <div class="content">
                 
                 <!-- TAB: SUPRIMENTOS -->
@@ -276,33 +297,33 @@
                             <div class="card-sub">OPEX Previsto: <span id="ui-custo-fixo">0</span>/mês</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Armazém / Infraestrutura</div>
+                            <div class="card-header">Armazém / Estoque</div>
                             <div class="card-value" id="ui-estoque">0</div>
                             <div class="card-sub" id="ui-lbl-produto">Unidades prontas</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Lote Base Negociável</div>
-                            <div class="card-value" id="ui-lote-qtd">1.000</div>
-                            <div class="card-sub">Capacidade de volume por contrato</div>
+                            <div class="card-header">Clima de Mercado (Macro)</div>
+                            <div class="card-value" id="ui-macro-status" style="color: var(--text-main); font-size: 20px; padding-top: 6px;">Estável</div>
+                            <div class="card-sub" id="ui-macro-desc" style="margin-top: 6px;">Demanda e Custos na normalidade.</div>
                         </div>
                     </div>
 
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title">1. Contratos de Fornecimento</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Qualidade afeta diretamente a demanda B2C. No B2B, afeta o poder de fechar grandes contratos.</p>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Alta qualidade atrai demanda, mas esmaga a margem unitária.</p>
                             <div id="ui-fornecedores"></div>
                         </div>
 
                         <div class="panel">
-                            <div class="panel-title">2. Escala de Negociação</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Comprar em grandes volumes reduz os custos logísticos unitários.</p>
+                            <div class="panel-title">2. Negociação de Volumes</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Comprar em grandes volumes garante até 20% de desconto na fatura.</p>
                             
                             <div class="form-group">
                                 <select id="ui-volume-compra" class="select" onchange="atualizarCustoOP()">
-                                    <option value="1">Lote Fracionado (1x) - S/ Desconto</option>
-                                    <option value="5">Lote Corporativo (5x) - 10% OFF</option>
-                                    <option value="20">Contentor Fechado (20x) - 20% OFF</option>
+                                    <option value="1">Lote Fracionado (1x Base) - S/ Desconto</option>
+                                    <option value="5">Lote Corporativo (5x Base) - 10% OFF</option>
+                                    <option value="20">Contentor Fechado (20x Base) - 20% OFF</option>
                                 </select>
                             </div>
 
@@ -316,7 +337,7 @@
                                     <strong id="ui-op-qtd" style="font-size: 12px;">-</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="color: var(--text-muted); font-size: 12px;">Custo Efetivo Unitário:</span>
+                                    <span style="color: var(--text-muted); font-size: 12px;">Custo Unitário Final:</span>
                                     <strong id="ui-op-custounit" style="font-size: 12px;">-</strong>
                                 </div>
                                 <hr style="border: 0; border-top: 1px dashed var(--border); margin: 12px 0;">
@@ -326,7 +347,7 @@
                                 </div>
                             </div>
                             
-                            <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="emitirOrdemProducao()">Pagar Fatura e Estocar</button>
+                            <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="emitirOrdemProducao()">Pagar Fatura Logística</button>
                         </div>
                     </div>
                 </div>
@@ -340,13 +361,13 @@
                             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="lbl-market-desc">-</p>
                             
                             <div class="form-group">
-                                <label class="form-label" id="lbl-market-input">Preço Unitário Faturado</label>
+                                <label class="form-label">Preço Unitário Faturado</label>
                                 <input type="number" id="ui-preco" class="input" value="0" oninput="calcularMargem()">
                             </div>
                             
                             <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="font-size: 12px; color: var(--text-muted);">Custo Base Produtivo:</span>
+                                    <span style="font-size: 12px; color: var(--text-muted);">Custo Base de Referência:</span>
                                     <span id="ui-margem-custo" style="font-size: 12px;">$ 0</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
@@ -356,8 +377,35 @@
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">Players do Setor e Market Share</div>
+                            <div class="panel-title">Grandes Competidores e Market Share</div>
                             <div id="ui-concorrentes"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: DIRETORIA RH -->
+                <div id="tab-rh" class="tab">
+                    <h1 class="page-title">Conselho Executivo (C-Level)</h1>
+                    <div class="panel" style="margin-bottom: 24px;">
+                        <div class="panel-title">Contratação de Diretores</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Diretores especializados otimizam setores críticos da empresa, mas exigem remunerações agressivas que incham o seu OPEX (Custo Fixo) permanentemente.</p>
+                        
+                        <div class="list-item" style="background: rgba(0,0,0,0.4); border-color: #333;">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Diretor de Marketing (CMO)</div>
+                                <div style="font-size: 12px; color: var(--success); margin-bottom: 4px;">Benefício: +30% Demanda/Vendas</div>
+                                <div style="font-size: 11px; color: var(--danger);">Custo: <span id="ui-rh-custo-cmo">-</span>/mês</div>
+                            </div>
+                            <button class="btn btn-primary" id="btn-hire-cmo" onclick="contratarDiretor('cmo')">Contratar</button>
+                        </div>
+                        
+                        <div class="list-item" style="background: rgba(0,0,0,0.4); border-color: #333;">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Diretor de Operações (COO)</div>
+                                <div style="font-size: 12px; color: var(--success); margin-bottom: 4px;">Benefício: Reduz o Custo Fixo base em 20%</div>
+                                <div style="font-size: 11px; color: var(--danger);">Custo: <span id="ui-rh-custo-coo">-</span>/mês</div>
+                            </div>
+                            <button class="btn btn-primary" id="btn-hire-coo" onclick="contratarDiretor('coo')">Contratar</button>
                         </div>
                     </div>
                 </div>
@@ -372,19 +420,19 @@
                             <div class="card-sub">Custo de rolagem: 3.5% a.m.</div>
                         </div>
                         <div class="panel" style="margin:0;">
-                            <div class="panel-title">Linhas de Crédito</div>
+                            <div class="panel-title">Operações de Crédito</div>
                             <div class="grid-half" style="margin-bottom: 16px;">
-                                <button class="btn" onclick="tomarEmprestimo()">Emitir Dívida</button>
+                                <button class="btn" onclick="tomarEmprestimo()">Levantar Dívida</button>
                                 <button class="btn btn-primary" onclick="amortizarDivida()">Amortizar</button>
                             </div>
                             <input type="number" id="ui-val-amortizar" class="input" placeholder="Montante a Amortizar">
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-title">Extrato de Movimentação (Caixa PJ)</div>
+                        <div class="panel-title">Extrato de Conta (Caixa PJ)</div>
                         <div style="max-height: 350px; overflow-y: auto; margin: -20px; margin-top: 0;">
                             <table style="margin-top: 10px;">
-                                <thead><tr><th>Data</th><th>Descritivo</th><th style="text-align: right;">Montante</th></tr></thead>
+                                <thead><tr><th>Data</th><th>Movimento</th><th style="text-align: right;">Montante</th></tr></thead>
                                 <tbody id="tb-extrato-pj"></tbody>
                             </table>
                         </div>
@@ -399,14 +447,14 @@
 
                 <!-- TAB: BRANDING -->
                 <div id="tab-brand" class="tab">
-                    <h1 class="page-title">Branding e Sede Corporativa</h1>
+                    <h1 class="page-title">Branding e Cultura Corporativa</h1>
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title">Identidade Visual da Marca</div>
                             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Personalize a paleta de cores e a tipografia. Isto reflete a essência do seu negócio no sistema.</p>
                             
                             <label class="form-label">Cor Oficial (Accent Color)</label>
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                            <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
                                 <div class="color-circle active" style="background: #0a84ff;" onclick="setBrandColor('#0a84ff', this)"></div>
                                 <div class="color-circle" style="background: #32d74b;" onclick="setBrandColor('#32d74b', this)"></div>
                                 <div class="color-circle" style="background: #ff9f0a;" onclick="setBrandColor('#ff9f0a', this)"></div>
@@ -419,13 +467,13 @@
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <button class="btn" style="justify-content: flex-start; font-family: 'Inter', sans-serif;" onclick="setBrandFont('modern')">Modern Sans (Tech/Startup)</button>
                                 <button class="btn" style="justify-content: flex-start; font-family: 'Playfair Display', serif; font-size: 15px;" onclick="setBrandFont('serif')">Classic Serif (Luxo/Moda)</button>
-                                <button class="btn" style="justify-content: flex-start; font-family: 'Roboto Mono', monospace;" onclick="setBrandFont('mono')">Console Mono (Finanças)</button>
+                                <button class="btn" style="justify-content: flex-start; font-family: 'Roboto Mono', monospace;" onclick="setBrandFont('mono')">Console Mono (Dev/Finanças)</button>
                             </div>
                         </div>
 
                         <div class="panel" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
-                            <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Sede Física da <span id="ui-brand-comp">Empresa</span></h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Melhorar a Sede atrai grandes talentos e impõe respeito no mercado.</p>
+                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Sede Física da <span id="ui-brand-comp">Empresa</span></h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Melhorar a Sede atrai grandes talentos e impõe respeito no mercado.</p>
                             <button class="btn btn-disabled">Transferir Sede ($500k) - Em Breve</button>
                         </div>
                     </div>
@@ -433,7 +481,7 @@
 
                 <!-- TAB: CEO (PF) -->
                 <div id="tab-ceo" class="tab">
-                    <h1 class="page-title">Conta Pessoal e Estilo de Vida</h1>
+                    <h1 class="page-title">Gestão de Património Pessoal</h1>
                     <div class="grid-2">
                         <div>
                             <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
@@ -457,19 +505,6 @@
                     </div>
                 </div>
                 
-                <!-- TAB: STOCK -->
-                <div id="tab-stock" class="tab">
-                    <h1 class="page-title">Mercado de Capitais</h1>
-                    <div class="panel" style="text-align: center; padding: 60px 20px;">
-                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;" id="ui-valuation">0</h2>
-                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px;">Valuation Estimado (Valor da Empresa)</div>
-                        <p style="font-size: 13px; color: #aaa; max-width: 500px; margin: 0 auto 30px;">
-                            A sua empresa é de capital privado. Para abrir capital (IPO), o Valuation deve ser sustentável e superar as metas do mercado financeiro.
-                        </p>
-                        <button class="btn btn-disabled">Preparar Oferta Pública Inicial (IPO)</button>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -478,34 +513,25 @@
         const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
 
         const businessModels = {
-            'tech_retail': { sector: 'tech', type: 'b2c', name: 'Varejo de Eletrônicos (Loja)', loteQtd: 1000, inputLbl: 'Lotes Prontos', outputLbl: 'Smartphones', capInicial: 150000,
-                fornecedores: [ { id:'tr1', nome:'GlobalTech Dist.', custo: 200, frete: 20, q:'Padrão' }, { id:'tr2', nome:'Pear Certified', custo: 600, frete: 50, q:'Premium' } ],
-                concorrentes: [ { nome: 'MegaStore', preco: 400, share: 60 }, { nome: 'TechBuy', preco: 900, share: 40 } ], custoFixo: 12000, precoBase: 500 },
-            'tech_ind': { sector: 'tech', type: 'b2b', name: 'Fábrica de Hardware (Indústria)', loteQtd: 5000, inputLbl: 'Silício/Minérios', outputLbl: 'Aparelhos (B2B)', capInicial: 800000,
-                fornecedores: [ { id:'ti1', nome:'Mineração Ásia', custo: 30, frete: 10, q:'Base' }, { id:'ti2', nome:'Taiwan Silicons', custo: 80, frete: 25, q:'Alta' } ],
-                concorrentes: [ { nome: 'FoxAssemble', preco: 150, share: 70 }, { nome: 'TaiwaCorp', preco: 250, share: 30 } ], custoFixo: 45000, precoBase: 120 },
+            'tech_retail': { sector: 'tech', type: 'b2c', name: 'Varejo de Eletrônicos (Loja)', loteQtd: 1000, inputLbl: 'Lotes Prontos', outputLbl: 'Smartphones (Venda)', capInicial: 150000, forn: [ { id:'tr1', nome:'GlobalTech Distribuidora', custo: 200, frete: 20, q:'Padrão' }, { id:'tr2', nome:'Pear Certified Partners', custo: 600, frete: 50, q:'Premium' } ], conc: [ { nome: 'MegaStore Retail', preco: 400, share: 60 }, { nome: 'TechBuy', preco: 900, share: 40 } ], custoFixo: 12000, precoBase: 500 },
+            'tech_ind': { sector: 'tech', type: 'b2b', name: 'Fábrica de Hardware (Indústria)', loteQtd: 5000, inputLbl: 'Silício/Minérios', outputLbl: 'Aparelhos (Atacado)', capInicial: 800000, forn: [ { id:'ti1', nome:'Mineração Ásia Limitada', custo: 30, frete: 10, q:'Base' }, { id:'ti2', nome:'Taiwan Silicons', custo: 80, frete: 25, q:'Alta' } ], conc: [ { nome: 'FoxAssemble', preco: 150, share: 70 }, { nome: 'TaiwaCorp', preco: 250, share: 30 } ], custoFixo: 45000, precoBase: 120 },
             
-            'fashion_retail': { sector: 'fashion', type: 'b2c', name: 'Boutique de Luxo', loteQtd: 100, inputLbl: 'Coleções Prontas', outputLbl: 'Peças Exclusivas', capInicial: 250000,
-                fornecedores: [ { id:'fr1', nome:'Distribuidora Comum', custo: 50, frete: 5, q:'Padrão' }, { id:'fr2', nome:'Milano High Fashion', custo: 400, frete: 40, q:'Luxo' } ],
-                concorrentes: [ { nome: 'Loui V. Stores', preco: 1500, share: 60 }, { nome: 'Pradd', preco: 1200, share: 40 } ], custoFixo: 20000, precoBase: 800 },
-            'fashion_fast': { sector: 'fashion', type: 'b2c', name: 'Fast Fashion (Massa)', loteQtd: 5000, inputLbl: 'Roupas de Massa', outputLbl: 'Vestuário', capInicial: 300000,
-                fornecedores: [ { id:'ff1', nome:'Shenzhen Apparel', custo: 5, frete: 2, q:'Baixa' } ],
-                concorrentes: [ { nome: 'Zêra Retail', preco: 30, share: 50 }, { nome: 'H&Massa', preco: 25, share: 50 } ], custoFixo: 25000, precoBase: 25 },
+            'fashion_retail': { sector: 'fashion', type: 'b2c', name: 'Boutique de Luxo', loteQtd: 100, inputLbl: 'Coleções Prontas', outputLbl: 'Peças Exclusivas', capInicial: 250000, forn: [ { id:'fr1', nome:'Distribuidora Comum', custo: 50, frete: 5, q:'Padrão' }, { id:'fr2', nome:'Milano High Fashion', custo: 400, frete: 40, q:'Luxo' } ], conc: [ { nome: 'Loui V. Stores', preco: 1500, share: 60 }, { nome: 'Pradd', preco: 1200, share: 40 } ], custoFixo: 20000, precoBase: 800 },
+            'fashion_fast': { sector: 'fashion', type: 'b2c', name: 'Fast Fashion (Varejo de Massa)', loteQtd: 5000, inputLbl: 'Roupas de Massa', outputLbl: 'Vestuário Comercial', capInicial: 300000, forn: [ { id:'ff1', nome:'Shenzhen Apparel Factory', custo: 5, frete: 2, q:'Baixa' } ], conc: [ { nome: 'Zêra Retail', preco: 30, share: 50 }, { nome: 'H&Massa', preco: 25, share: 50 } ], custoFixo: 25000, precoBase: 25 },
             
-            'food_fast': { sector: 'food', type: 'b2c', name: 'Rede de Fast Food', loteQtd: 2000, inputLbl: 'Ingredientes', outputLbl: 'Refeições Rápidas', capInicial: 100000,
-                fornecedores: [ { id:'fdf1', nome:'AgroMass Alimentos', custo: 2, frete: 1, q:'Padrão' } ],
-                concorrentes: [ { nome: 'McBurger', preco: 10, share: 60 }, { nome: 'Burger Lord', preco: 9, share: 40 } ], custoFixo: 15000, precoBase: 10 },
-            'food_alta': { sector: 'food', type: 'b2c', name: 'Restaurante Premium', loteQtd: 100, inputLbl: 'Ingredientes Raros', outputLbl: 'Pratos de Chef', capInicial: 200000,
-                fornecedores: [ { id:'fda1', nome:'Fazendas Orgânicas', custo: 30, frete: 5, q:'Alta' }, { id:'fda2', nome:'Importação Europeia', custo: 80, frete: 20, q:'Luxo' } ],
-                concorrentes: [ { nome: 'Fasano Elite', preco: 250, share: 100 } ], custoFixo: 25000, precoBase: 150 },
+            'food_fast': { sector: 'food', type: 'b2c', name: 'Rede de Fast Food', loteQtd: 2000, inputLbl: 'Ingredientes Base', outputLbl: 'Refeições', capInicial: 100000, forn: [ { id:'fdf1', nome:'AgroMass Alimentos', custo: 2, frete: 1, q:'Padrão' } ], conc: [ { nome: 'McBurger', preco: 10, share: 60 }, { nome: 'Burger Lord', preco: 9, share: 40 } ], custoFixo: 15000, precoBase: 10 },
+            'food_alta': { sector: 'food', type: 'b2c', name: 'Alta Gastronomia', loteQtd: 100, inputLbl: 'Ingredientes Raros', outputLbl: 'Pratos de Chef', capInicial: 200000, forn: [ { id:'fda1', nome:'Fazendas Orgânicas Locais', custo: 30, frete: 5, q:'Alta' }, { id:'fda2', nome:'Importação Europeia', custo: 80, frete: 20, q:'Luxo' } ], conc: [ { nome: 'Fasano Elite', preco: 250, share: 100 } ], custoFixo: 25000, precoBase: 150 },
 
-            'fin_retail': { sector: 'fin', type: 'b2c', name: 'Fintech (Banco Digital)', loteQtd: 5000, inputLbl: 'Captação (CDI)', outputLbl: 'Cartões/Crédito', capInicial: 1000000,
-                fornecedores: [ { id:'fnr1', nome:'Mercado Interbancário', custo: 8, frete: 2, q:'Padrão' } ],
-                concorrentes: [ { nome: 'NuBank', preco: 35, share: 50 }, { nome: 'Itaú', preco: 50, share: 50 } ], custoFixo: 40000, precoBase: 30 },
-            'fin_b2b': { sector: 'fin', type: 'b2b', name: 'Banco de Investimentos', loteQtd: 50, inputLbl: 'Fundos de VC', outputLbl: 'Rodadas de Capital', capInicial: 2500000,
-                fornecedores: [ { id:'fnb1', nome:'Family Offices', custo: 2000, frete: 500, q:'Alta' } ],
-                concorrentes: [ { nome: 'BTG Pactual', preco: 4500, share: 60 }, { nome: 'XP Investimentos', preco: 3500, share: 40 } ], custoFixo: 120000, precoBase: 4000 }
+            'fin_retail': { sector: 'fin', type: 'b2c', name: 'Fintech (Banco Digital)', loteQtd: 5000, inputLbl: 'Captação interbancária', outputLbl: 'Cartões/Empréstimos', capInicial: 1000000, forn: [ { id:'fnr1', nome:'Mercado CDI', custo: 8, frete: 2, q:'Padrão' } ], conc: [ { nome: 'NuBank', preco: 35, share: 50 }, { nome: 'Itaú', preco: 50, share: 50 } ], custoFixo: 40000, precoBase: 30 },
+            'fin_b2b': { sector: 'fin', type: 'b2b', name: 'Banco de Investimentos (B2B)', loteQtd: 50, inputLbl: 'Fundos de VC', outputLbl: 'Rodadas de Capital', capInicial: 2500000, forn: [ { id:'fnb1', nome:'Family Offices', custo: 2000, frete: 500, q:'Alta' } ], conc: [ { nome: 'BTG Pactual', preco: 4500, share: 60 }, { nome: 'XP Investimentos', preco: 3500, share: 40 } ], custoFixo: 120000, precoBase: 4000 }
         };
+
+        const macroEvents = [
+            { tipo: 'ruim', nome: 'Crise na Cadeia Logística', dMod: 1.0, cMod: 1.4, msg: 'O encarecimento brutal dos fretes marítimos fez explodir o custo das importações.' },
+            { tipo: 'ruim', nome: 'Recessão Económica', dMod: 0.6, cMod: 1.0, msg: 'Os juros altos contraíram o mercado. Os clientes cortaram gastos não essenciais.' },
+            { tipo: 'bom', nome: 'Boom Tecnológico / Retalho', dMod: 1.5, cMod: 1.0, msg: 'A confiança do consumidor está em alta máxima. As pessoas estão a comprar sem olhar a preços!' },
+            { tipo: 'bom', nome: 'Queda nas Commodities', dMod: 1.0, cMod: 0.7, msg: 'A superprodução na Ásia derrubou os custos de fabricação e matéria-prima.' }
+        ];
 
         let state = null;
 
@@ -524,10 +550,11 @@
         }
         window.addEventListener('DOMContentLoaded', () => { updateSubSectors(); });
 
-        function fmt(usdValue) {
+        function fmt(usdValue, overrideCur = null) {
+            const cur = overrideCur || (state ? state.moeda : 'USD');
             if(usdValue === undefined || isNaN(usdValue)) return "0";
-            const converted = usdValue * exchangeRates[state.moeda];
-            return new Intl.NumberFormat(state.moeda === 'BRL' ? 'pt-BR' : state.moeda === 'EUR' ? 'de-DE' : 'en-US', { style: 'currency', currency: state.moeda }).format(converted);
+            const converted = usdValue * exchangeRates[cur];
+            return new Intl.NumberFormat(cur === 'BRL' ? 'pt-BR' : cur === 'EUR' ? 'de-DE' : 'en-US', { style: 'currency', currency: cur }).format(converted);
         }
         function parseToUSD(localValue) { return localValue / exchangeRates[state.moeda]; }
         function toLocal(usdValue) { return usdValue * exchangeRates[state.moeda]; }
@@ -536,10 +563,14 @@
             const mod = businessModels[modId];
             return {
                 ceo, empresa: comp, moeda: cur, modelo: modId, mes: 1, ano: 1,
-                fornecedorId: mod.fornecedores[0].id, precoVendaUSD: mod.precoBase,
-                pj: { caixa: mod.capInicial, caixaInicial: mod.capInicial, divida: 0, estoque: 0, extrato: [] },
+                fornecedorId: mod.forn[0].id, precoVendaUSD: mod.precoBase,
+                pj: { 
+                    caixa: mod.capInicial, caixaInicial: mod.capInicial, divida: 0, estoque: 0, extrato: [],
+                    diretores: { cmo: false, coo: false },
+                    macro: { ativo: false, demandMod: 1.0, costMod: 1.0, nome: 'Estável', turnos: 0 }
+                },
                 pf: { caixa: 15000, salario: 5000, bens: [], extrato: [] },
-                emails: [] 
+                emails: []
             };
         }
 
@@ -560,12 +591,12 @@
             const modId = document.getElementById('setup-model').value;
             
             if(!ceo || !comp) return alert("Preencha todos os campos do Estatuto Social.");
-            if(!businessModels[modId]) return alert("Erro: Modelo não selecionado.");
+            if(!businessModels[modId]) return alert("Erro crítico de seleção.");
             
             state = gerarEstadoNovo(ceo, comp, cur, modId);
             const mod = businessModels[modId];
             
-            addEmail('Elena (Secretária/CFO)', `Abertura Concluída: ${comp}`, `Presidente ${ceo}, a estruturação da <strong>${comp}</strong> foi concluída na Junta.<br><br>Operamos no modelo <strong>${mod.name} (${mod.type.toUpperCase()})</strong> com um capital corporativo de <strong>${fmt(mod.capInicial)}</strong>.<br><br>A sua prioridade deve ser comprar suprimentos. Negociar volumes fechados (5x ou 20x) dá-nos margens logísticas melhores. Lembre-se que eu acompanharei as métricas para dedução de impostos anuais (IRPJ) caso a empresa dê lucro.<br>- Elena`);
+            addEmail('Elena (Secretária/CFO)', `Abertura Concluída: ${comp}`, `Presidente ${ceo}, a estruturação da <strong>${comp}</strong> foi concluída na Junta Comercial.<br><br>Operamos no modelo <strong>${mod.name} (${mod.type.toUpperCase()})</strong> com um capital corporativo de <strong>${fmt(mod.capInicial)}</strong>.<br><br>Poderá recrutar diretores na aba C-Level, mas cuidado com os salários. Eu vou monitorizar a macroeconomia e cobrar o IRPJ de 15% caso a empresa lucre no final do ano.<br>- Elena`);
 
             montarJogo();
         }
@@ -583,12 +614,16 @@
             document.getElementById('ui-lote-qtd').innerText = mod.loteQtd.toLocaleString();
             
             if(mod.type === 'b2b') {
-                document.getElementById('lbl-market-title').innerText = "Contratos B2B (Larga Escala)";
-                document.getElementById('lbl-market-desc').innerText = "Venda em grandes volumes. Concorrência severa no preço.";
+                document.getElementById('lbl-market-title').innerText = "Contratos B2B (Atacado)";
+                document.getElementById('lbl-market-desc').innerText = "Venda em grandes volumes para outras corporações. A concorrência é agressiva no preço.";
             } else {
-                document.getElementById('lbl-market-title').innerText = "Varejo ao Consumidor (B2C)";
-                document.getElementById('lbl-market-desc').innerText = "Demanda sensível ao preço e à qualidade do fornecedor.";
+                document.getElementById('lbl-market-title').innerText = "Preço de Balcão (B2C)";
+                document.getElementById('lbl-market-desc').innerText = "A procura é sensível ao preço, mas produtos fornecidos por parceiros Premium atraem melhores clientes.";
             }
+
+            // Valores de Contratação RH
+            document.getElementById('ui-rh-custo-cmo').innerText = fmt(15000);
+            document.getElementById('ui-rh-custo-coo').innerText = fmt(12000);
 
             document.getElementById('ui-preco').value = Math.round(toLocal(state.precoVendaUSD));
 
@@ -602,10 +637,10 @@
         function renderFornecedores() {
             const mod = businessModels[state.modelo];
             let html = '';
-            mod.fornecedores.forEach(f => {
+            mod.forn.forEach(f => {
                 const checked = state.fornecedorId === f.id ? 'checked' : '';
                 html += `
-                <label class="list-item" onclick="setFornecedor('${f.id}')">
+                <label class="list-item" style="flex-direction:row;" onclick="setFornecedor('${f.id}')">
                     <div style="display:flex; gap:12px; align-items:center;">
                         <input type="radio" name="sup" class="sup-radio" ${checked}>
                         <div>
@@ -624,7 +659,7 @@
         }
 
         function setFornecedor(id) { state.fornecedorId = id; renderFornecedores(); }
-        function getFornecedorAtual() { return businessModels[state.modelo].fornecedores.find(f => f.id === state.fornecedorId); }
+        function getFornecedorAtual() { return businessModels[state.modelo].forn.find(f => f.id === state.fornecedorId); }
 
         function atualizarCustoOP() {
             const f = getFornecedorAtual();
@@ -635,8 +670,8 @@
             if (multiplicador === 5) desconto = 0.10;
             if (multiplicador === 20) desconto = 0.20;
 
-            const custoNormalUn = f.custo + f.frete;
-            const custoEfetivoUn = custoNormalUn * (1 - desconto);
+            const custoBaseReal = (f.custo + f.frete) * state.pj.macro.costMod; // Afetado pela Macroeconomia
+            const custoEfetivoUn = custoBaseReal * (1 - desconto);
             const qtdReal = mod.loteQtd * multiplicador;
             const totalUSD = custoEfetivoUn * qtdReal;
 
@@ -657,7 +692,8 @@
             if (multiplicador === 5) desconto = 0.10;
             if (multiplicador === 20) desconto = 0.20;
 
-            const custoEfetivoUn = (f.custo + f.frete) * (1 - desconto);
+            const custoBaseReal = (f.custo + f.frete) * state.pj.macro.costMod;
+            const custoEfetivoUn = custoBaseReal * (1 - desconto);
             const qtdReal = mod.loteQtd * multiplicador;
             const totalUSD = custoEfetivoUn * qtdReal;
             
@@ -665,13 +701,13 @@
                 state.pj.caixa -= totalUSD; state.pj.estoque += qtdReal;
                 addExtrato('pj', `Despesa Logística (${qtdReal} un.)`, -totalUSD);
                 atualizarUI();
-            } else { alert(`Liquidez corporativa insuficiente. Necessita de: ${fmt(totalUSD)}`); }
+            } else { alert(`Caixa insuficiente. Faltam fundos para pagar a fatura de ${fmt(totalUSD)}`); }
         }
 
         function renderConcorrentes() {
             const mod = businessModels[state.modelo];
             let html = '';
-            mod.concorrentes.forEach(c => {
+            mod.conc.forEach(c => {
                 html += `
                 <div style="margin-bottom: 12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px;">
@@ -688,7 +724,8 @@
             state.precoVendaUSD = parseToUSD(precoLocal);
             
             const f = getFornecedorAtual();
-            const custoEfetivo = custoOverride !== null ? custoOverride : (f.custo + f.frete);
+            const custoBaseReal = (f.custo + f.frete) * state.pj.macro.costMod;
+            const custoEfetivo = custoOverride !== null ? custoOverride : custoBaseReal;
             const lucroUniUSD = state.precoVendaUSD - custoEfetivo;
 
             document.getElementById('ui-margem-custo').innerText = fmt(custoEfetivo);
@@ -702,13 +739,36 @@
             const dataText = `A${state.ano}/M${state.mes}`;
             document.getElementById('ui-data').innerText = `Ano ${state.ano} / Mês ${state.mes}`;
             
-            // Verifica se tem elemento mobile (adicionado via css)
             const mobileData = document.getElementById('ui-data-mobile');
             if(mobileData) mobileData.innerText = dataText;
-            if(window.innerWidth <= 768 && mobileData) { mobileData.style.display = 'block'; }
+            
+            // RH Buttons Update
+            const btnCmo = document.getElementById('btn-hire-cmo');
+            if (state.pj.diretores.cmo) { btnCmo.innerText = 'Contratado'; btnCmo.classList.add('btn-disabled'); }
+            
+            const btnCoo = document.getElementById('btn-hire-coo');
+            if (state.pj.diretores.coo) { btnCoo.innerText = 'Contratado'; btnCoo.classList.add('btn-disabled'); }
+            
+            // Macro
+            const mStatus = document.getElementById('ui-macro-status');
+            mStatus.innerText = state.pj.macro.nome;
+            if(state.pj.macro.ativo) {
+                mStatus.className = state.pj.macro.demandMod > 1.0 || state.pj.macro.costMod < 1.0 ? "card-value c-green" : "card-value c-warn";
+            } else {
+                mStatus.className = "card-value"; mStatus.style.color = "var(--text-main)";
+            }
+            if(state.pj.macro.ativo) { document.getElementById('ui-macro-desc').innerText = `Dura mais ${state.pj.macro.turnos} meses`; }
+            else { document.getElementById('ui-macro-desc').innerText = 'Demanda e Custos na normalidade.'; }
+
+            // Calcular OPEX real (Custo fixo base + Diretores)
+            let opexBase = mod.custoFixo;
+            if (state.pj.diretores.coo) opexBase *= 0.8; // Desconto COO
+            let opexTotal = opexBase;
+            if (state.pj.diretores.cmo) opexTotal += 15000;
+            if (state.pj.diretores.coo) opexTotal += 12000;
             
             document.getElementById('ui-caixa-pj').innerText = fmt(state.pj.caixa);
-            document.getElementById('ui-custo-fixo').innerText = fmt(mod.custoFixo);
+            document.getElementById('ui-custo-fixo').innerText = fmt(opexTotal);
             document.getElementById('ui-estoque').innerText = state.pj.estoque.toLocaleString();
             document.getElementById('ui-divida-pj').innerText = fmt(state.pj.divida);
             
@@ -719,19 +779,29 @@
             
             document.getElementById('tb-extrato-pj').innerHTML = buildTb(state.pj.extrato);
             document.getElementById('tb-extrato-pf').innerHTML = buildTb(state.pf.extrato);
-
-            const valuation = state.pj.caixa + ((getFornecedorAtual().custo * state.pj.estoque)) - state.pj.divida;
-            document.getElementById('ui-valuation').innerText = fmt(Math.max(0, valuation * 3));
             
             const mBens = document.getElementById('ui-meus-bens');
             mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:12px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:11px;">Nenhum ativo privado reportado.</span>';
         }
 
+        // --- RH ---
+        function contratarDiretor(cargo) {
+            const custo = cargo === 'cmo' ? 15000 : 12000;
+            if (state.pj.caixa >= custo) {
+                state.pj.diretores[cargo] = true;
+                state.pj.caixa -= custo;
+                addExtrato('pj', `Bónus de Contratação (${cargo.toUpperCase()})`, -custo);
+                addEmail('Recursos Humanos', `Novo ${cargo.toUpperCase()} a Bordo`, `O novo diretor já está integrado e passará a constar na folha de pagamento do OPEX a partir de agora.`);
+                atualizarUI();
+            } else {
+                alert(`Caixa PJ insuficiente para pagar o bónus de contratação de ${fmt(custo)}`);
+            }
+        }
+
         function tomarEmprestimo() {
             const valUSD = 100000;
             state.pj.caixa += valUSD; state.pj.divida += valUSD;
-            addExtrato('pj', 'Levantamento de Capital (Dívida)', valUSD);
-            atualizarUI();
+            addExtrato('pj', 'Emissão de Dívida', valUSD); atualizarUI();
         }
 
         function amortizarDivida() {
@@ -744,8 +814,7 @@
             const abat = Math.min(valUSD, state.pj.divida);
             state.pj.caixa -= abat; state.pj.divida -= abat;
             addExtrato('pj', 'Amortização Passiva', -abat);
-            document.getElementById('ui-val-amortizar').value = '';
-            atualizarUI();
+            document.getElementById('ui-val-amortizar').value = ''; atualizarUI();
         }
 
         function addExtrato(tipo, desc, val) {
@@ -753,19 +822,12 @@
             if (state[tipo].extrato.length > 30) state[tipo].extrato.pop();
         }
 
-        function verificarEventosElena() {
-            if (state.mes === 11) {
-                addEmail('Elena (CFO)', 'Lembrete Fiscal: IRPJ Acumulado', `O ano contabilístico fecha no próximo mês. Caso o fluxo de caixa corporativo esteja acima do inicial (${fmt(state.pj.caixaInicial)}), pagaremos 15% sobre o lucro retido. Acumule liquidez.`);
-            }
-            if (state.mes === 12) {
-                if (state.pj.caixa > state.pj.caixaInicial) {
-                    const lucroBase = state.pj.caixa - state.pj.caixaInicial;
-                    const imposto = lucroBase * 0.15;
-                    state.pj.caixa -= imposto;
-                    addExtrato('pj', 'Imposto Corporativo (IRPJ 15%)', -imposto);
-                    addEmail('Contabilidade Geral', 'Tributos Liquidados', `O fisco reteve 15% sobre a margem de crescimento da empresa no ano corrente. Montante pago: ${fmt(imposto)}.`);
-                }
-            }
+        function dispararEventoMacro() {
+            const evento = macroEvents[Math.floor(Math.random() * macroEvents.length)];
+            state.pj.macro = {
+                ativo: true, demandMod: evento.dMod, costMod: evento.cMod, nome: evento.nome, turnos: Math.floor(Math.random() * 3) + 2
+            };
+            addEmail('Elena (Aviso de Mercado)', `NOTÍCIA: ${evento.nome}`, `${evento.msg}<br><br>Isto afeta diretamente as nossas margens e a procura. Verifique o impacto no painel Operacional durante os próximos ${state.pj.macro.turnos} meses.`);
         }
 
         function avancarCiclo() {
@@ -773,35 +835,61 @@
             const f = getFornecedorAtual();
             let vendas = 0;
 
+            // Fim do Evento Macro
+            if (state.pj.macro.ativo) {
+                state.pj.macro.turnos--;
+                if (state.pj.macro.turnos <= 0) {
+                    state.pj.macro = { ativo: false, demandMod: 1.0, costMod: 1.0, nome: 'Estável', turnos: 0 };
+                    addEmail('Elena (Aviso de Mercado)', 'Clima Normalizado', 'O evento macroeconómico terminou. Os mercados regressaram à estabilidade.');
+                }
+            } else {
+                if (Math.random() < 0.15) dispararEventoMacro(); // 15% chance de crise/boom
+            }
+
             if (mod.type === 'b2c') {
-                const mediaConc = mod.concorrentes.reduce((a, b) => a + b.preco, 0) / mod.concorrentes.length;
+                const mediaConc = mod.conc.reduce((a, b) => a + b.preco, 0) / mod.conc.length;
                 let fatorPreco = mediaConc / state.precoVendaUSD;
-                let cap = Math.floor(mod.loteQtd * 0.8 * fatorPreco);
+                
+                // CMO Bonus
+                let fatorVendaFinal = fatorPreco * state.pj.macro.demandMod;
+                if (state.pj.diretores.cmo) fatorVendaFinal *= 1.30; 
+
+                let cap = Math.floor(mod.loteQtd * 0.8 * fatorVendaFinal);
                 if(f.q === 'Premium' || f.q === 'Luxo' || f.q === 'Alta') cap = Math.floor(cap * 1.3);
                 vendas = Math.min(cap, state.pj.estoque);
             } else if (mod.type === 'b2b') {
-                const melhorPreco = Math.min(...mod.concorrentes.map(c => c.preco));
-                if (state.precoVendaUSD <= melhorPreco * 1.15) {
-                    vendas = Math.min(mod.loteQtd * 3, state.pj.estoque); 
+                const melhorPreco = Math.min(...mod.conc.map(c => c.preco));
+                // CMO permite vender um pouco mais caro no B2B
+                const tolerancia = state.pj.diretores.cmo ? 1.25 : 1.15; 
+                
+                if (state.precoVendaUSD <= melhorPreco * tolerancia) {
+                    vendas = Math.min(mod.loteQtd * (state.pj.macro.demandMod > 1 ? 4 : 3), state.pj.estoque); 
                 } else {
                     vendas = 0;
-                    if(state.pj.estoque > 0) addEmail('Elena (Vendas B2B)', 'Alerta de Mercado', 'As vendas B2B falharam este mês. O nosso preço de contrato está acima das outras companhias.');
+                    if(state.pj.estoque > 0) addEmail('Vendas (B2B)', 'Alerta de Mercado', 'As vendas institucionais falharam. O nosso preço de contrato está muito acima do tolerável.');
                 }
             }
 
             if (vendas > 0) {
                 const recUSD = vendas * state.precoVendaUSD;
                 state.pj.caixa += recUSD; state.pj.estoque -= vendas;
-                addExtrato('pj', `Receitas Comerciais (${vendas} un.)`, recUSD);
+                addExtrato('pj', `Faturação Comercial (${vendas} un)`, recUSD);
             }
 
-            state.pj.caixa -= mod.custoFixo;
-            addExtrato('pj', 'Despesas Operacionais Fixas', -mod.custoFixo);
+            // Aplicar OPEX
+            let opexBase = mod.custoFixo;
+            if (state.pj.diretores.coo) opexBase *= 0.8;
+            let opexTotal = opexBase;
+            if (state.pj.diretores.cmo) opexTotal += 15000;
+            if (state.pj.diretores.coo) opexTotal += 12000;
+
+            state.pj.caixa -= opexTotal;
+            addExtrato('pj', 'Despesas Operacionais Fixas', -opexTotal);
 
             if (state.pj.divida > 0) {
                 const juros = state.pj.divida * 0.035;
                 state.pj.divida += juros;
-                addExtrato('pj', 'Juros Bancários', -juros);
+                addExtrato('pj', 'Juros Bancários (3.5%)', -juros);
             }
 
             if (state.pj.caixa >= state.pf.salario) {
@@ -809,26 +897,34 @@
                 addExtrato('pj', 'Transferência de Pró-labore', -state.pf.salario);
                 addExtrato('pf', 'Recebimento de Pró-labore', state.pf.salario);
             } else {
-                addEmail('Elena (Head of Staff)', 'Urgente: Falência Técnica', 'A tesouraria colapsou. A empresa não tem caixa para o seu pró-labore este mês.');
+                addEmail('Elena (Head of Staff)', 'Urgente: Tesouraria Congelada', 'A empresa não tem liquidez para o seu pró-labore este mês.');
             }
 
-            verificarEventosElena();
+            // Impostos 
+            if (state.mes === 11) addEmail('Elena (CFO)', 'Lembrete Fiscal', `No próximo mês (Mês 12) pagaremos 15% sobre o crescimento de caixa anual (IRPJ). Prepare-se.`);
+            if (state.mes === 12 && state.pj.caixa > state.pj.caixaInicial) {
+                const lucroBase = state.pj.caixa - state.pj.caixaInicial;
+                const imp = lucroBase * 0.15;
+                state.pj.caixa -= imp;
+                addExtrato('pj', 'Imposto Corporativo (IRPJ)', -imp);
+                addEmail('Contabilidade', 'Imposto Liquidado', `O fisco reteve 15% sobre a margem de crescimento da empresa no ano. Montante: ${fmt(imp)}.`);
+                state.pj.caixaInicial = state.pj.caixa; // Reseta base para ano seguinte
+            }
 
             state.mes++; if (state.mes > 12) { state.mes = 1; state.ano++; }
+            atualizarCustoOP(); // Refresh cost values in UI
             atualizarUI();
         }
 
-        const lojaPF = [{n: 'Coleção de Arte', v: 45000}, {n: 'Helicóptero Executivo', v: 850000}, {n: 'Iate Privado', v: 4500000}];
-        
+        const lojaPF = [{n: 'Arte Contemporânea', v: 45000}, {n: 'Helicóptero Executivo', v: 850000}, {n: 'Iate Privado (Mónaco)', v: 4500000}];
         function renderLojaPF() {
             document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
                 <div class="list-item" style="background: rgba(0,0,0,0.3);">
                     <div><div style="font-size:12px;font-weight:600;">${i.n}</div><div style="font-size:11px;color:var(--text-muted);">${fmt(i.v)}</div></div>
-                    <button class="btn" style="padding:8px 12px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Adquirir</button>
+                    <button class="btn" style="padding:8px 12px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Adquirir Ativo</button>
                 </div>
             `).join('');
         }
-        
         function comprarPF(n, v) {
             if (state.pf.caixa >= v) {
                 state.pf.caixa -= v; state.pf.bens.push({n, v});
@@ -837,11 +933,7 @@
             } else { alert("Saldo Pessoal Insuficiente."); }
         }
 
-        function addEmail(r, t, c) {
-            state.emails.unshift({ id: Date.now(), remetente: r, titulo: t, corpo: c, lido: false });
-            renderEmails();
-        }
-        
+        function addEmail(r, t, c) { state.emails.unshift({ id: Date.now(), remetente: r, titulo: t, corpo: c, lido: false }); renderEmails(); }
         function renderEmails() {
             const list = document.getElementById('ui-email-list');
             const naoLidos = state.emails.filter(e => !e.lido).length;
@@ -855,20 +947,16 @@
                     <div class="e-body" id="mail-body-${i}">${e.corpo}</div>
                 </div>`).join('');
         }
-        
         function toggleMail(i) {
             state.emails[i].lido = true;
-            document.getElementById(`mail-body-${i}`).style.display = 'block';
-            renderEmails();
+            document.getElementById(`mail-body-${i}`).style.display = 'block'; renderEmails();
         }
 
-        /* MÓDULO DE BRANDING & ESTILOS */
         function setBrandColor(hex, el) {
             document.documentElement.style.setProperty('--info', hex);
             document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
         }
-        
         function setBrandFont(type) {
             const logo = document.getElementById('ui-main-logo');
             if(type === 'modern') logo.style.fontFamily = "'Inter', sans-serif";
@@ -882,8 +970,8 @@
             document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
             
-            // Fecha menu lateral se estiver no mobile
-            if(window.innerWidth <= 768) {
+            // Fecha menu no mobile
+            if(window.innerWidth <= 900) {
                 document.querySelector('.sidebar').classList.remove('open');
                 document.querySelector('.sidebar-overlay').classList.remove('active');
             }
