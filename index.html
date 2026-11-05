@@ -18,7 +18,7 @@
             --accent-text: #000000;
             --danger: #ff453a;
             --success: #32d74b;
-            --info: #0a84ff; /* Variável alterável via Branding */
+            --info: #0a84ff; /* Cor dinâmica da marca */
             --grid-color: rgba(255,255,255,0.03);
         }
 
@@ -46,10 +46,9 @@
         .btn { background: rgba(255,255,255,0.02); color: var(--text-main); border: 1px solid var(--border); padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(4px); }
         .btn:hover { background: var(--surface-hover); border-color: #444; }
         .btn-primary { background: var(--info); color: #fff; border: 1px solid var(--info); box-shadow: 0 4px 14px rgba(0,0,0,0.3); font-weight: 600; }
-        .btn-primary:hover { filter: brightness(1.2); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+        .btn-primary:hover { filter: brightness(1.2); }
         .btn-danger { color: var(--danger); border-color: rgba(255, 69, 58, 0.3); background: rgba(255, 69, 58, 0.05); }
         .btn-danger:hover { background: rgba(255, 69, 58, 0.1); }
-        .btn-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
         
         .input, .select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: var(--text-main); padding: 12px 16px; border-radius: 6px; font-size: 13px; transition: 0.2s; backdrop-filter: blur(4px); }
         .input:focus, .select:focus { outline: none; border-color: var(--info); box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.1); }
@@ -77,7 +76,7 @@
         .menu-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
         .menu-item.active { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border); border-left: 3px solid var(--info); }
         
-        .badge-count { background: var(--info); color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; }
+        .badge-count { background: var(--info); color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; transition: background 0.3s; }
 
         .workspace { flex: 1; display: flex; flex-direction: column; position: relative; }
         .topbar { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); z-index: 5; }
@@ -98,7 +97,7 @@
         
         .c-green { color: var(--success); }
         .c-red { color: var(--danger); }
-        .c-info { color: var(--info); }
+        .c-info { color: var(--info); transition: color 0.3s; }
 
         .panel { background: rgba(12,12,12,0.9); border: 1px solid var(--border); border-radius: 12px; padding: 24px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
@@ -115,17 +114,17 @@
         .sup-radio:checked::after { content: ''; position: absolute; top: 3px; left: 3px; width: 10px; height: 10px; background: var(--info); border-radius: 50%; }
         
         .market-bar-bg { width: 100%; height: 6px; background: #222; border-radius: 3px; overflow: hidden; margin-top: 8px; }
-        .market-bar-fill { height: 100%; background: var(--info); border-radius: 3px; transition: width 0.4s; }
+        .market-bar-fill { height: 100%; background: var(--info); border-radius: 3px; transition: width 0.4s, background 0.3s; }
 
-        /* Estilos de Email */
+        /* Inbox Estilos */
         .e-item { padding: 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.2s; }
         .e-item:hover { background: rgba(255,255,255,0.03); }
-        .e-item.unread { border-left: 3px solid var(--info); background: rgba(10, 132, 255, 0.05); }
+        .e-item.unread { border-left: 3px solid var(--info); background: rgba(255, 255, 255, 0.05); }
         .e-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
         .e-title { font-size: 14px; font-weight: 600; color: var(--text-main); }
         .e-body { font-size: 13px; color: #aaa; line-height: 1.6; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); display: none; }
-        
-        /* Branding & Cores */
+
+        /* Branding Estilos */
         .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .color-circle:hover { transform: scale(1.1); }
         .color-circle.active { border-color: #fff; }
@@ -151,7 +150,7 @@
     <!-- START -->
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
-        <div class="brand-subtitle">Simulador Executivo Corporativo</div>
+        <div class="brand-subtitle">Simulador de Mercado Corporativo</div>
         <button class="btn btn-primary" style="padding: 14px 32px; font-size: 14px;" onclick="changeScreen('screen-setup')">Fundar Empresa</button>
     </div>
 
@@ -161,7 +160,7 @@
             <h2 style="font-size: 22px; margin-bottom: 24px; font-weight: 600; letter-spacing: -0.5px;">Registro Comercial</h2>
             
             <div class="form-group">
-                <label class="form-label">Nome do Titular / Fundador</label>
+                <label class="form-label">Nome do Presidente (Fundador)</label>
                 <input type="text" id="setup-ceo" class="input" placeholder="Ex: Daniel Campos" autocomplete="off">
             </div>
             <div class="form-group">
@@ -183,9 +182,9 @@
                     <label class="form-label">Setor de Atuação</label>
                     <select id="setup-sec" class="select" onchange="updateSubSectors()">
                         <option value="tech">Tecnologia</option>
-                        <option value="fashion">Moda & Vestuário</option>
+                        <option value="fashion">Moda & Têxtil</option>
                         <option value="food">Alimentação</option>
-                        <option value="fin">Finanças</option>
+                        <option value="fin">Finanças (Bancos)</option>
                     </select>
                 </div>
                 <div>
@@ -235,7 +234,7 @@
                         <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Fecho Contábil</div>
                         <div style="font-size: 14px; font-weight: 600;" id="ui-data">Ano 1 / Mês 1</div>
                     </div>
-                    <button class="btn btn-primary" onclick="avancarCiclo()">Avançar Mês ➔</button>
+                    <button class="btn btn-primary" onclick="avancarCiclo()">Avançar Ciclo (Mês) ➔</button>
                 </div>
             </div>
 
@@ -247,26 +246,26 @@
                     
                     <div class="grid-3">
                         <div class="card">
-                            <div class="card-header">Liquidez (Caixa Corporativo)</div>
+                            <div class="card-header">Liquidez (Caixa da Empresa)</div>
                             <div class="card-value c-green" id="ui-caixa-pj">0</div>
-                            <div class="card-sub">OPEX Previsto: <span id="ui-custo-fixo">0</span>/mês</div>
+                            <div class="card-sub">OPEX: <span id="ui-custo-fixo">0</span>/mês</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Armazém (Capacidade)</div>
+                            <div class="card-header">Armazém e Estoque</div>
                             <div class="card-value" id="ui-estoque">0</div>
                             <div class="card-sub" id="ui-lbl-produto">Unidades prontas</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Lote Base de Referência</div>
+                            <div class="card-header">Lote Base Operacional</div>
                             <div class="card-value" id="ui-lote-qtd">1.000</div>
-                            <div class="card-sub">Unidades mínimas por contrato</div>
+                            <div class="card-sub">Capacidade base por ordem</div>
                         </div>
                     </div>
 
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title">1. Contratos de Fornecimento</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Selecione a origem da matéria-prima. Alta qualidade atrai consumidores, mas reduz a margem.</p>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Selecione a origem da matéria-prima. Alta qualidade atrai mais clientes, mas esmaga a margem.</p>
                             <div id="ui-fornecedores"></div>
                         </div>
 
@@ -302,7 +301,7 @@
                                 </div>
                             </div>
                             
-                            <button class="btn btn-primary" style="width: 100%;" onclick="emitirOrdemProducao()">Pagar e Estocar Suprimentos</button>
+                            <button class="btn btn-primary" style="width: 100%;" onclick="emitirOrdemProducao()">Pagar Fatura e Estocar</button>
                         </div>
                     </div>
                 </div>
@@ -326,26 +325,26 @@
                                     <span id="ui-margem-custo" style="font-size: 12px;">$ 0</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
-                                    <span style="font-size: 12px; color: var(--text-muted);">Margem (Lucro Bruto Projetado):</span>
+                                    <span style="font-size: 12px; color: var(--text-muted);">Margem Projetada (Lucro Bruto):</span>
                                     <span id="ui-margem-lucro" style="font-size: 13px; font-weight: 600;" class="c-green">$ 0</span>
                                 </div>
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">Players do Setor e Market Share</div>
+                            <div class="panel-title">Grandes Competidores do Setor</div>
                             <div id="ui-concorrentes"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB: FINANCEIRO -->
+                <!-- TAB: FINANCEIRO PJ -->
                 <div id="tab-fin" class="tab">
                     <h1 class="page-title">Tesouraria Corporativa</h1>
                     <div class="grid-2">
                         <div class="card">
-                            <div class="card-header">Dívida Ativa Bancária</div>
+                            <div class="card-header">Dívida Bancária (Curto Prazo)</div>
                             <div class="card-value c-red" id="ui-divida-pj">0</div>
-                            <div class="card-sub">Custo de capital: 3.5% a.m.</div>
+                            <div class="card-sub">Custo do capital: 3.5% a.m.</div>
                         </div>
                         <div class="panel" style="margin:0;">
                             <div class="panel-title">Linhas de Crédito</div>
@@ -353,14 +352,14 @@
                                 <button class="btn" style="flex:1;" onclick="tomarEmprestimo()">Emitir Dívida</button>
                                 <button class="btn btn-primary" style="flex:1;" onclick="amortizarDivida()">Amortizar</button>
                             </div>
-                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Montante de Amortização">
+                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Montante a Amortizar">
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-title">Extrato de Movimentação Corporativa</div>
+                        <div class="panel-title">Extrato de Conta Corrente (Empresa)</div>
                         <div style="max-height: 350px; overflow-y: auto; margin: -20px; margin-top: 0;">
                             <table style="margin-top: 10px;">
-                                <thead><tr><th>Data</th><th>Descritivo Operacional</th><th style="text-align: right;">Montante</th></tr></thead>
+                                <thead><tr><th>Data</th><th>Descritivo do Movimento</th><th style="text-align: right;">Montante</th></tr></thead>
                                 <tbody id="tb-extrato-pj"></tbody>
                             </table>
                         </div>
@@ -373,7 +372,7 @@
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title">Identidade Visual da Marca</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Ajuste a paleta de cores e a tipografia. Isso reflete a essência do seu negócio no mercado.</p>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Ajuste a paleta de cores e a tipografia. Isto reflete a essência do seu negócio em todo o terminal de operações.</p>
                             
                             <label class="form-label">Cor Oficial (Accent Color)</label>
                             <div style="display: flex; gap: 12px; margin-bottom: 24px;">
@@ -394,8 +393,8 @@
                         </div>
 
                         <div class="panel" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
-                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Estrutura Física (Sede)</h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Melhorar a Sede atrai grandes talentos, reduz o OPEX futuro e impõe respeito no mercado.</p>
+                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Sede Física da <span id="ui-brand-comp">Empresa</span></h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Melhorar a Sede atrai grandes talentos, reduz o OPEX futuro e impõe respeito no mercado B2B.</p>
                             <button class="btn btn-disabled">Transferir Sede ($500k) - Em Breve</button>
                         </div>
                     </div>
@@ -407,7 +406,7 @@
                     <div class="grid-2">
                         <div>
                             <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
-                                <div class="card-header">Conta Bancária Privada</div>
+                                <div class="card-header">Conta Bancária (PF)</div>
                                 <div class="card-value c-green" id="ui-caixa-pf">0</div>
                                 <div class="card-sub">Retirada Fixa (Pró-labore): <span id="ui-salario-pf">0</span>/mês</div>
                             </div>
@@ -489,7 +488,6 @@
 
         let state = null;
 
-        // Invocada diretamente para popular as opções logo que o código carrega
         function updateSubSectors() {
             const sec = document.getElementById('setup-sec').value;
             const modelSelect = document.getElementById('setup-model');
@@ -503,12 +501,15 @@
                 }
             }
         }
-        updateSubSectors();
+        
+        // Garante que as opções carreguem de imediato para não gerar erro
+        window.addEventListener('DOMContentLoaded', () => { updateSubSectors(); });
 
-        function fmt(usdValue) {
+        function fmt(usdValue, overrideCur = null) {
+            const cur = overrideCur || (state ? state.moeda : 'USD');
             if(usdValue === undefined || isNaN(usdValue)) return "0";
-            const converted = usdValue * exchangeRates[state.moeda];
-            return new Intl.NumberFormat(state.moeda === 'BRL' ? 'pt-BR' : state.moeda === 'EUR' ? 'de-DE' : 'en-US', { style: 'currency', currency: state.moeda }).format(converted);
+            const converted = usdValue * exchangeRates[cur];
+            return new Intl.NumberFormat(cur === 'BRL' ? 'pt-BR' : cur === 'EUR' ? 'de-DE' : 'en-US', { style: 'currency', currency: cur }).format(converted);
         }
         function parseToUSD(localValue) { return localValue / exchangeRates[state.moeda]; }
         function toLocal(usdValue) { return usdValue * exchangeRates[state.moeda]; }
@@ -520,13 +521,7 @@
                 fornecedorId: mod.fornecedores[0].id, precoVendaUSD: mod.precoBase,
                 pj: { caixa: mod.capInicial, caixaInicial: mod.capInicial, divida: 0, estoque: 0, extrato: [] },
                 pf: { caixa: 15000, salario: 5000, bens: [], extrato: [] },
-                emails: [
-                    { 
-                        id: 1, remetente: 'Elena (Secretária/CFO)', titulo: `Abertura Concluída: ${comp}`, 
-                        corpo: `Presidente ${ceo}, a estruturação da <strong>${comp}</strong> foi concluída na Junta.<br><br>Operamos no modelo <strong>${mod.name} (${mod.type.toUpperCase()})</strong> com um capital corporativo de <strong>${fmt(mod.capInicial)}</strong>.<br><br>A sua prioridade deve ser comprar suprimentos. Negociar volumes fechados (5x ou 20x) dá-nos margens logísticas melhores. Lembre-se que eu acompanharei as métricas para dedução de impostos anuais (IRPJ) caso a empresa dê lucro. Boa sorte.<br>- Elena`, 
-                        lido: false 
-                    }
-                ]
+                emails: [] // E-mail será injetado após o state estar completamente definido
             };
         }
 
@@ -542,9 +537,15 @@
             const modId = document.getElementById('setup-model').value;
             
             if(!ceo || !comp) return alert("Preencha todos os campos do Estatuto Social.");
-            if(!businessModels[modId]) return alert("Erro: Modelo não selecionado.");
+            if(!businessModels[modId]) return alert("Erro crítico de seleção. Atualize a página e tente novamente.");
             
+            // O GATILHO QUE CONGELAVA O JOGO ESTÁ RESOLVIDO AQUI
             state = gerarEstadoNovo(ceo, comp, cur, modId);
+            const mod = businessModels[modId];
+            
+            // Injeta o e-mail APÓS o 'state' existir globalmente
+            addEmail('Elena (Secretária/CFO)', `Abertura Concluída: ${comp}`, `Presidente ${ceo}, a estruturação da <strong>${comp}</strong> foi concluída.<br><br>Operamos no modelo <strong>${mod.name} (${mod.type.toUpperCase()})</strong> com um capital corporativo de <strong>${fmt(mod.capInicial)}</strong>.<br><br>A sua prioridade deve ser comprar suprimentos. Negociar volumes fechados (5x ou 20x) dá-nos margens logísticas melhores. Lembre-se que eu acompanharei as métricas para dedução de impostos anuais (IRPJ) caso a empresa dê lucro. Boa sorte.<br>- Elena`);
+
             montarJogo();
         }
 
@@ -553,6 +554,7 @@
             const mod = businessModels[state.modelo];
             
             document.getElementById('ui-sb-comp').innerText = state.empresa;
+            document.getElementById('ui-brand-comp').innerText = state.empresa;
             document.getElementById('ui-main-logo').innerText = state.empresa.split(' ')[0].toUpperCase();
             document.getElementById('ui-modelo-info').innerText = `${mod.name} (${mod.type.toUpperCase()}) • Câmbio Base: ${state.moeda}`;
             
@@ -677,6 +679,7 @@
         function atualizarUI() {
             const mod = businessModels[state.modelo];
             document.getElementById('ui-data').innerText = `Ano ${state.ano} / Mês ${state.mes}`;
+            
             document.getElementById('ui-caixa-pj').innerText = fmt(state.pj.caixa);
             document.getElementById('ui-custo-fixo').innerText = fmt(mod.custoFixo);
             document.getElementById('ui-estoque').innerText = state.pj.estoque.toLocaleString();
@@ -700,7 +703,7 @@
         function tomarEmprestimo() {
             const valUSD = 100000;
             state.pj.caixa += valUSD; state.pj.divida += valUSD;
-            addExtrato('pj', 'Levantamento de Capital (Banco Central)', valUSD);
+            addExtrato('pj', 'Levantamento de Capital Bancário', valUSD);
             atualizarUI();
         }
 
