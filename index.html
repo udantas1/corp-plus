@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corp+ | Gestão e Negócios</title>
+    <title>Corp+ | Simulador Executivo</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
         :root {
             --bg-dark: #050505;
-            --panel-bg: rgba(20, 20, 22, 0.7);
+            --panel-bg: #0f0f13;
             --panel-border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-muted: #8a8a93;
             --brand-primary: #4f46e5;
-            --brand-glow: rgba(79, 70, 229, 0.4);
             --money-in: #10b981;
             --money-out: #f43f5e;
-            --glass-blur: blur(12px);
+            --status-gold: #fbbf24;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
@@ -26,64 +25,55 @@
             background-color: var(--bg-dark); 
             color: var(--text-main); 
             height: 100vh; 
-            display: flex; 
+            width: 100vw;
             overflow: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
         }
 
-        /* Sistema de Telas */
-        .screen { display: none; width: 100%; height: 100%; animation: fadeIn 0.4s ease; }
-        .screen.active { display: flex; }
+        /* SISTEMA DE TELAS À PROVA DE FALHAS */
+        .screen { display: none !important; width: 100%; height: 100%; }
+        .screen.active { display: flex !important; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- TELA INICIAL (START) --- */
-        #screen-start { flex-direction: column; justify-content: center; align-items: center; background: var(--bg-dark); }
-        .start-logo { font-size: 72px; font-weight: 700; letter-spacing: -2px; margin-bottom: 10px; }
+        #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle at center, #15151a 0%, var(--bg-dark) 100%); }
+        #screen-game { flex-direction: row; }
+
+        /* Estilos Globais */
+        .btn-primary { background: var(--brand-primary); color: white; border: none; padding: 16px 36px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-primary:hover { background: #4338ca; transform: translateY(-2px); }
+
+        /* --- START & SETUP --- */
+        .start-logo { font-size: 80px; font-weight: 700; letter-spacing: -3px; margin-bottom: 10px; }
         .start-logo span { color: var(--brand-primary); }
-        .start-subtitle { font-size: 16px; color: var(--text-muted); margin-bottom: 50px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-start { background: var(--brand-primary); color: white; border: none; padding: 16px 36px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-start:hover { background: #4338ca; }
-
-        /* --- TELA DE SETUP --- */
-        #screen-setup { justify-content: center; align-items: center; }
+        .start-subtitle { font-size: 18px; color: var(--text-muted); margin-bottom: 50px; text-transform: uppercase; letter-spacing: 2px; }
+        
         .setup-box { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 16px; padding: 40px; width: 100%; max-width: 480px; }
-        .setup-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-        .setup-desc { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; }
         .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; }
-        .form-input, .form-select { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); color: white; padding: 14px; border-radius: 8px; font-size: 15px; }
-        .form-input:focus, .form-select:focus { outline: none; border-color: var(--brand-primary); }
-        .form-select { appearance: none; cursor: pointer; }
-        
-        /* --- WORKSPACE DO JOGO --- */
-        #screen-game { display: none; width: 100%; } 
-        
-        .sidebar { width: 260px; background: var(--panel-bg); border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; padding: 24px 16px; }
-        .logo { font-size: 24px; font-weight: 700; letter-spacing: -1px; margin-bottom: 5px; padding-left: 12px; }
-        .logo span { color: var(--brand-primary); }
-        .company-name-display { padding-left: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 40px; text-transform: uppercase; font-weight: 600; }
+        .form-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; font-weight: 600; }
+        .form-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); color: white; padding: 14px; border-radius: 8px; font-size: 15px; transition: 0.2s; }
+        .form-input:focus { outline: none; border-color: var(--brand-primary); }
 
-        .menu-item { padding: 14px 16px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 12px; transition: 0.2s; border: 1px solid transparent; font-size: 14px; }
+        /* --- SIDEBAR --- */
+        .sidebar { width: 280px; background: var(--panel-bg); border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; padding: 30px 20px; }
+        .company-name-display { padding-left: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 40px; text-transform: uppercase; font-weight: 600; }
+        
+        .menu-item { padding: 14px 16px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-weight: 500; color: var(--text-muted); display: flex; align-items: center; gap: 12px; transition: 0.2s; border: 1px solid transparent; }
         .menu-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
         .menu-item.active { background: rgba(79, 70, 229, 0.1); color: var(--brand-primary); border: 1px solid rgba(79, 70, 229, 0.2); }
-        .menu-item i { font-style: normal; font-size: 16px; }
 
+        /* --- WORKSPACE --- */
         .workspace { flex: 1; display: flex; flex-direction: column; }
-        .top-nav { height: 80px; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); background: rgba(5, 5, 5, 0.8); }
-        .time-display { display: flex; flex-direction: column; }
+        .top-nav { height: 80px; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); background: var(--bg-dark); }
         .time-display .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
         .time-display .value { font-size: 20px; font-weight: 600; }
-
-        .btn-advance { background: var(--text-main); color: var(--bg-dark); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        
+        .btn-advance { background: white; color: black; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn-advance:hover { background: #e4e4e7; }
 
         .content-container { padding: 40px; overflow-y: auto; flex: 1; }
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
+        .tab-content { display: none !important; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block !important; }
 
-        /* Componentes / Cards */
+        /* --- WIDGETS --- */
         .widget-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px; }
         .widget { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 12px; padding: 24px; }
         .w-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
@@ -92,52 +82,50 @@
         
         .text-green { color: var(--money-in); }
         .text-red { color: var(--money-out); }
+        .text-gold { color: var(--status-gold); }
 
         .action-panel { background: rgba(255,255,255,0.02); border: 1px solid var(--panel-border); border-radius: 12px; padding: 24px; margin-top: 20px; }
-        .action-header { font-size: 16px; font-weight: 600; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--panel-border); display: flex; align-items: center; gap: 8px; }
+        .action-header { font-size: 16px; font-weight: 600; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; align-items: center; }
         
         .btn { width: 100%; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
         .btn-buy { background: rgba(79, 70, 229, 0.1); color: #818cf8; border: 1px solid rgba(79, 70, 229, 0.3); }
         .btn-buy:hover { background: rgba(79, 70, 229, 0.2); }
         .btn-action { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid var(--panel-border); }
         .btn-action:hover { background: rgba(255, 255, 255, 0.15); }
+        .btn-disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Extratos */
         .ledger-table { width: 100%; border-collapse: collapse; }
-        .ledger-table th { text-align: left; padding: 10px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--panel-border); }
-        .ledger-table td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
-        .badge { padding: 4px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+        .ledger-table th { text-align: left; padding: 12px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--panel-border); }
+        .ledger-table td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
+        .badge { padding: 4px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
         .badge-in { background: rgba(16, 185, 129, 0.15); color: var(--money-in); }
         .badge-out { background: rgba(244, 63, 94, 0.15); color: var(--money-out); }
-        
-        /* Lista de Bens */
-        .asset-list { margin-top: 15px; }
-        .asset-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border); border-radius: 8px; margin-bottom: 8px; }
-        .asset-item .name { font-size: 14px; font-weight: 500; }
-        .asset-item .val { font-size: 13px; color: var(--text-muted); }
 
-        /* Modal Tutorial */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
-        .modal-overlay.active { display: flex; }
+        /* Notificações do Jogo */
+        .game-log { font-size: 13px; padding: 12px; background: rgba(255,255,255,0.05); border-left: 3px solid var(--brand-primary); margin-bottom: 10px; border-radius: 0 4px 4px 0; }
+        .log-warn { border-left-color: #fbbf24; }
+        .log-err { border-left-color: var(--money-out); }
+
+        /* Modal Overlay */
+        .modal-overlay { display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex !important; }
         .modal-content { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 12px; padding: 32px; max-width: 450px; width: 90%; }
-        .modal-title { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
-        .modal-text { color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- TELA 1: START -->
+    <!-- START SCREEN -->
     <div id="screen-start" class="screen active">
         <div class="start-logo">CORP<span>+</span></div>
-        <div class="start-subtitle">Simulador de Negócios</div>
-        <button class="btn-start" onclick="goToSetup()">Abrir Empresa</button>
+        <div class="start-subtitle">Simulação Executiva de Alta Complexidade</div>
+        <button class="btn-primary" onclick="goToSetup()">Iniciar Nova Corporação</button>
     </div>
 
-    <!-- TELA 2: SETUP -->
+    <!-- SETUP SCREEN -->
     <div id="screen-setup" class="screen">
         <div class="setup-box">
-            <h2 class="setup-title">Registro Comercial</h2>
-            <p class="setup-desc">Insira os dados do titular e a razão social da nova empresa.</p>
+            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 30px;">Contrato Social</h2>
             
             <div class="form-group">
                 <label class="form-label">Titular (Pessoa Física)</label>
@@ -146,97 +134,95 @@
             
             <div class="form-group">
                 <label class="form-label">Razão Social (Pessoa Jurídica)</label>
-                <input type="text" id="input-company-name" class="form-input" placeholder="Ex: Campos Varejo LTDA" autocomplete="off">
+                <input type="text" id="input-company-name" class="form-input" placeholder="Ex: Campos Varejo" autocomplete="off">
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Setor Operacional</label>
-                <select class="form-select" disabled>
-                    <option>Comércio e Varejo</option>
-                </select>
-            </div>
-
-            <button class="btn-start" style="width: 100%;" onclick="startGame()">Registrar Empresa</button>
+            <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="startGame()">Fundar Empresa</button>
         </div>
     </div>
 
-    <!-- TELA 3: WORKSPACE -->
+    <!-- GAME WORKSPACE -->
     <div id="screen-game" class="screen">
         
+        <!-- Sidebar -->
         <div class="sidebar">
-            <div class="logo">CORP<span>+</span></div>
-            <div class="company-name-display" id="display-sidebar-company">Empresa LTDA</div>
+            <div class="start-logo" style="font-size: 28px; margin-bottom: 5px;">CORP<span>+</span></div>
+            <div class="company-name-display" id="display-sidebar-company">EMPRESA</div>
             
-            <div class="menu-item active" onclick="switchTab('dashboard', this)"><i>🏢</i> Operações</div>
-            <div class="menu-item" onclick="switchTab('financeiro', this)"><i>📊</i> Financeiro PJ</div>
-            <div class="menu-item" onclick="switchTab('ceo', this)"><i>👑</i> Patrimônio PF</div>
+            <div class="menu-item active" onclick="switchTab('dashboard', this)"><i>📊</i> Operações e Mercado</div>
+            <div class="menu-item" onclick="switchTab('financeiro', this)"><i>🏦</i> Financeiro (PJ)</div>
+            <div class="menu-item" onclick="switchTab('ceo', this)"><i>👑</i> Vida de CEO (PF)</div>
         </div>
 
+        <!-- Content -->
         <div class="workspace">
             <div class="top-nav">
                 <div class="time-display">
-                    <span class="label">Ciclo Atual</span>
+                    <span class="label">Fechamento Contábil</span>
                     <span class="value" id="ui-data">Ano 1 • Mês 1</span>
                 </div>
-                <button class="btn-advance" onclick="avancarMes()">Avançar Mês ➔</button>
+                <button class="btn-advance" onclick="avancarMes()">Avançar Ciclo (Mês) ➔</button>
             </div>
 
             <div class="content-container">
                 
-                <!-- ABA: OPERAÇÕES -->
+                <!-- ABA: OPERAÇÕES E MERCADO -->
                 <div id="tab-dashboard" class="tab-content active">
-                    <h2 style="margin-bottom: 20px; font-weight: 500; font-size: 20px;">Resumo Operacional</h2>
+                    <h2 style="margin-bottom: 20px; font-size: 20px;">Indicadores Operacionais</h2>
                     
-                    <div class="widget-grid">
+                    <div class="widget-grid" style="grid-template-columns: repeat(3, 1fr);">
                         <div class="widget">
-                            <div class="w-title">Caixa Empresa (PJ)</div>
+                            <div class="w-title">Caixa Líquido (PJ)</div>
                             <div class="w-value text-green" id="ui-emp-caixa">$ 50.000</div>
-                            <div class="w-sub">Custo Fixo: $ 8.000 / mês</div>
+                            <div class="w-sub">Custo Fixo Mensal: $ 8.000</div>
                         </div>
                         <div class="widget">
-                            <div class="w-title">Estoque de Produtos</div>
+                            <div class="w-title">Estoque</div>
                             <div class="w-value" id="ui-emp-estoque">0</div>
                             <div class="w-sub">Unidades em armazém</div>
+                        </div>
+                        <div class="widget">
+                            <div class="w-title">Tração de Mercado</div>
+                            <div class="w-value" id="ui-emp-demanda" style="color: #60a5fa;">Normal</div>
+                            <div class="w-sub">Humor dos consumidores</div>
                         </div>
                     </div>
 
                     <div class="widget-grid" style="grid-template-columns: 1fr 1fr;">
-                        <div class="action-panel">
-                            <div class="action-header"><i>🛒</i> Suprimentos</div>
-                            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Compra de lotes fechados para revenda.</p>
-                            <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; border: 1px solid var(--panel-border);">
-                                <div><span style="display: block; font-size: 11px; color: var(--text-muted);">Lote Padrão</span><strong>100 un.</strong></div>
-                                <div style="text-align: right;"><span style="display: block; font-size: 11px; color: var(--text-muted);">Custo</span><strong style="color: var(--money-out);">-$ 5.000</strong></div>
+                        
+                        <div class="action-panel" style="margin-top: 0;">
+                            <div class="action-header">Aquisição de Suprimentos</div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; border: 1px solid var(--panel-border);">
+                                <div><span style="display: block; font-size: 11px; color: var(--text-muted);">Volume</span><strong>100 Unidades</strong></div>
+                                <div style="text-align: right;"><span style="display: block; font-size: 11px; color: var(--text-muted);">Custo Base</span><strong class="text-red">-$ 5.000</strong></div>
                             </div>
-                            <button class="btn btn-buy" onclick="comprarEstoque()">Autorizar Compra</button>
+                            <button class="btn btn-buy" onclick="comprarEstoque()">Faturar Lote</button>
                         </div>
 
-                        <div class="action-panel">
-                            <div class="action-header"><i>📈</i> Varejo e Preço</div>
-                            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Preços altos reduzem o volume de vendas.</p>
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <label class="form-label">Preço Unitário ($)</label>
+                        <div class="action-panel" style="margin-top: 0;">
+                            <div class="action-header">Estratégia Comercial</div>
+                            <div class="form-group">
+                                <label class="form-label">Preço Unitário de Venda ($)</label>
                                 <input type="number" id="preco-venda" class="form-input" value="120" min="1">
                             </div>
-                            <p style="font-size: 12px; color: var(--text-muted);">Custo por unidade: $ 50. Vendas calculadas ao fechar o mês.</p>
+                            <button class="btn btn-action" id="btn-marketing" onclick="investirMarketing()">Campanha de Marketing (-$ 2.000)</button>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px;">O Marketing dobra a demanda do próximo ciclo.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- ABA: FINANCEIRO PJ -->
                 <div id="tab-financeiro" class="tab-content">
-                    <h2 style="margin-bottom: 20px; font-weight: 500; font-size: 20px;">Finanças e Crédito</h2>
-                    
-                    <div class="widget-grid" style="grid-template-columns: 1.5fr 1fr;">
+                    <div class="widget-grid" style="grid-template-columns: 2fr 1fr;">
                         
                         <div class="widget" style="padding: 0;">
                             <div style="padding: 20px; border-bottom: 1px solid var(--panel-border);">
-                                <h3 style="font-size: 15px; font-weight: 600;">Fluxo de Caixa (PJ)</h3>
+                                <h3 style="font-size: 16px;">Fluxo de Caixa (Empresa)</h3>
                             </div>
-                            <div style="max-height: 400px; overflow-y: auto;">
+                            <div style="max-height: 500px; overflow-y: auto;">
                                 <table class="ledger-table">
-                                    <thead><tr><th>Data</th><th>Movimentação</th><th>Tipo</th><th style="text-align: right;">Valor</th></tr></thead>
-                                    <tbody id="tb-extrato-empresa"><tr><td colspan="4" style="text-align: center;">Sem dados.</td></tr></tbody>
+                                    <thead><tr><th>Data</th><th>Lançamento</th><th>Fluxo</th><th style="text-align: right;">Valor</th></tr></thead>
+                                    <tbody id="tb-extrato-empresa"><tr><td colspan="4" style="text-align: center;">Sem registros.</td></tr></tbody>
                                 </table>
                             </div>
                         </div>
@@ -245,19 +231,19 @@
                             <div class="widget" style="margin-bottom: 20px;">
                                 <div class="w-title">Dívida Bancária</div>
                                 <div class="w-value text-red" id="ui-emp-divida">$ 0</div>
-                                <div class="w-sub">Taxa: 3.5% a.m.</div>
+                                <div class="w-sub">Juros Passivos: 3.5% a.m.</div>
                             </div>
                             
                             <div class="action-panel" style="margin-top: 0; margin-bottom: 20px;">
-                                <div class="action-header" style="font-size: 14px;">Empréstimo Rápido</div>
-                                <button class="btn btn-action" style="color: var(--money-out);" onclick="pegarEmprestimo()">Captar $ 20.000</button>
+                                <div class="action-header">Linha de Crédito <span id="ui-credito-status" style="font-size: 12px; font-weight: 500;" class="text-green">Disponível</span></div>
+                                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Se a sua dívida ultrapassar o triplo do seu caixa, o crédito é bloqueado.</p>
+                                <button class="btn btn-action text-red" id="btn-emprestimo" onclick="pegarEmprestimo()">Emitir Nota Promissória (+$ 20.000)</button>
                             </div>
 
                             <div class="action-panel" style="margin-top: 0;">
-                                <div class="action-header" style="font-size: 14px;">Amortização de Dívida</div>
-                                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Use o caixa da empresa para reduzir o passivo.</p>
+                                <div class="action-header">Amortização</div>
                                 <div class="form-group" style="margin-bottom: 10px;">
-                                    <input type="number" id="valor-amortizar" class="form-input" placeholder="Valor ($)" min="1">
+                                    <input type="number" id="valor-amortizar" class="form-input" placeholder="Valor para abater ($)" min="1">
                                 </div>
                                 <button class="btn btn-buy" onclick="amortizarDivida()">Pagar Dívida</button>
                             </div>
@@ -267,65 +253,49 @@
 
                 <!-- ABA: PATRIMÔNIO PF -->
                 <div id="tab-ceo" class="tab-content">
-                    <h2 style="margin-bottom: 20px; font-weight: 500; font-size: 20px;">Conta PF: <span id="display-ceo-name" style="font-weight: 600;">Titular</span></h2>
-                    
                     <div class="widget-grid" style="grid-template-columns: 1fr 1fr;">
                         
                         <div>
-                            <div class="widget" style="margin-bottom: 20px;">
-                                <div class="w-title">Saldo Disponível (PF)</div>
+                            <div class="widget" style="margin-bottom: 20px; background: linear-gradient(135deg, rgba(79,70,229,0.1) 0%, rgba(20,20,22,1) 100%);">
+                                <div class="w-title">Saldo Disponível (Pessoa Física)</div>
                                 <div class="w-value text-green" id="ui-ceo-caixa">$ 10.000</div>
-                                <div class="w-sub">Pró-labore mensal atual: $ 5.000</div>
+                                <div class="w-sub">Pró-labore automático: $ 5.000 / mês</div>
+                                
+                                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--panel-border);">
+                                    <div class="w-title">Nível de Influência do CEO</div>
+                                    <div class="w-value text-gold" id="ui-ceo-status" style="font-size: 24px;">0 pts</div>
+                                </div>
                             </div>
                             
-                            <!-- Mercado de Bens -->
                             <div class="action-panel" style="margin-top: 0;">
-                                <div class="action-header" style="font-size: 15px;"><i>💎</i> Aquisição de Bens</div>
-                                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Construa o seu patrimônio com o seu dinheiro pessoal.</p>
+                                <div class="action-header">Bens de Luxo e Status</div>
+                                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Adquira bens com o seu dinheiro pessoal para aumentar a sua influência no mercado.</p>
                                 
-                                <div class="asset-list">
-                                    <div class="asset-item">
-                                        <div>
-                                            <div class="name">Relógio Suíço</div>
-                                            <div class="val">$ 15.000</div>
-                                        </div>
-                                        <button class="btn btn-action" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="comprarBem('Relógio Suíço', 15000)">Comprar</button>
+                                <div id="mercado-bens">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border); border-radius: 8px; margin-bottom: 10px;">
+                                        <div><div style="font-size: 14px; font-weight: 500;">Relógio Suíço</div><div style="font-size: 12px; color: var(--text-muted);">+10 Status • $ 15.000</div></div>
+                                        <button class="btn btn-action" style="width: auto; padding: 6px 12px;" onclick="comprarBem('Relógio Suíço', 15000, 10)">Comprar</button>
                                     </div>
-                                    <div class="asset-item">
-                                        <div>
-                                            <div class="name">Sedã de Luxo</div>
-                                            <div class="val">$ 120.000</div>
-                                        </div>
-                                        <button class="btn btn-action" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="comprarBem('Sedã de Luxo', 120000)">Comprar</button>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border); border-radius: 8px; margin-bottom: 10px;">
+                                        <div><div style="font-size: 14px; font-weight: 500;">Sedã Executivo</div><div style="font-size: 12px; color: var(--text-muted);">+50 Status • $ 120.000</div></div>
+                                        <button class="btn btn-action" style="width: auto; padding: 6px 12px;" onclick="comprarBem('Sedã Executivo', 120000, 50)">Comprar</button>
                                     </div>
-                                    <div class="asset-item">
-                                        <div>
-                                            <div class="name">Cobertura Duplex</div>
-                                            <div class="val">$ 850.000</div>
-                                        </div>
-                                        <button class="btn btn-action" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="comprarBem('Cobertura Duplex', 850000)">Comprar</button>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border); border-radius: 8px; margin-bottom: 10px;">
+                                        <div><div style="font-size: 14px; font-weight: 500;">Cobertura Duplex</div><div style="font-size: 12px; color: var(--text-muted);">+200 Status • $ 850.000</div></div>
+                                        <button class="btn btn-action" style="width: auto; padding: 6px 12px;" onclick="comprarBem('Cobertura Duplex', 850000, 200)">Comprar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <div class="widget" style="margin-bottom: 20px; padding: 0;">
-                                <div style="padding: 15px 20px; border-bottom: 1px solid var(--panel-border);">
-                                    <h3 style="font-size: 14px; font-weight: 600;">Ativos Registrados</h3>
-                                </div>
-                                <div id="lista-meus-bens" style="padding: 15px 20px;">
-                                    <p style="font-size: 13px; color: var(--text-muted);">Nenhum bem adquirido ainda.</p>
-                                </div>
-                            </div>
-
                             <div class="widget" style="padding: 0;">
-                                <div style="padding: 15px 20px; border-bottom: 1px solid var(--panel-border);">
-                                    <h3 style="font-size: 14px; font-weight: 600;">Extrato da Conta (PF)</h3>
+                                <div style="padding: 20px; border-bottom: 1px solid var(--panel-border);">
+                                    <h3 style="font-size: 16px;">Extrato Pessoal (PF)</h3>
                                 </div>
-                                <div style="max-height: 250px; overflow-y: auto;">
+                                <div style="max-height: 400px; overflow-y: auto;">
                                     <table class="ledger-table">
-                                        <tbody id="tb-extrato-ceo"><tr><td style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 15px;">Nenhum histórico.</td></tr></tbody>
+                                        <tbody id="tb-extrato-ceo"><tr><td style="text-align: center; color: var(--text-muted); padding: 15px;">Sem registros.</td></tr></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -338,23 +308,22 @@
         </div>
     </div>
 
-    <!-- MODAL INICIAL -->
+    <!-- MODAL INICIAL (TUTORIAL) -->
     <div class="modal-overlay" id="tutorial-modal">
         <div class="modal-content">
-            <h2 class="modal-title">Empresa Registrada</h2>
-            <p class="modal-text">A <strong><span id="tut-company-name">Empresa</span></strong> está legalmente ativa.</p>
-            <p class="modal-text"><strong>Diretriz Financeira:</strong> Os fundos da empresa (PJ) e os seus fundos pessoais (PF) são contas isoladas. O crescimento do negócio depende do caixa da empresa; o seu enriquecimento depende do pró-labore transferido mensalmente.</p>
-            <button class="btn-start" style="width: 100%; border-radius: 8px; font-size: 14px; padding: 12px;" onclick="closeTutorial()">Acessar Painel</button>
+            <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 15px;">Operação Autorizada</h2>
+            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px;">O registro da <strong style="color: white;" id="tut-company-name">Empresa</strong> foi aprovado.<br><br>Lembrete Executivo: Mantenha as contas da empresa (PJ) e do CEO (PF) estritamente separadas. A empresa precisa de caixa para girar o estoque. O seu enriquecimento virá do pró-labore e da aquisição de bens para aumentar o seu Status.</p>
+            <button class="btn-primary" style="width: 100%;" onclick="closeTutorial()">Acessar Painel</button>
         </div>
     </div>
 
     <script>
-        // ESTADO GLOBAL DO JOGO
+        // LÓGICA E ESTADO
         let jogo = {
             ceoNome: "", empresaNome: "",
             mes: 1, ano: 1,
-            empresa: { caixa: 50000, divida: 0, estoque: 0, custoFixo: 8000, extrato: [] },
-            ceo: { caixa: 10000, salario: 5000, bens: [], extrato: [] }
+            empresa: { caixa: 50000, divida: 0, estoque: 0, custoFixo: 8000, marketingAtivo: false, extrato: [] },
+            ceo: { caixa: 10000, salario: 5000, statusPts: 0, extrato: [] }
         };
 
         // UI Base
@@ -365,31 +334,31 @@
         function goToSetup() { changeScreen('screen-setup'); }
 
         function startGame() {
-            const inputCeo = document.getElementById('input-ceo-name').value.trim();
-            const inputComp = document.getElementById('input-company-name').value.trim();
-            if(!inputCeo || !inputComp) { alert("Preencha todos os campos."); return; }
+            const ceo = document.getElementById('input-ceo-name').value.trim();
+            const comp = document.getElementById('input-company-name').value.trim();
+            if(!ceo || !comp) { alert("Preencha todos os campos."); return; }
 
-            jogo.ceoNome = inputCeo; jogo.empresaNome = inputComp;
+            jogo.ceoNome = ceo; jogo.empresaNome = comp;
             document.getElementById('display-sidebar-company').innerText = jogo.empresaNome;
-            document.getElementById('display-ceo-name').innerText = jogo.ceoNome;
             document.getElementById('tut-company-name').innerText = jogo.empresaNome;
 
             changeScreen('screen-game');
             atualizarUI();
-            setTimeout(() => { document.getElementById('tutorial-modal').classList.add('active'); }, 100);
+            
+            setTimeout(() => { document.getElementById('tutorial-modal').classList.add('active'); }, 200);
         }
 
         function closeTutorial() {
             document.getElementById('tutorial-modal').classList.remove('active');
-            registrarTransacao('empresa', 'Aporte de Capital Inicial', 50000);
+            registrarTransacao('empresa', 'Capital Inicial Integralizado', 50000);
             registrarTransacao('ceo', 'Saldo de origem', 10000);
         }
 
+        // Sistema Financeiro
         function fmtMoney(valor) { return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'USD' }).replace('US$', '$'); }
-        function fmtDate() { return `${jogo.mes}/${jogo.ano}`; }
-
+        
         function registrarTransacao(entidade, descricao, valor) {
-            const t = { data: fmtDate(), descricao: descricao, valor: valor, tipo: valor >= 0 ? 'entrada' : 'saida' };
+            const t = { data: `${jogo.mes}/${jogo.ano}`, descricao: descricao, valor: valor, tipo: valor >= 0 ? 'entrada' : 'saida' };
             if (entidade === 'empresa') jogo.empresa.extrato.unshift(t);
             else jogo.ceo.extrato.unshift(t);
             renderizarExtratos();
@@ -407,15 +376,38 @@
             if (jogo.ceo.extrato.length > 0) document.getElementById('tb-extrato-ceo').innerHTML = buildHtml(jogo.ceo.extrato);
         }
 
+        function checarCredito() {
+            // Se a dívida for 3x maior que o caixa e superior a 10k, bloqueia empréstimo
+            const bloqueado = (jogo.empresa.divida > 10000 && jogo.empresa.divida > (jogo.empresa.caixa * 3));
+            const btn = document.getElementById('btn-emprestimo');
+            const status = document.getElementById('ui-credito-status');
+            
+            if (bloqueado) {
+                btn.classList.add('btn-disabled'); btn.disabled = true;
+                status.innerText = "Bloqueado (Alto Risco)"; status.className = "text-red";
+            } else {
+                btn.classList.remove('btn-disabled'); btn.disabled = false;
+                status.innerText = "Disponível"; status.className = "text-green";
+            }
+        }
+
         function atualizarUI() {
             document.getElementById('ui-data').innerText = `Ano ${jogo.ano} • Mês ${jogo.mes}`;
             document.getElementById('ui-emp-caixa').innerText = fmtMoney(jogo.empresa.caixa).split(',')[0];
             document.getElementById('ui-emp-estoque').innerText = jogo.empresa.estoque;
             document.getElementById('ui-emp-divida').innerText = fmtMoney(jogo.empresa.divida).split(',')[0];
             document.getElementById('ui-ceo-caixa').innerText = fmtMoney(jogo.ceo.caixa).split(',')[0];
+            document.getElementById('ui-ceo-status').innerText = `${jogo.ceo.statusPts} pts`;
+            
+            // Demanda visual
+            const demaUI = document.getElementById('ui-emp-demanda');
+            if(jogo.empresa.marketingAtivo) { demaUI.innerText = "Em Alta"; demaUI.style.color = "var(--money-in)"; }
+            else { demaUI.innerText = "Normal"; demaUI.style.color = "#60a5fa"; }
+
+            checarCredito();
         }
 
-        // --- MECÂNICAS DA EMPRESA ---
+        // Ações PJ
         function comprarEstoque() {
             if (jogo.empresa.caixa >= 5000) {
                 jogo.empresa.caixa -= 5000; jogo.empresa.estoque += 100;
@@ -424,58 +416,53 @@
             } else { alert("Caixa PJ insuficiente."); }
         }
 
+        function investirMarketing() {
+            if (jogo.empresa.marketingAtivo) { alert("Campanha já está ativa para este mês."); return; }
+            if (jogo.empresa.caixa >= 2000) {
+                jogo.empresa.caixa -= 2000; jogo.empresa.marketingAtivo = true;
+                registrarTransacao('empresa', 'Agência de Marketing', -2000);
+                atualizarUI();
+            } else { alert("Caixa PJ insuficiente para Marketing."); }
+        }
+
         function pegarEmprestimo() {
             jogo.empresa.caixa += 20000; jogo.empresa.divida += 20000;
-            registrarTransacao('empresa', 'Liberação de Crédito Bancário', 20000);
+            registrarTransacao('empresa', 'Crédito Bancário', 20000);
             atualizarUI();
         }
 
         function amortizarDivida() {
-            const valorInput = document.getElementById('valor-amortizar').value;
-            const valor = parseFloat(valorInput);
+            const v = parseFloat(document.getElementById('valor-amortizar').value);
+            if (isNaN(v) || v <= 0) return;
+            if (jogo.empresa.divida <= 0) return alert("Sem dívidas ativas.");
+            if (v > jogo.empresa.caixa) return alert("Caixa PJ insuficiente.");
 
-            if (isNaN(valor) || valor <= 0) { alert("Insira um valor válido para amortizar."); return; }
-            if (jogo.empresa.divida <= 0) { alert("A empresa não possui dívidas."); return; }
-            if (valor > jogo.empresa.caixa) { alert("Caixa PJ insuficiente para este pagamento."); return; }
-
-            const abatimento = Math.min(valor, jogo.empresa.divida);
-            jogo.empresa.caixa -= abatimento;
-            jogo.empresa.divida -= abatimento;
+            const abatimento = Math.min(v, jogo.empresa.divida);
+            jogo.empresa.caixa -= abatimento; jogo.empresa.divida -= abatimento;
             registrarTransacao('empresa', 'Amortização de Dívida', -abatimento);
             document.getElementById('valor-amortizar').value = '';
             atualizarUI();
         }
 
-        // --- MECÂNICAS DO CEO (PF) ---
-        function comprarBem(nome, preco) {
+        // Ações PF
+        function comprarBem(nome, preco, pts) {
             if (jogo.ceo.caixa >= preco) {
                 jogo.ceo.caixa -= preco;
-                jogo.ceo.bens.push({ nome: nome, valor: preco });
-                registrarTransacao('ceo', `Aquisição de Ativo: ${nome}`, -preco);
-                renderizarBens();
+                jogo.ceo.statusPts += pts;
+                registrarTransacao('ceo', `Aquisição de Bem: ${nome}`, -preco);
                 atualizarUI();
+                alert(`Parabéns! Adquiriu um(a) ${nome}. +${pts} Status.`);
             } else { alert("Saldo PF insuficiente."); }
         }
 
-        function renderizarBens() {
-            const lista = document.getElementById('lista-meus-bens');
-            if (jogo.ceo.bens.length === 0) {
-                lista.innerHTML = '<p style="font-size: 13px; color: var(--text-muted);">Nenhum bem adquirido.</p>';
-            } else {
-                lista.innerHTML = jogo.ceo.bens.map(bem => `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
-                        <span style="color: var(--text-main); font-weight: 500;">${bem.nome}</span>
-                        <span style="color: var(--money-green);">${fmtMoney(bem.valor)}</span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        // --- PASSAGEM DE TEMPO ---
+        // Motor do Jogo
         function avancarMes() {
             const preco = parseFloat(document.getElementById('preco-venda').value);
-            // Variação de Mercado: Demanda sobe ou desce aleatoriamente até 20%
-            const fatorMercado = 0.8 + (Math.random() * 0.4); 
+            
+            // Fator de mercado base + Marketing
+            let fatorMercado = 0.8 + (Math.random() * 0.4); 
+            if (jogo.empresa.marketingAtivo) fatorMercado *= 2.0; // Marketing dobra a procura
+
             let demandaMax = Math.floor((20000 / preco) * fatorMercado); 
             let vendas = Math.min(demandaMax, jogo.empresa.estoque);
             
@@ -486,12 +473,12 @@
             }
 
             jogo.empresa.caixa -= jogo.empresa.custoFixo;
-            registrarTransacao('empresa', 'Despesas Operacionais Fixas', -jogo.empresa.custoFixo);
+            registrarTransacao('empresa', 'Custo Fixo Operacional', -jogo.empresa.custoFixo);
 
             if (jogo.empresa.divida > 0) {
                 let juros = jogo.empresa.divida * 0.035;
                 jogo.empresa.divida += juros;
-                registrarTransacao('empresa', 'Encargos Financeiros (Dívida)', -juros);
+                registrarTransacao('empresa', 'Juros Bancários (3.5%)', -juros);
             }
 
             if (jogo.empresa.caixa >= jogo.ceo.salario) {
@@ -500,14 +487,18 @@
                 registrarTransacao('empresa', 'Pagamento Pró-labore', -jogo.ceo.salario);
                 registrarTransacao('ceo', 'Recebimento Pró-labore', jogo.ceo.salario);
             } else {
-                alert("Caixa PJ insuficiente para pagar o titular este mês.");
+                alert("Aviso: A empresa faliu tecnicamente no fechamento (Sem caixa para o CEO).");
             }
 
+            // Reset Marketing
+            jogo.empresa.marketingAtivo = false;
+            
             jogo.mes++;
             if (jogo.mes > 12) { jogo.mes = 1; jogo.ano++; }
             atualizarUI();
         }
 
+        // Navegação
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
