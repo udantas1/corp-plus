@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corp+ | CEO Dashboard</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 250px; background-color: var(--card-dark); padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #334155; }
+        .logo { font-size: 24px; font-weight: bold; color: var(--accent-blue); margin-bottom: 40px; text-align: center; letter-spacing: 2px; }
+        .menu-item { padding: 12px; margin-bottom: 8px; border-radius: 6px; cursor: pointer; transition: 0.2s; color: var(--text-muted); }
+        .menu-item:hover, .menu-item.active { background-color: #334155; color: var(--text-main); }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background-color: var(--card-dark); padding: 20px; border-radius: 10px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card h3 { margin-top: 0; color: var(--text-muted); font-size: 14px; text-transform: uppercase; }
+        .value { font-size: 28px; font-weight: bold; margin: 10px 0; }
+        .text-green { color: var(--accent-green); }
+        .text-red { color: var(--accent-red); }
+        .text-blue { color: var(--accent-blue); }
+        .btn { background-color: var(--accent-blue); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; margin-top: 10px; }
+        .btn:hover { filter: brightness(1.2); }
+        .btn-green { background-color: var(--accent-green); }
+        .btn-red { background-color: var(--accent-red); }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .log-box { background-color: #0b1120; padding: 15px; border-radius: 6px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 13px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">CORP+</div>
+        <div class="menu-item active">📊 Dashboard PJ</div>
+        <div class="menu-item">👤 Minha Vida (PF)</div>
+        <div class="menu-item">🏦 Banco & Crédito</div>
+        <div class="menu-item">📦 Fornecedores</div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h2>Painel Executivo</h2>
+                <p style="color: var(--text-muted); margin: 0;">Bem-vindo, CEO.</p>
+            </div>
+            <div style="text-align: right;">
+                <h2 id="display-data" style="margin: 0;">Mês 1 | 2027</h2>
+                <button class="btn btn-green" onclick="avancarMes()" style="width: auto; padding: 10px 30px; font-size: 16px;">▶ AVANÇAR MÊS</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>🏢 Caixa da Empresa (PJ)</h3>
+                <div class="value text-blue" id="pj-caixa">R$ 50.000,00</div>
+                <p style="font-size: 12px; color: var(--text-muted);">Custo Fixo Mensal: R$ 8.000,00</p>
+            </div>
+            <div class="card">
+                <h3>💳 Seu Dinheiro (PF)</h3>
+                <div class="value text-green" id="pf-caixa">R$ 10.000,00</div>
+                <p style="font-size: 12px; color: var(--text-muted);">Salário CEO: R$ 5.000,00/mês</p>
+            </div>
+            <div class="card">
+                <h3>🏦 Dívida Bancária (PJ)</h3>
+                <div class="value text-red" id="pj-divida">R$ 0,00</div>
+                <p style="font-size: 12px; color: var(--text-muted);">Juros: 3% ao mês</p>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Ações Operacionais</h3>
+                <p>Estoque atual: <strong id="estoque-qtd">0</strong> unidades</p>
+                <div class="action-grid">
+                    <button class="btn" onclick="comprarEstoque()">Comprar 100 un. (R$ 5.000)</button>
+                    <button class="btn btn-red" onclick="pegarEmprestimo()">Pegar Empréstimo (R$ 20.000)</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <label style="font-size: 14px; color: var(--text-muted);">Preço de Venda ao Consumidor (R$):</label>
+                    <input type="number" id="preco-venda" value="120" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #334155; background: #0b1120; color: white;">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Notícias do Mercado (Logs)</h3>
+                <div class="log-box" id="log-box">
+                    [Sistema] Empresa fundada. Bem-vindo ao mercado.<br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let estado = {
+            mes: 1,
+            ano: 2027,
+            pj: { caixa: 50000, divida: 0, estoque: 0, custoFixo: 8000 },
+            pf: { caixa: 10000, salario: 5000 }
+        };
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function addLog(mensagem) {
+            const logBox = document.getElementById('log-box');
+            logBox.innerHTML += `[Mês ${estado.mes}/${estado.ano}] ${mensagem}<br>`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function atualizarUI() {
+            document.getElementById('display-data').innerText = `Mês ${estado.mes} | ${estado.ano}`;
+            document.getElementById('pj-caixa').innerText = formatarMoeda(estado.pj.caixa);
+            document.getElementById('pf-caixa').innerText = formatarMoeda(estado.pf.caixa);
+            document.getElementById('pj-divida').innerText = formatarMoeda(estado.pj.divida);
+            document.getElementById('estoque-qtd').innerText = estado.pj.estoque;
+        }
+
+        function comprarEstoque() {
+            const custo = 5000;
+            if (estado.pj.caixa >= custo) {
+                estado.pj.caixa -= custo;
+                estado.pj.estoque += 100;
+                addLog("Compra de 100 unidades de estoque realizada com sucesso.");
+                atualizarUI();
+            } else {
+                addLog("⚠️ ERRO PJ: Saldo insuficiente para comprar estoque.");
+            }
+        }
+
+        function pegarEmprestimo() {
+            estado.pj.caixa += 20000;
+            estado.pj.divida += 20000;
+            addLog("🏦 Empréstimo PJ de R$ 20.000 aprovado no Banco do Jogo.");
+            atualizarUI();
+        }
+
+        function avancarMes() {
+            // 1. Passagem do tempo
+            estado.mes++;
+            if (estado.mes > 12) {
+                estado.mes = 1;
+                estado.ano++;
+            }
+
+            let logMensagens = [];
+
+            // 2. Pagamento de Salário do CEO (Transfere da PJ para PF)
+            if (estado.pj.caixa >= estado.pf.salario) {
+                estado.pj.caixa -= estado.pf.salario;
+                estado.pf.caixa += estado.pf.salario;
+            } else {
+                logMensagens.push("⚠️ A empresa não tem caixa para pagar seu salário este mês!");
+            }
+
+            // 3. Pagamento de Custos Fixos (Aluguel, luz, etc)
+            estado.pj.caixa -= estado.pj.custoFixo;
+
+            // 4. Juros da Dívida (3% a.m.)
+            if (estado.pj.divida > 0) {
+                let juros = estado.pj.divida * 0.03;
+                estado.pj.divida += juros;
+                logMensagens.push(`Juros do empréstimo aplicados: +${formatarMoeda(juros)} na dívida.`);
+            }
+
+            // 5. Simulação de Vendas (Inteligência do Mercado)
+            const preco = parseFloat(document.getElementById('preco-venda').value);
+            let demandaMax = Math.floor(20000 / preco); // Quanto mais caro, menos pessoas querem
+            let vendasRestantes = Math.min(demandaMax, estado.pj.estoque);
+            
+            if (vendasRestantes > 0) {
+                let receita = vendasRestantes * preco;
+                estado.pj.caixa += receita;
+                estado.pj.estoque -= vendasRestantes;
+                logMensagens.push(`Você vendeu ${vendasRestantes} unidades e faturou ${formatarMoeda(receita)}.`);
+            } else if (estado.pj.estoque === 0) {
+                logMensagens.push("⚠️ Vendas zeradas: Você está sem estoque!");
+            } else {
+                logMensagens.push("⚠️ Seu preço está muito alto, ninguém comprou!");
+            }
+
+            // Falência
+            if (estado.pj.caixa < 0) {
+                logMensagens.push("🚨 ALERTA VERMELHO: O caixa da empresa está negativo!");
+            }
+
+            // Mostra os logs do mês
+            logMensagens.forEach(msg => addLog(msg));
+            addLog("--- Fim do Mês ---");
+
+            atualizarUI();
+        }
+    </script>
+</body>
+</html>
