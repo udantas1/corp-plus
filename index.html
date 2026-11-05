@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,7 +46,7 @@
         /* Layout */
         #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; }
         .brand-title { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; }
-        .brand-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+        .brand-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 0.5px; }
         .setup-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; width: 100%; max-width: 440px; }
 
         /* Workspace */
@@ -123,16 +123,18 @@
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
         <div class="brand-subtitle">Business OS</div>
-        <div style="display: flex; gap: 16px;">
+        <div style="display: flex; gap: 16px; margin-bottom: 24px;">
             <button class="btn btn-primary" onclick="changeScreen('screen-setup')">Nova Holding</button>
             <button class="btn" id="btn-load" style="display: none;" onclick="carregarJogo()">Continuar</button>
         </div>
+        <!-- Botão de emergência para limpar base de dados antiga -->
+        <button class="btn btn-danger" style="font-size: 11px; border:none; background:transparent; opacity:0.4;" onclick="limparSistema()">[ Limpar Base de Dados ]</button>
     </div>
 
     <!-- TELA: SETUP -->
     <div id="screen-setup" class="screen">
         <div class="setup-box">
-            <h2 style="font-size: 20px; margin-bottom: 24px;">Registro de Operações</h2>
+            <h2 style="font-size: 20px; margin-bottom: 24px;">Registo de Operações</h2>
             
             <div class="form-group">
                 <label class="form-label">Nome do Titular (CEO)</label>
@@ -191,7 +193,7 @@
                 <span class="badge-count" id="ui-email-badge" style="display:none;">0</span>
             </div>
 
-            <div class="menu-section">Patrimônio Privado</div>
+            <div class="menu-section">Património Privado</div>
             <div class="menu-item" onclick="switchTab('tab-ceo', this)"><svg><use href="#ic-user"/></svg> Vida de CEO (PF)</div>
         </div>
 
@@ -200,7 +202,7 @@
                 <div style="font-size: 12px; color: var(--text-muted);" id="ui-cambio-info">Moeda Base: BRL</div>
                 <div style="display: flex; align-items: center; gap: 24px;">
                     <div style="text-align: right;">
-                        <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Fechamento de Ciclo</div>
+                        <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Fecho de Ciclo</div>
                         <div style="font-size: 14px; font-weight: 600;" id="ui-data">Ano 1 / Mês 1</div>
                     </div>
                     <button class="btn btn-primary" onclick="avancarCiclo()">Avançar Mês ➔</button>
@@ -250,7 +252,7 @@
                                     <strong id="ui-op-forn">-</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="color: var(--text-muted); font-size: 13px;">Custo de Fabricação (Unit.):</span>
+                                    <span style="color: var(--text-muted); font-size: 13px;">Custo de Fabrico (Unit.):</span>
                                     <strong id="ui-op-custounit">-</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
@@ -341,7 +343,7 @@
                         <div style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation (Valor de Mercado Estimado)</div>
                         
                         <p style="font-size: 14px; color: #aaa; max-width: 500px; margin: 0 auto 30px;">
-                            Sua empresa ainda é de capital fechado (Private). Para realizar uma Oferta Pública Inicial (IPO) e listar suas ações na bolsa, o Valuation da empresa precisa ultrapassar a marca de <strong><span id="ui-ipo-meta">0</span></strong>.
+                            A sua empresa ainda é de capital fechado (Private). Para realizar uma Oferta Pública Inicial (IPO) e listar as suas ações na bolsa, o Valuation da empresa precisa ultrapassar a marca de <strong><span id="ui-ipo-meta">0</span></strong>.
                         </p>
                         
                         <button class="btn btn-disabled" style="padding: 16px 32px; font-size: 16px;">Realizar IPO (Em Breve)</button>
@@ -356,7 +358,7 @@
 
                 <!-- TAB: CEO (PF) -->
                 <div id="tab-ceo" class="tab">
-                    <h1 class="page-title">Patrimônio Privado do Titular</h1>
+                    <h1 class="page-title">Património Privado do Titular</h1>
                     <div class="grid-2">
                         <div>
                             <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
@@ -450,18 +452,24 @@
         function parseToUSD(localValue) { return localValue / exchangeRates[state.moeda]; }
         function toLocal(usdValue) { return usdValue * exchangeRates[state.moeda]; }
 
+        function limparSistema() {
+            localStorage.clear();
+            location.reload();
+        }
+
         function gerarEstadoNovo(ceo, comp, cur, sec) {
             const capInicialUSD = 100000;
             const pfInicialUSD = 10000;
 
             return {
+                version: 8, // Controlo rigoroso de versão
                 ceo, empresa: comp, moeda: cur, setor: sec, mes: 1, ano: 1,
                 fornecedorId: 'f2', 
                 precoVendaUSD: sectors[sec].concorrentes[1].precoBase,
                 pj: { caixa: capInicialUSD, divida: 0, estoque: 0, extrato: [] },
                 pf: { caixa: pfInicialUSD, salario: 5000, bens: [], extrato: [] },
                 emails: [
-                    { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa', corpo: `A holding ${comp} foi registrada. O setor de ${sectors[sec].nome} é competitivo. Verifique fornecedores e preços.`, lido: false }
+                    { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa', corpo: `A holding ${comp} foi registada. O setor de ${sectors[sec].nome} é competitivo. Verifique fornecedores e preços.`, lido: false }
                 ]
             };
         }
@@ -593,7 +601,7 @@
             document.getElementById('ui-caixa-pf').innerText = fmt(state.pf.caixa);
             document.getElementById('ui-salario-pf').innerText = fmt(state.pf.salario);
 
-            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#666;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3">Sem registros.</td></tr>';
+            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#666;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3">Sem registos.</td></tr>';
             document.getElementById('tb-extrato-pj').innerHTML = buildTb(state.pj.extrato);
             document.getElementById('tb-extrato-pf').innerHTML = buildTb(state.pf.extrato);
 
@@ -649,7 +657,7 @@
             if (vendas > 0) {
                 const recUSD = vendas * state.precoVendaUSD;
                 state.pj.caixa += recUSD; state.pj.estoque -= vendas;
-                addExtrato('pj', `Faturamento (${vendas} un.)`, recUSD);
+                addExtrato('pj', `Faturação (${vendas} un.)`, recUSD);
             }
 
             state.pj.caixa -= cfg.custoFixo;
@@ -678,7 +686,7 @@
             salvarJogo();
         }
 
-        const lojaPF = [{n: 'Relógio de Luxo', v: 25000}, {n: 'Carro Esportivo', v: 150000}, {n: 'Mansão (Sede)', v: 2500000}];
+        const lojaPF = [{n: 'Relógio de Luxo', v: 25000}, {n: 'Carro Desportivo', v: 150000}, {n: 'Mansão (Sede)', v: 2500000}];
         function renderLojaPF() {
             document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
                 <div class="list-item">
@@ -732,8 +740,18 @@
             if (saved) { document.getElementById('btn-load').style.display = 'inline-flex'; }
         }
         function carregarJogo() {
-            const saved = localStorage.getItem('corp_save');
-            if (saved) { state = JSON.parse(saved); montarJogo(); }
+            try {
+                const saved = localStorage.getItem('corp_save');
+                if (saved) {
+                    state = JSON.parse(saved);
+                    // Verificação rigorosa de versão para impedir bloqueios com saves antigos
+                    if (state.version !== 8) throw new Error("Save antigo");
+                    montarJogo();
+                }
+            } catch (e) {
+                alert("Erro de Sistema: O seu progresso antigo é de uma versão desatualizada. A memória será limpa automaticamente para iniciar a nova versão.");
+                limparSistema();
+            }
         }
         function salvarJogo() {
             if(!state) return;
