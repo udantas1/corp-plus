@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corp+ | Global Business Simulator</title>
+    <title>Corp+ | Business OS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -46,7 +46,7 @@
         /* Layout */
         #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; }
         .brand-title { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; }
-        .brand-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 0.5px; }
+        .brand-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
         .setup-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; width: 100%; max-width: 440px; }
 
         /* Workspace */
@@ -122,7 +122,7 @@
     <!-- TELA: START -->
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
-        <div class="brand-subtitle">Simulação Econômica Global</div>
+        <div class="brand-subtitle">Business OS</div>
         <div style="display: flex; gap: 16px;">
             <button class="btn btn-primary" onclick="changeScreen('screen-setup')">Nova Holding</button>
             <button class="btn" id="btn-load" style="display: none;" onclick="carregarJogo()">Continuar</button>
@@ -385,7 +385,6 @@
     </div>
 
     <script>
-        // CONFIGURAÇÕES BASE (Valores em USD, serão convertidos via Câmbio)
         const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
         const currencySymbols = { 'USD': '$', 'EUR': '€', 'BRL': 'R$' };
 
@@ -437,41 +436,32 @@
             }
         };
 
-        let state = {};
+        let state = null;
 
-        // FORMATAÇÃO MONETÁRIA INTELIGENTE
         function fmt(usdValue) {
             if(usdValue === undefined || isNaN(usdValue)) return "0";
             const converted = usdValue * exchangeRates[state.moeda];
-            
-            // Formatador nativo de moedas do navegador
             return new Intl.NumberFormat(
                 state.moeda === 'BRL' ? 'pt-BR' : state.moeda === 'EUR' ? 'de-DE' : 'en-US',
                 { style: 'currency', currency: state.moeda }
             ).format(converted);
         }
 
-        // Converte valor digitado pelo usuário (na moeda local) de volta para USD (motor interno)
-        function parseToUSD(localValue) {
-            return localValue / exchangeRates[state.moeda];
-        }
-        function toLocal(usdValue) {
-            return usdValue * exchangeRates[state.moeda];
-        }
+        function parseToUSD(localValue) { return localValue / exchangeRates[state.moeda]; }
+        function toLocal(usdValue) { return usdValue * exchangeRates[state.moeda]; }
 
         function gerarEstadoNovo(ceo, comp, cur, sec) {
-            // Valores iniciais em USD
             const capInicialUSD = 100000;
             const pfInicialUSD = 10000;
 
             return {
                 ceo, empresa: comp, moeda: cur, setor: sec, mes: 1, ano: 1,
-                fornecedorId: 'f2', // Padrão
-                precoVendaUSD: sectors[sec].concorrentes[1].precoBase, // Começa com o preço do concorrente médio
+                fornecedorId: 'f2', 
+                precoVendaUSD: sectors[sec].concorrentes[1].precoBase,
                 pj: { caixa: capInicialUSD, divida: 0, estoque: 0, extrato: [] },
                 pf: { caixa: pfInicialUSD, salario: 5000, bens: [], extrato: [] },
                 emails: [
-                    { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa', corpo: `Sua holding ${comp} foi registrada. O setor de ${sectors[sec].nome} é altamente competitivo. Verifique os fornecedores e defina seu preço.`, lido: false }
+                    { id: 1, remetente: 'Junta Comercial', titulo: 'Abertura de Empresa', corpo: `A holding ${comp} foi registrada. O setor de ${sectors[sec].nome} é competitivo. Verifique fornecedores e preços.`, lido: false }
                 ]
             };
         }
@@ -484,6 +474,7 @@
 
             if(!ceo || !comp) return alert("Preencha todos os dados.");
             state = gerarEstadoNovo(ceo, comp, cur, sec);
+            salvarJogo();
             montarJogo();
         }
 
@@ -494,6 +485,7 @@
             
             const cfg = sectors[state.setor];
             document.getElementById('ui-lbl-produto').innerText = cfg.nome;
+            document.getElementById('ui-lbl-produto2').innerText = cfg.nome;
             document.getElementById('ui-preco').value = Math.round(toLocal(state.precoVendaUSD));
 
             renderFornecedores();
@@ -503,7 +495,6 @@
             renderEmails();
         }
 
-        // --- SISTEMA DE FORNECEDORES E LOGÍSTICA ---
         function renderFornecedores() {
             const list = sectors[state.setor].fornecedores;
             let html = '';
@@ -533,9 +524,7 @@
             renderFornecedores();
         }
 
-        function getFornecedorAtual() {
-            return sectors[state.setor].fornecedores.find(f => f.id === state.fornecedorId);
-        }
+        function getFornecedorAtual() { return sectors[state.setor].fornecedores.find(f => f.id === state.fornecedorId); }
 
         function atualizarCustoOP() {
             const f = getFornecedorAtual();
@@ -560,7 +549,6 @@
             } else { alert(`Liquidez corporativa insuficiente. Necessário: ${fmt(totalCustoUSD)}`); }
         }
 
-        // --- MERCADO E PRECIFICAÇÃO ---
         function renderConcorrentes() {
             const concs = sectors[state.setor].concorrentes;
             let html = '';
@@ -593,7 +581,6 @@
             else { lblLucro.className = 'c-green'; }
         }
 
-        // --- ATUALIZAÇÃO UI GERAL ---
         function atualizarUI() {
             const cfg = sectors[state.setor];
             document.getElementById('ui-data').innerText = `Ano ${state.ano} / Mês ${state.mes}`;
@@ -606,22 +593,18 @@
             document.getElementById('ui-caixa-pf').innerText = fmt(state.pf.caixa);
             document.getElementById('ui-salario-pf').innerText = fmt(state.pf.salario);
 
-            // Tabela Extrato
             const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#666;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3">Sem registros.</td></tr>';
             document.getElementById('tb-extrato-pj').innerHTML = buildTb(state.pj.extrato);
             document.getElementById('tb-extrato-pf').innerHTML = buildTb(state.pf.extrato);
 
-            // Valuation
             const valuation = state.pj.caixa + ((getFornecedorAtual().custoFab * state.pj.estoque)) - state.pj.divida;
-            document.getElementById('ui-valuation').innerText = fmt(valuation * 3); // Multiplo basico
+            document.getElementById('ui-valuation').innerText = fmt(valuation * 3);
             document.getElementById('ui-ipo-meta').innerText = fmt(cfg.ipoMeta);
 
-            // Bens PF
             const mBens = document.getElementById('ui-meus-bens');
             mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:13px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:12px;">Nenhum ativo adquirido.</span>';
         }
 
-        // --- SISTEMAS FINANCEIROS E LOGICA MENSAL ---
         function tomarEmprestimo() {
             const valUSD = 50000;
             state.pj.caixa += valUSD; state.pj.divida += valUSD;
@@ -649,13 +632,10 @@
             if (state[tipo].extrato.length > 30) state[tipo].extrato.pop();
         }
 
-        // --- PASSAGEM DE TEMPO & MOTOR DE VENDAS ---
         function avancarCiclo() {
             const cfg = sectors[state.setor];
             const f = getFornecedorAtual();
             
-            // Algoritmo de Demanda Complexo
-            // Compara o preço da empresa com a média dos concorrentes, ajustado pela qualidade do fornecedor
             const mediaConc = cfg.concorrentes.reduce((a, b) => a + b.precoBase, 0) / 3;
             let fatorPreco = mediaConc / state.precoVendaUSD; 
             
@@ -663,25 +643,15 @@
             if(f.qualidade === 'Alta') modQualidade = 1.3;
             if(f.qualidade === 'Baixa') modQualidade = 0.7;
 
-            let demandaCalculada = Math.floor((300 * fatorPreco * modQualidade) * (0.8 + Math.random()*0.4));
-            
-            // Limitado pelo estoque
-            let vendas = Math.min(demandaCalculada, state.pj.estoque);
+            let demandaTeorica = Math.floor((300 * fatorPreco * modQualidade) * (0.8 + Math.random()*0.4));
+            let vendas = Math.min(demandaTeorica, state.pj.estoque);
 
-            // Atualiza UI de Demanda
-            const uiDem = document.getElementById('ui-demanda');
-            if(demandaCalculada > 400) { uiDem.innerText = "Altíssima"; uiDem.style.color = "var(--success)"; }
-            else if(demandaCalculada < 100) { uiDem.innerText = "Baixa"; uiDem.style.color = "var(--danger)"; }
-            else { uiDem.innerText = "Estável"; uiDem.style.color = "var(--text-main)"; }
-
-            // Faturamento
             if (vendas > 0) {
                 const recUSD = vendas * state.precoVendaUSD;
                 state.pj.caixa += recUSD; state.pj.estoque -= vendas;
                 addExtrato('pj', `Faturamento (${vendas} un.)`, recUSD);
             }
 
-            // Custos e Juros
             state.pj.caixa -= cfg.custoFixo;
             addExtrato('pj', 'OPEX Mensal', -cfg.custoFixo);
 
@@ -689,22 +659,25 @@
                 const juros = state.pj.divida * 0.035;
                 state.pj.divida += juros;
                 addExtrato('pj', 'Juros Passivos (3.5%)', -juros);
+                
+                if(state.pj.divida > state.pj.caixa * 2 && Math.random() > 0.5) {
+                    addEmail('Corporate Bank', 'ALERTA: Alavancagem Alta', 'O risco de crédito da sua empresa está elevado. Recomendamos amortização imediata do passivo circulante.');
+                }
             }
 
-            // Pró-labore
             if (state.pj.caixa >= state.pf.salario) {
                 state.pj.caixa -= state.pf.salario; state.pf.caixa += state.pf.salario;
                 addExtrato('pj', 'Pró-labore Pago', -state.pf.salario);
-                addExtrato('pf', 'Pró-labore Recebido', state.pf.salario);
+                addExtrato('pf', 'Recebimento Pró-labore', state.pf.salario);
             } else {
-                addEmail('CFO', 'Alerta de Falência Técnica', 'Não houve caixa suficiente para cobrir a folha de pagamento corporativa e o seu pró-labore.');
+                addEmail('RH & Contabilidade', 'Falha no Pagamento', 'O caixa corporativo operou no vermelho este mês. O pagamento do pró-labore do titular foi suspenso.');
             }
 
             state.mes++; if (state.mes > 12) { state.mes = 1; state.ano++; }
             atualizarUI();
+            salvarJogo();
         }
 
-        // --- LOJA PF ---
         const lojaPF = [{n: 'Relógio de Luxo', v: 25000}, {n: 'Carro Esportivo', v: 150000}, {n: 'Mansão (Sede)', v: 2500000}];
         function renderLojaPF() {
             document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
@@ -719,10 +692,10 @@
                 state.pf.caixa -= v; state.pf.bens.push({n, v});
                 addExtrato('pf', `Aquisição: ${n}`, -v);
                 atualizarUI();
+                salvarJogo();
             } else { alert("Saldo PF Insuficiente."); }
         }
 
-        // --- EMAILS ---
         function addEmail(r, t, c) {
             state.emails.unshift({ id: Date.now(), remetente: r, titulo: t, corpo: c, lido: false });
             renderEmails();
@@ -744,6 +717,7 @@
             state.emails[i].lido = true;
             document.getElementById(`mail-body-${i}`).style.display = 'block';
             renderEmails();
+            salvarJogo();
         }
 
         function switchTab(id, el) {
@@ -752,6 +726,21 @@
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
         }
+
+        function checkSave() {
+            const saved = localStorage.getItem('corp_save');
+            if (saved) { document.getElementById('btn-load').style.display = 'inline-flex'; }
+        }
+        function carregarJogo() {
+            const saved = localStorage.getItem('corp_save');
+            if (saved) { state = JSON.parse(saved); montarJogo(); }
+        }
+        function salvarJogo() {
+            if(!state) return;
+            localStorage.setItem('corp_save', JSON.stringify(state));
+        }
+
+        checkSave();
     </script>
 </body>
 </html>
