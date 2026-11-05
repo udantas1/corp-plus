@@ -2,7 +2,7 @@
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Corp+ | Business OS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Roboto+Mono:wght@500&display=swap');
@@ -18,11 +18,11 @@
             --accent-text: #000000;
             --danger: #ff453a;
             --success: #32d74b;
-            --info: #0a84ff; /* Cor dinâmica da marca */
+            --info: #0a84ff;
             --grid-color: rgba(255,255,255,0.03);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { 
             background-color: var(--bg); 
@@ -43,107 +43,123 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* UI Elements */
-        .btn { background: rgba(255,255,255,0.02); color: var(--text-main); border: 1px solid var(--border); padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(4px); }
+        .btn { background: rgba(255,255,255,0.02); color: var(--text-main); border: 1px solid var(--border); padding: 12px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(4px); }
         .btn:hover { background: var(--surface-hover); border-color: #444; }
         .btn-primary { background: var(--info); color: #fff; border: 1px solid var(--info); box-shadow: 0 4px 14px rgba(0,0,0,0.3); font-weight: 600; }
         .btn-primary:hover { filter: brightness(1.2); }
         .btn-danger { color: var(--danger); border-color: rgba(255, 69, 58, 0.3); background: rgba(255, 69, 58, 0.05); }
-        .btn-danger:hover { background: rgba(255, 69, 58, 0.1); }
+        .btn-disabled { opacity: 0.5; pointer-events: none; }
         
-        .input, .select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: var(--text-main); padding: 12px 16px; border-radius: 6px; font-size: 13px; transition: 0.2s; backdrop-filter: blur(4px); }
+        .input, .select { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: var(--text-main); padding: 14px 16px; border-radius: 6px; font-size: 14px; transition: 0.2s; backdrop-filter: blur(4px); }
         .input:focus, .select:focus { outline: none; border-color: var(--info); box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.1); }
-        .form-label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-group { margin-bottom: 20px; }
 
         svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
-        /* Layout */
-        #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; }
-        .brand-title { font-size: 56px; font-weight: 700; letter-spacing: -3px; margin-bottom: 4px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .brand-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
-        .setup-box { background: rgba(12, 12, 12, 0.7); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 480px; backdrop-filter: blur(10px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        /* Layout - Telas Iniciais */
+        #screen-start, #screen-setup { flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .brand-title { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 4px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); text-align: center; }
+        .brand-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; text-align: center; }
+        .setup-box { background: rgba(12, 12, 12, 0.85); border: 1px solid var(--border); border-radius: 16px; padding: 30px; width: 100%; max-width: 480px; backdrop-filter: blur(10px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); overflow-y: auto; max-height: 90vh; }
 
-        /* Workspace */
-        #screen-game { flex-direction: row; }
-        .sidebar { width: 270px; background: rgba(0,0,0,0.6); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; backdrop-filter: blur(10px); z-index: 10; }
+        /* Workspace & Sidebar */
+        #screen-game { flex-direction: row; position: relative; }
+        .sidebar { width: 270px; background: rgba(5,5,5,0.95); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; backdrop-filter: blur(15px); z-index: 20; height: 100%; transition: left 0.3s ease; }
         .sb-header { padding: 0 12px; margin-bottom: 30px; }
-        .sb-brand { font-size: 24px; font-weight: 700; letter-spacing: -1px; margin-bottom: 4px; color: var(--info); transition: color 0.3s; }
+        .sb-brand { font-size: 22px; font-weight: 700; letter-spacing: -1px; margin-bottom: 4px; color: var(--info); transition: color 0.3s; }
         .sb-company { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
 
-        .menu-section { font-size: 10px; text-transform: uppercase; color: #555; font-weight: 600; margin: 24px 0 8px 12px; letter-spacing: 1px; }
-        .menu-item { padding: 10px 12px; margin-bottom: 4px; border-radius: 6px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; transition: 0.2s; font-size: 13px; font-weight: 500; }
+        .menu-section { font-size: 10px; text-transform: uppercase; color: #666; font-weight: 600; margin: 20px 0 8px 12px; letter-spacing: 1px; }
+        .menu-item { padding: 12px; margin-bottom: 4px; border-radius: 6px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; transition: 0.2s; font-size: 13px; font-weight: 500; }
         .menu-item .m-left { display: flex; align-items: center; gap: 10px; }
-        .menu-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
         .menu-item.active { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border); border-left: 3px solid var(--info); }
-        
-        .badge-count { background: var(--info); color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; transition: background 0.3s; }
+        .badge-count { background: var(--info); color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; }
 
-        .workspace { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .topbar { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); z-index: 5; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 15; backdrop-filter: blur(3px); }
+
+        .workspace { flex: 1; display: flex; flex-direction: column; position: relative; width: 100%; }
+        .topbar { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 5; }
+        .btn-menu { display: none; background: transparent; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; padding: 5px; }
         
-        .content { padding: 32px; overflow-y: auto; flex: 1; scroll-behavior: smooth; }
+        .content { padding: 24px; overflow-y: auto; flex: 1; scroll-behavior: smooth; }
         .tab { display: none !important; animation: fadeIn 0.3s ease; }
         .tab.active { display: block !important; }
-        .page-title { font-size: 22px; font-weight: 600; margin-bottom: 24px; letter-spacing: -0.5px; }
+        .page-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; letter-spacing: -0.5px; }
 
         /* Grids & Cards */
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
-        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         
-        .card { background: rgba(15,15,15,0.8); border: 1px solid var(--border); border-radius: 12px; padding: 20px; backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .card-header { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card-value { font-size: 28px; font-weight: 600; margin-bottom: 6px; letter-spacing: -1px; }
-        .card-sub { font-size: 12px; color: var(--text-muted); }
+        .card { background: rgba(15,15,15,0.8); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card-header { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; }
+        .card-value { font-size: 24px; font-weight: 600; margin-bottom: 4px; letter-spacing: -1px; }
+        .card-sub { font-size: 11px; color: var(--text-muted); }
         
         .c-green { color: var(--success); }
         .c-red { color: var(--danger); }
         .c-info { color: var(--info); transition: color 0.3s; }
 
-        .panel { background: rgba(12,12,12,0.9); border: 1px solid var(--border); border-radius: 12px; padding: 24px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .panel { background: rgba(12,12,12,0.9); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
 
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px 10px; font-size: 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 12px; }
+        th { text-align: left; padding: 12px 8px; font-size: 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; text-transform: uppercase; }
+        td { padding: 14px 8px; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 12px; }
         .t-val { font-weight: 500; text-align: right; }
 
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.2); transition: 0.2s; cursor: pointer; }
-        .list-item:hover { background: rgba(255,255,255,0.02); border-color: #444; }
-        .sup-radio { appearance: none; width: 18px; height: 18px; border: 1px solid #666; border-radius: 50%; outline: none; cursor: pointer; position: relative; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.2); cursor: pointer; }
+        .sup-radio { appearance: none; width: 18px; height: 18px; border: 1px solid #666; border-radius: 50%; outline: none; cursor: pointer; position: relative; flex-shrink: 0; }
         .sup-radio:checked { border-color: var(--info); }
         .sup-radio:checked::after { content: ''; position: absolute; top: 3px; left: 3px; width: 10px; height: 10px; background: var(--info); border-radius: 50%; }
         
         .market-bar-bg { width: 100%; height: 6px; background: #222; border-radius: 3px; overflow: hidden; margin-top: 8px; }
-        .market-bar-fill { height: 100%; background: var(--info); border-radius: 3px; transition: width 0.4s, background 0.3s; }
+        .market-bar-fill { height: 100%; background: var(--info); border-radius: 3px; transition: width 0.4s; }
 
-        /* Inbox Estilos */
-        .e-item { padding: 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.2s; }
-        .e-item:hover { background: rgba(255,255,255,0.03); }
+        /* Emails */
+        .e-item { padding: 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.4); cursor: pointer; }
         .e-item.unread { border-left: 3px solid var(--info); background: rgba(255, 255, 255, 0.05); }
         .e-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
         .e-title { font-size: 14px; font-weight: 600; color: var(--text-main); }
         .e-body { font-size: 13px; color: #aaa; line-height: 1.6; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); display: none; }
 
-        /* Branding Estilos */
-        .color-circle { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .color-circle:hover { transform: scale(1.1); }
-        .color-circle.active { border-color: #fff; }
+        /* Branding */
+        .color-circle { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
+        .color-circle.active { border-color: #fff; transform: scale(1.1); }
         .font-modern { font-family: 'Inter', sans-serif; }
         .font-serif { font-family: 'Playfair Display', serif; }
         .font-mono { font-family: 'Roboto Mono', monospace; letter-spacing: -1px; }
+
+        /* RESPONSIVIDADE MOBILE */
+        @media (max-width: 768px) {
+            .btn-menu { display: block; }
+            .hide-mobile { display: none !important; }
+            .sidebar { position: absolute; left: -100%; top: 0; }
+            .sidebar.open { left: 0; box-shadow: 5px 0 25px rgba(0,0,0,0.8); }
+            .sidebar-overlay.active { display: block; }
+            .grid-3, .grid-2, .grid-half { grid-template-columns: 1fr; }
+            .content { padding: 16px; }
+            .topbar { padding: 0 16px; }
+            .setup-box { padding: 24px; border: none; border-radius: 0; background: transparent; box-shadow: none; }
+            #screen-setup { justify-content: flex-start; padding-top: 40px; }
+            .card-value { font-size: 22px; }
+            .page-title { font-size: 18px; margin-bottom: 16px; }
+        }
     </style>
 </head>
 <body>
 
     <svg style="display:none;">
         <defs>
-            <g id="ic-truck"><path d="M1 3h15v13H1z"></path><path d="M16 8h4l3 3v5h-7V8z"></path><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></g>
-            <g id="ic-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></g>
-            <g id="ic-mail"><path d="M4 7l8 5 8-5"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect></g>
-            <g id="ic-dollar"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></g>
-            <g id="ic-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g>
-            <g id="ic-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></g>
-            <g id="ic-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></g>
+            <g id="ic-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></g>
+            <g id="ic-truck"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></g>
+            <g id="ic-globe"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></g>
+            <g id="ic-mail"><path d="M4 7l8 5 8-5"/><rect x="2" y="4" width="20" height="16" rx="2"/></g>
+            <g id="ic-dollar"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></g>
+            <g id="ic-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
+            <g id="ic-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></g>
+            <g id="ic-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></g>
         </defs>
     </svg>
 
@@ -151,21 +167,21 @@
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
         <div class="brand-subtitle">Simulador de Mercado Corporativo</div>
-        <button class="btn btn-primary" style="padding: 14px 32px; font-size: 14px;" onclick="changeScreen('screen-setup')">Fundar Empresa</button>
+        <button class="btn btn-primary" style="padding: 16px 36px; font-size: 15px;" onclick="changeScreen('screen-setup')">Fundar Empresa</button>
     </div>
 
     <!-- SETUP -->
     <div id="screen-setup" class="screen">
         <div class="setup-box">
-            <h2 style="font-size: 22px; margin-bottom: 24px; font-weight: 600; letter-spacing: -0.5px;">Registro Comercial</h2>
+            <h2 style="font-size: 22px; margin-bottom: 24px; font-weight: 600;">Estatuto Social e Registos</h2>
             
             <div class="form-group">
                 <label class="form-label">Nome do Presidente (Fundador)</label>
                 <input type="text" id="setup-ceo" class="input" placeholder="Ex: Daniel Campos" autocomplete="off">
             </div>
             <div class="form-group">
-                <label class="form-label">Nome da Empresa</label>
-                <input type="text" id="setup-comp" class="input" placeholder="Ex: Campos Enterprises" autocomplete="off">
+                <label class="form-label">Razão Social da Empresa</label>
+                <input type="text" id="setup-comp" class="input" placeholder="Ex: Campos Holdings" autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -177,7 +193,7 @@
                 </select>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+            <div class="grid-half" style="margin-bottom: 24px;">
                 <div>
                     <label class="form-label">Setor de Atuação</label>
                     <select id="setup-sec" class="select" onchange="updateSubSectors()">
@@ -193,13 +209,16 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="iniciarNovoJogo()">Registrar e Iniciar Operações</button>
+            <button class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 14px;" onclick="iniciarNovoJogo()">Registrar e Iniciar Operações</button>
         </div>
     </div>
 
     <!-- WORKSPACE -->
     <div id="screen-game" class="screen">
         
+        <!-- SIDEBAR MOBILE OVERLAY -->
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sb-header">
@@ -213,28 +232,34 @@
                 <span class="badge-count" id="ui-email-badge" style="display:none;">0</span>
             </div>
 
-            <div class="menu-section">Logística e Operações</div>
-            <div class="menu-item active" onclick="switchTab('tab-ops', this)"><div class="m-left"><svg><use href="#ic-truck"/></svg> Cadeia de Suprimentos</div></div>
-            <div class="menu-item" onclick="switchTab('tab-market', this)"><div class="m-left"><svg><use href="#ic-globe"/></svg> Estratégia Comercial</div></div>
+            <div class="menu-section">Operacional & Vendas</div>
+            <div class="menu-item active" onclick="switchTab('tab-ops', this)"><div class="m-left"><svg><use href="#ic-truck"/></svg> Suprimentos</div></div>
+            <div class="menu-item" onclick="switchTab('tab-market', this)"><div class="m-left"><svg><use href="#ic-globe"/></svg> Estratégia de Mercado</div></div>
             
-            <div class="menu-section">Finanças e M&A</div>
-            <div class="menu-item" onclick="switchTab('tab-fin', this)"><div class="m-left"><svg><use href="#ic-dollar"/></svg> Tesouraria Corporativa</div></div>
+            <div class="menu-section">Finanças Corporativas</div>
+            <div class="menu-item" onclick="switchTab('tab-fin', this)"><div class="m-left"><svg><use href="#ic-dollar"/></svg> Tesouraria (Caixa PJ)</div></div>
             <div class="menu-item" onclick="switchTab('tab-stock', this)"><div class="m-left"><svg><use href="#ic-activity"/></svg> Mercado de Capitais</div></div>
             
-            <div class="menu-section">Identidade e Património</div>
-            <div class="menu-item" onclick="switchTab('tab-brand', this)"><div class="m-left"><svg><use href="#ic-star"/></svg> Branding & Sede</div></div>
-            <div class="menu-item" onclick="switchTab('tab-ceo', this)"><div class="m-left"><svg><use href="#ic-user"/></svg> Conta Pessoal do CEO</div></div>
+            <div class="menu-section">Privado & Sede</div>
+            <div class="menu-item" onclick="switchTab('tab-brand', this)"><div class="m-left"><svg><use href="#ic-star"/></svg> Branding & Instalações</div></div>
+            <div class="menu-item" onclick="switchTab('tab-ceo', this)"><div class="m-left"><svg><use href="#ic-user"/></svg> Vida de Presidente (PF)</div></div>
         </div>
 
         <div class="workspace">
+            <!-- TOPBAR -->
             <div class="topbar">
-                <div style="font-size: 11px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px;" id="ui-modelo-info">MODELO • CÂMBIO</div>
-                <div style="display: flex; align-items: center; gap: 24px;">
-                    <div style="text-align: right;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="btn-menu" onclick="toggleSidebar()"><svg><use href="#ic-menu"/></svg></button>
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px;" id="ui-modelo-info" class="hide-mobile">MODELO • CÂMBIO</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="text-align: right;" class="hide-mobile">
                         <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Fecho Contábil</div>
                         <div style="font-size: 14px; font-weight: 600;" id="ui-data">Ano 1 / Mês 1</div>
                     </div>
-                    <button class="btn btn-primary" onclick="avancarCiclo()">Avançar Ciclo (Mês) ➔</button>
+                    <!-- Versão Mobile Data -->
+                    <div style="font-size: 12px; font-weight: 600; display: none;" id="ui-data-mobile">A1/M1</div>
+                    <button class="btn btn-primary" onclick="avancarCiclo()">Avançar ➔</button>
                 </div>
             </div>
 
@@ -242,66 +267,66 @@
                 
                 <!-- TAB: SUPRIMENTOS -->
                 <div id="tab-ops" class="tab active">
-                    <h1 class="page-title">Gestão da Cadeia de Suprimentos</h1>
+                    <h1 class="page-title">Gestão de Suprimentos</h1>
                     
                     <div class="grid-3">
                         <div class="card">
                             <div class="card-header">Liquidez (Caixa da Empresa)</div>
                             <div class="card-value c-green" id="ui-caixa-pj">0</div>
-                            <div class="card-sub">OPEX: <span id="ui-custo-fixo">0</span>/mês</div>
+                            <div class="card-sub">OPEX Previsto: <span id="ui-custo-fixo">0</span>/mês</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Armazém e Estoque</div>
+                            <div class="card-header">Armazém / Infraestrutura</div>
                             <div class="card-value" id="ui-estoque">0</div>
                             <div class="card-sub" id="ui-lbl-produto">Unidades prontas</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Lote Base Operacional</div>
+                            <div class="card-header">Lote Base Negociável</div>
                             <div class="card-value" id="ui-lote-qtd">1.000</div>
-                            <div class="card-sub">Capacidade base por ordem</div>
+                            <div class="card-sub">Capacidade de volume por contrato</div>
                         </div>
                     </div>
 
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title">1. Contratos de Fornecimento</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Selecione a origem da matéria-prima. Alta qualidade atrai mais clientes, mas esmaga a margem.</p>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Qualidade afeta diretamente a demanda B2C. No B2B, afeta o poder de fechar grandes contratos.</p>
                             <div id="ui-fornecedores"></div>
                         </div>
 
                         <div class="panel">
-                            <div class="panel-title">2. Escala de Negociação (Volume)</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Comprar em grandes volumes garante descontos expressivos nos custos logísticos.</p>
+                            <div class="panel-title">2. Escala de Negociação</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Comprar em grandes volumes reduz os custos logísticos unitários.</p>
                             
                             <div class="form-group">
                                 <select id="ui-volume-compra" class="select" onchange="atualizarCustoOP()">
-                                    <option value="1">Lote Fracionado (1x Base) - Preço Padrão</option>
-                                    <option value="5">Lote Corporativo (5x Base) - 10% OFF</option>
-                                    <option value="20">Contentor Fechado (20x Base) - 20% OFF</option>
+                                    <option value="1">Lote Fracionado (1x) - S/ Desconto</option>
+                                    <option value="5">Lote Corporativo (5x) - 10% OFF</option>
+                                    <option value="20">Contentor Fechado (20x) - 20% OFF</option>
                                 </select>
                             </div>
 
                             <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                     <span style="color: var(--text-muted); font-size: 12px;">Parceiro Selecionado:</span>
-                                    <strong id="ui-op-forn" style="font-size: 12px;">-</strong>
+                                    <strong id="ui-op-forn" style="font-size: 12px; text-align:right;">-</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                     <span style="color: var(--text-muted); font-size: 12px;">Volume de Aquisição:</span>
                                     <strong id="ui-op-qtd" style="font-size: 12px;">-</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="color: var(--text-muted); font-size: 12px;">Custo Efetivo (c/ desconto logístico):</span>
+                                    <span style="color: var(--text-muted); font-size: 12px;">Custo Efetivo Unitário:</span>
                                     <strong id="ui-op-custounit" style="font-size: 12px;">-</strong>
                                 </div>
                                 <hr style="border: 0; border-top: 1px dashed var(--border); margin: 12px 0;">
-                                <div style="display: flex; justify-content: space-between;">
+                                <div style="display: flex; justify-content: space-between; align-items:center;">
                                     <span style="color: var(--text-muted); font-size: 12px;">Fatura Total da Operação:</span>
                                     <strong class="c-red" id="ui-op-total" style="font-size: 16px;">-</strong>
                                 </div>
                             </div>
                             
-                            <button class="btn btn-primary" style="width: 100%;" onclick="emitirOrdemProducao()">Pagar Fatura e Estocar</button>
+                            <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="emitirOrdemProducao()">Pagar Fatura e Estocar</button>
                         </div>
                     </div>
                 </div>
@@ -320,18 +345,18 @@
                             </div>
                             
                             <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                     <span style="font-size: 12px; color: var(--text-muted);">Custo Base Produtivo:</span>
                                     <span id="ui-margem-custo" style="font-size: 12px;">$ 0</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
-                                    <span style="font-size: 12px; color: var(--text-muted);">Margem Projetada (Lucro Bruto):</span>
+                                    <span style="font-size: 12px; color: var(--text-muted);">Margem Projetada (Lucro/Un):</span>
                                     <span id="ui-margem-lucro" style="font-size: 13px; font-weight: 600;" class="c-green">$ 0</span>
                                 </div>
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">Grandes Competidores do Setor</div>
+                            <div class="panel-title">Players do Setor e Market Share</div>
                             <div id="ui-concorrentes"></div>
                         </div>
                     </div>
@@ -342,40 +367,46 @@
                     <h1 class="page-title">Tesouraria Corporativa</h1>
                     <div class="grid-2">
                         <div class="card">
-                            <div class="card-header">Dívida Bancária (Curto Prazo)</div>
+                            <div class="card-header">Dívida Ativa Bancária</div>
                             <div class="card-value c-red" id="ui-divida-pj">0</div>
-                            <div class="card-sub">Custo do capital: 3.5% a.m.</div>
+                            <div class="card-sub">Custo de rolagem: 3.5% a.m.</div>
                         </div>
                         <div class="panel" style="margin:0;">
                             <div class="panel-title">Linhas de Crédito</div>
-                            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-                                <button class="btn" style="flex:1;" onclick="tomarEmprestimo()">Emitir Dívida</button>
-                                <button class="btn btn-primary" style="flex:1;" onclick="amortizarDivida()">Amortizar</button>
+                            <div class="grid-half" style="margin-bottom: 16px;">
+                                <button class="btn" onclick="tomarEmprestimo()">Emitir Dívida</button>
+                                <button class="btn btn-primary" onclick="amortizarDivida()">Amortizar</button>
                             </div>
                             <input type="number" id="ui-val-amortizar" class="input" placeholder="Montante a Amortizar">
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-title">Extrato de Conta Corrente (Empresa)</div>
+                        <div class="panel-title">Extrato de Movimentação (Caixa PJ)</div>
                         <div style="max-height: 350px; overflow-y: auto; margin: -20px; margin-top: 0;">
                             <table style="margin-top: 10px;">
-                                <thead><tr><th>Data</th><th>Descritivo do Movimento</th><th style="text-align: right;">Montante</th></tr></thead>
+                                <thead><tr><th>Data</th><th>Descritivo</th><th style="text-align: right;">Montante</th></tr></thead>
                                 <tbody id="tb-extrato-pj"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
+                <!-- TAB: INBOX -->
+                <div id="tab-mail" class="tab">
+                    <h1 class="page-title">Caixa de Entrada Oficial</h1>
+                    <div id="ui-email-list"></div>
+                </div>
+
                 <!-- TAB: BRANDING -->
                 <div id="tab-brand" class="tab">
-                    <h1 class="page-title">Branding e Cultura Corporativa</h1>
+                    <h1 class="page-title">Branding e Sede Corporativa</h1>
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title">Identidade Visual da Marca</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Ajuste a paleta de cores e a tipografia. Isto reflete a essência do seu negócio em todo o terminal de operações.</p>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Personalize a paleta de cores e a tipografia. Isto reflete a essência do seu negócio no sistema.</p>
                             
                             <label class="form-label">Cor Oficial (Accent Color)</label>
-                            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
                                 <div class="color-circle active" style="background: #0a84ff;" onclick="setBrandColor('#0a84ff', this)"></div>
                                 <div class="color-circle" style="background: #32d74b;" onclick="setBrandColor('#32d74b', this)"></div>
                                 <div class="color-circle" style="background: #ff9f0a;" onclick="setBrandColor('#ff9f0a', this)"></div>
@@ -384,17 +415,17 @@
                                 <div class="color-circle" style="background: #ff453a;" onclick="setBrandColor('#ff453a', this)"></div>
                             </div>
 
-                            <label class="form-label">Tipografia Corporativa</label>
+                            <label class="form-label">Tipografia do Logotipo</label>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <button class="btn" style="justify-content: flex-start; font-family: 'Inter', sans-serif;" onclick="setBrandFont('modern')">Modern Sans (Tech/Startup)</button>
                                 <button class="btn" style="justify-content: flex-start; font-family: 'Playfair Display', serif; font-size: 15px;" onclick="setBrandFont('serif')">Classic Serif (Luxo/Moda)</button>
-                                <button class="btn" style="justify-content: flex-start; font-family: 'Roboto Mono', monospace;" onclick="setBrandFont('mono')">Console Mono (Dev/Finanças)</button>
+                                <button class="btn" style="justify-content: flex-start; font-family: 'Roboto Mono', monospace;" onclick="setBrandFont('mono')">Console Mono (Finanças)</button>
                             </div>
                         </div>
 
                         <div class="panel" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
-                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Sede Física da <span id="ui-brand-comp">Empresa</span></h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Melhorar a Sede atrai grandes talentos, reduz o OPEX futuro e impõe respeito no mercado B2B.</p>
+                            <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Sede Física da <span id="ui-brand-comp">Empresa</span></h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Melhorar a Sede atrai grandes talentos e impõe respeito no mercado.</p>
                             <button class="btn btn-disabled">Transferir Sede ($500k) - Em Breve</button>
                         </div>
                     </div>
@@ -406,7 +437,7 @@
                     <div class="grid-2">
                         <div>
                             <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
-                                <div class="card-header">Conta Bancária (PF)</div>
+                                <div class="card-header">Conta Bancária Privada</div>
                                 <div class="card-value c-green" id="ui-caixa-pf">0</div>
                                 <div class="card-sub">Retirada Fixa (Pró-labore): <span id="ui-salario-pf">0</span>/mês</div>
                             </div>
@@ -418,7 +449,7 @@
                         <div class="panel">
                             <div class="panel-title">Meus Ativos Pessoais</div>
                             <div id="ui-meus-bens" style="margin-bottom: 24px;"></div>
-                            <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 15px;">Extrato de Movimentação Pessoal</div>
+                            <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 15px;">Extrato Privado (PF)</div>
                             <div style="max-height: 250px; overflow-y: auto; margin: -20px; margin-top: 0;">
                                 <table style="margin-top: 10px;"><tbody id="tb-extrato-pf"></tbody></table>
                             </div>
@@ -431,18 +462,12 @@
                     <h1 class="page-title">Mercado de Capitais</h1>
                     <div class="panel" style="text-align: center; padding: 60px 20px;">
                         <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 10px;" id="ui-valuation">0</h2>
-                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation Estimado (Valor da Empresa)</div>
+                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px;">Valuation Estimado (Valor da Empresa)</div>
                         <p style="font-size: 13px; color: #aaa; max-width: 500px; margin: 0 auto 30px;">
                             A sua empresa é de capital privado. Para abrir capital (IPO), o Valuation deve ser sustentável e superar as metas do mercado financeiro.
                         </p>
                         <button class="btn btn-disabled">Preparar Oferta Pública Inicial (IPO)</button>
                     </div>
-                </div>
-
-                <!-- TAB: INBOX -->
-                <div id="tab-mail" class="tab">
-                    <h1 class="page-title">Gabinete de Comunicações</h1>
-                    <div id="ui-email-list"></div>
                 </div>
 
             </div>
@@ -453,35 +478,31 @@
         const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
 
         const businessModels = {
-            // TECNOLOGIA
-            'tech_retail': { sector: 'tech', type: 'b2c', name: 'Varejo de Eletrônicos (Loja)', loteQtd: 1000, inputLbl: 'Lotes Prontos', outputLbl: 'Smartphones (Venda)', capInicial: 150000,
-                fornecedores: [ { id:'tr1', nome:'GlobalTech Distribuidora', custo: 200, frete: 20, q:'Padrão' }, { id:'tr2', nome:'Pear Certified Partners', custo: 600, frete: 50, q:'Premium' } ],
-                concorrentes: [ { nome: 'MegaStore Retail', preco: 400, share: 60 }, { nome: 'TechBuy', preco: 900, share: 40 } ], custoFixo: 12000, precoBase: 500 },
-            'tech_ind': { sector: 'tech', type: 'b2b', name: 'Fábrica de Hardware (Indústria)', loteQtd: 5000, inputLbl: 'Silício/Minérios', outputLbl: 'Aparelhos (Atacado)', capInicial: 800000,
-                fornecedores: [ { id:'ti1', nome:'Mineração Ásia Limitada', custo: 30, frete: 10, q:'Base' }, { id:'ti2', nome:'Taiwan Silicons', custo: 80, frete: 25, q:'Alta' } ],
+            'tech_retail': { sector: 'tech', type: 'b2c', name: 'Varejo de Eletrônicos (Loja)', loteQtd: 1000, inputLbl: 'Lotes Prontos', outputLbl: 'Smartphones', capInicial: 150000,
+                fornecedores: [ { id:'tr1', nome:'GlobalTech Dist.', custo: 200, frete: 20, q:'Padrão' }, { id:'tr2', nome:'Pear Certified', custo: 600, frete: 50, q:'Premium' } ],
+                concorrentes: [ { nome: 'MegaStore', preco: 400, share: 60 }, { nome: 'TechBuy', preco: 900, share: 40 } ], custoFixo: 12000, precoBase: 500 },
+            'tech_ind': { sector: 'tech', type: 'b2b', name: 'Fábrica de Hardware (Indústria)', loteQtd: 5000, inputLbl: 'Silício/Minérios', outputLbl: 'Aparelhos (B2B)', capInicial: 800000,
+                fornecedores: [ { id:'ti1', nome:'Mineração Ásia', custo: 30, frete: 10, q:'Base' }, { id:'ti2', nome:'Taiwan Silicons', custo: 80, frete: 25, q:'Alta' } ],
                 concorrentes: [ { nome: 'FoxAssemble', preco: 150, share: 70 }, { nome: 'TaiwaCorp', preco: 250, share: 30 } ], custoFixo: 45000, precoBase: 120 },
             
-            // MODA E VESTUÁRIO
             'fashion_retail': { sector: 'fashion', type: 'b2c', name: 'Boutique de Luxo', loteQtd: 100, inputLbl: 'Coleções Prontas', outputLbl: 'Peças Exclusivas', capInicial: 250000,
                 fornecedores: [ { id:'fr1', nome:'Distribuidora Comum', custo: 50, frete: 5, q:'Padrão' }, { id:'fr2', nome:'Milano High Fashion', custo: 400, frete: 40, q:'Luxo' } ],
                 concorrentes: [ { nome: 'Loui V. Stores', preco: 1500, share: 60 }, { nome: 'Pradd', preco: 1200, share: 40 } ], custoFixo: 20000, precoBase: 800 },
-            'fashion_fast': { sector: 'fashion', type: 'b2c', name: 'Fast Fashion (Varejo de Massa)', loteQtd: 5000, inputLbl: 'Roupas de Massa', outputLbl: 'Vestuário Comercial', capInicial: 300000,
-                fornecedores: [ { id:'ff1', nome:'Shenzhen Apparel Factory', custo: 5, frete: 2, q:'Baixa' } ],
+            'fashion_fast': { sector: 'fashion', type: 'b2c', name: 'Fast Fashion (Massa)', loteQtd: 5000, inputLbl: 'Roupas de Massa', outputLbl: 'Vestuário', capInicial: 300000,
+                fornecedores: [ { id:'ff1', nome:'Shenzhen Apparel', custo: 5, frete: 2, q:'Baixa' } ],
                 concorrentes: [ { nome: 'Zêra Retail', preco: 30, share: 50 }, { nome: 'H&Massa', preco: 25, share: 50 } ], custoFixo: 25000, precoBase: 25 },
             
-            // ALIMENTAÇÃO
-            'food_fast': { sector: 'food', type: 'b2c', name: 'Rede de Fast Food', loteQtd: 2000, inputLbl: 'Ingredientes Base', outputLbl: 'Refeições', capInicial: 100000,
+            'food_fast': { sector: 'food', type: 'b2c', name: 'Rede de Fast Food', loteQtd: 2000, inputLbl: 'Ingredientes', outputLbl: 'Refeições Rápidas', capInicial: 100000,
                 fornecedores: [ { id:'fdf1', nome:'AgroMass Alimentos', custo: 2, frete: 1, q:'Padrão' } ],
                 concorrentes: [ { nome: 'McBurger', preco: 10, share: 60 }, { nome: 'Burger Lord', preco: 9, share: 40 } ], custoFixo: 15000, precoBase: 10 },
-            'food_alta': { sector: 'food', type: 'b2c', name: 'Alta Gastronomia', loteQtd: 100, inputLbl: 'Ingredientes Raros', outputLbl: 'Pratos de Chef', capInicial: 200000,
-                fornecedores: [ { id:'fda1', nome:'Fazendas Orgânicas Locais', custo: 30, frete: 5, q:'Alta' }, { id:'fda2', nome:'Importação Europeia', custo: 80, frete: 20, q:'Luxo' } ],
+            'food_alta': { sector: 'food', type: 'b2c', name: 'Restaurante Premium', loteQtd: 100, inputLbl: 'Ingredientes Raros', outputLbl: 'Pratos de Chef', capInicial: 200000,
+                fornecedores: [ { id:'fda1', nome:'Fazendas Orgânicas', custo: 30, frete: 5, q:'Alta' }, { id:'fda2', nome:'Importação Europeia', custo: 80, frete: 20, q:'Luxo' } ],
                 concorrentes: [ { nome: 'Fasano Elite', preco: 250, share: 100 } ], custoFixo: 25000, precoBase: 150 },
 
-            // FINANÇAS (NOVO)
-            'fin_retail': { sector: 'fin', type: 'b2c', name: 'Fintech (Banco Digital)', loteQtd: 5000, inputLbl: 'Captação interbancária', outputLbl: 'Cartões/Empréstimos', capInicial: 1000000,
-                fornecedores: [ { id:'fnr1', nome:'Mercado CDI', custo: 8, frete: 2, q:'Padrão' } ],
+            'fin_retail': { sector: 'fin', type: 'b2c', name: 'Fintech (Banco Digital)', loteQtd: 5000, inputLbl: 'Captação (CDI)', outputLbl: 'Cartões/Crédito', capInicial: 1000000,
+                fornecedores: [ { id:'fnr1', nome:'Mercado Interbancário', custo: 8, frete: 2, q:'Padrão' } ],
                 concorrentes: [ { nome: 'NuBank', preco: 35, share: 50 }, { nome: 'Itaú', preco: 50, share: 50 } ], custoFixo: 40000, precoBase: 30 },
-            'fin_b2b': { sector: 'fin', type: 'b2b', name: 'Banco de Investimentos (B2B)', loteQtd: 50, inputLbl: 'Fundos de VC', outputLbl: 'Rodadas de Capital', capInicial: 2500000,
+            'fin_b2b': { sector: 'fin', type: 'b2b', name: 'Banco de Investimentos', loteQtd: 50, inputLbl: 'Fundos de VC', outputLbl: 'Rodadas de Capital', capInicial: 2500000,
                 fornecedores: [ { id:'fnb1', nome:'Family Offices', custo: 2000, frete: 500, q:'Alta' } ],
                 concorrentes: [ { nome: 'BTG Pactual', preco: 4500, share: 60 }, { nome: 'XP Investimentos', preco: 3500, share: 40 } ], custoFixo: 120000, precoBase: 4000 }
         };
@@ -501,15 +522,12 @@
                 }
             }
         }
-        
-        // Garante que as opções carreguem de imediato para não gerar erro
         window.addEventListener('DOMContentLoaded', () => { updateSubSectors(); });
 
-        function fmt(usdValue, overrideCur = null) {
-            const cur = overrideCur || (state ? state.moeda : 'USD');
+        function fmt(usdValue) {
             if(usdValue === undefined || isNaN(usdValue)) return "0";
-            const converted = usdValue * exchangeRates[cur];
-            return new Intl.NumberFormat(cur === 'BRL' ? 'pt-BR' : cur === 'EUR' ? 'de-DE' : 'en-US', { style: 'currency', currency: cur }).format(converted);
+            const converted = usdValue * exchangeRates[state.moeda];
+            return new Intl.NumberFormat(state.moeda === 'BRL' ? 'pt-BR' : state.moeda === 'EUR' ? 'de-DE' : 'en-US', { style: 'currency', currency: state.moeda }).format(converted);
         }
         function parseToUSD(localValue) { return localValue / exchangeRates[state.moeda]; }
         function toLocal(usdValue) { return usdValue * exchangeRates[state.moeda]; }
@@ -521,13 +539,18 @@
                 fornecedorId: mod.fornecedores[0].id, precoVendaUSD: mod.precoBase,
                 pj: { caixa: mod.capInicial, caixaInicial: mod.capInicial, divida: 0, estoque: 0, extrato: [] },
                 pf: { caixa: 15000, salario: 5000, bens: [], extrato: [] },
-                emails: [] // E-mail será injetado após o state estar completamente definido
+                emails: [] 
             };
         }
 
         function changeScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+        }
+
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
         }
 
         function iniciarNovoJogo() {
@@ -537,14 +560,12 @@
             const modId = document.getElementById('setup-model').value;
             
             if(!ceo || !comp) return alert("Preencha todos os campos do Estatuto Social.");
-            if(!businessModels[modId]) return alert("Erro crítico de seleção. Atualize a página e tente novamente.");
+            if(!businessModels[modId]) return alert("Erro: Modelo não selecionado.");
             
-            // O GATILHO QUE CONGELAVA O JOGO ESTÁ RESOLVIDO AQUI
             state = gerarEstadoNovo(ceo, comp, cur, modId);
             const mod = businessModels[modId];
             
-            // Injeta o e-mail APÓS o 'state' existir globalmente
-            addEmail('Elena (Secretária/CFO)', `Abertura Concluída: ${comp}`, `Presidente ${ceo}, a estruturação da <strong>${comp}</strong> foi concluída.<br><br>Operamos no modelo <strong>${mod.name} (${mod.type.toUpperCase()})</strong> com um capital corporativo de <strong>${fmt(mod.capInicial)}</strong>.<br><br>A sua prioridade deve ser comprar suprimentos. Negociar volumes fechados (5x ou 20x) dá-nos margens logísticas melhores. Lembre-se que eu acompanharei as métricas para dedução de impostos anuais (IRPJ) caso a empresa dê lucro. Boa sorte.<br>- Elena`);
+            addEmail('Elena (Secretária/CFO)', `Abertura Concluída: ${comp}`, `Presidente ${ceo}, a estruturação da <strong>${comp}</strong> foi concluída na Junta.<br><br>Operamos no modelo <strong>${mod.name} (${mod.type.toUpperCase()})</strong> com um capital corporativo de <strong>${fmt(mod.capInicial)}</strong>.<br><br>A sua prioridade deve ser comprar suprimentos. Negociar volumes fechados (5x ou 20x) dá-nos margens logísticas melhores. Lembre-se que eu acompanharei as métricas para dedução de impostos anuais (IRPJ) caso a empresa dê lucro.<br>- Elena`);
 
             montarJogo();
         }
@@ -556,17 +577,17 @@
             document.getElementById('ui-sb-comp').innerText = state.empresa;
             document.getElementById('ui-brand-comp').innerText = state.empresa;
             document.getElementById('ui-main-logo').innerText = state.empresa.split(' ')[0].toUpperCase();
-            document.getElementById('ui-modelo-info').innerText = `${mod.name} (${mod.type.toUpperCase()}) • Câmbio Base: ${state.moeda}`;
+            document.getElementById('ui-modelo-info').innerText = `${mod.name} (${mod.type.toUpperCase()}) • Câmbio: ${state.moeda}`;
             
             document.getElementById('ui-lbl-produto').innerText = mod.outputLbl;
             document.getElementById('ui-lote-qtd').innerText = mod.loteQtd.toLocaleString();
             
             if(mod.type === 'b2b') {
                 document.getElementById('lbl-market-title').innerText = "Contratos B2B (Larga Escala)";
-                document.getElementById('lbl-market-desc').innerText = "Venda em grandes volumes para outras corporações. A concorrência é acérrima. Se o preço não for altamente competitivo, perde o contrato do mês inteiro.";
+                document.getElementById('lbl-market-desc').innerText = "Venda em grandes volumes. Concorrência severa no preço.";
             } else {
                 document.getElementById('lbl-market-title').innerText = "Varejo ao Consumidor (B2C)";
-                document.getElementById('lbl-market-desc').innerText = "O consumidor final é sensível ao preço, mas paga o prêmio exigido caso os produtos utilizem insumos de qualidade Premium/Alta.";
+                document.getElementById('lbl-market-desc').innerText = "Demanda sensível ao preço e à qualidade do fornecedor.";
             }
 
             document.getElementById('ui-preco').value = Math.round(toLocal(state.precoVendaUSD));
@@ -584,16 +605,16 @@
             mod.fornecedores.forEach(f => {
                 const checked = state.fornecedorId === f.id ? 'checked' : '';
                 html += `
-                <label class="list-item" style="cursor:pointer;" onclick="setFornecedor('${f.id}')">
+                <label class="list-item" onclick="setFornecedor('${f.id}')">
                     <div style="display:flex; gap:12px; align-items:center;">
                         <input type="radio" name="sup" class="sup-radio" ${checked}>
                         <div>
                             <div style="font-weight:600; font-size:13px;">${f.nome}</div>
-                            <div style="font-size:11px; color:var(--text-muted);">Qualidade / Perfil: ${f.q}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Qualidade: ${f.q}</div>
                         </div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-size:11px; color:var(--text-muted);">Custo Base Unitário</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Base/Unid</div>
                         <div style="font-weight:600;">${fmt(f.custo + f.frete)}</div>
                     </div>
                 </label>`;
@@ -644,7 +665,7 @@
                 state.pj.caixa -= totalUSD; state.pj.estoque += qtdReal;
                 addExtrato('pj', `Despesa Logística (${qtdReal} un.)`, -totalUSD);
                 atualizarUI();
-            } else { alert(`Liquidez corporativa insuficiente. Faltam fundos para pagar a fatura de ${fmt(totalUSD)}`); }
+            } else { alert(`Liquidez corporativa insuficiente. Necessita de: ${fmt(totalUSD)}`); }
         }
 
         function renderConcorrentes() {
@@ -652,7 +673,7 @@
             let html = '';
             mod.concorrentes.forEach(c => {
                 html += `
-                <div style="margin-bottom: 16px;">
+                <div style="margin-bottom: 12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px;">
                         <span style="font-weight:600;">${c.nome}</span><span>${fmt(c.preco)}</span>
                     </div>
@@ -678,7 +699,13 @@
 
         function atualizarUI() {
             const mod = businessModels[state.modelo];
+            const dataText = `A${state.ano}/M${state.mes}`;
             document.getElementById('ui-data').innerText = `Ano ${state.ano} / Mês ${state.mes}`;
+            
+            // Verifica se tem elemento mobile (adicionado via css)
+            const mobileData = document.getElementById('ui-data-mobile');
+            if(mobileData) mobileData.innerText = dataText;
+            if(window.innerWidth <= 768 && mobileData) { mobileData.style.display = 'block'; }
             
             document.getElementById('ui-caixa-pj').innerText = fmt(state.pj.caixa);
             document.getElementById('ui-custo-fixo').innerText = fmt(mod.custoFixo);
@@ -688,7 +715,7 @@
             document.getElementById('ui-caixa-pf').innerText = fmt(state.pf.caixa);
             document.getElementById('ui-salario-pf').innerText = fmt(state.pf.salario);
 
-            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#666;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3" style="text-align:center;">Nenhum registo bancário efetuado.</td></tr>';
+            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#666;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3" style="text-align:center;">Sem registos.</td></tr>';
             
             document.getElementById('tb-extrato-pj').innerHTML = buildTb(state.pj.extrato);
             document.getElementById('tb-extrato-pf').innerHTML = buildTb(state.pf.extrato);
@@ -703,7 +730,7 @@
         function tomarEmprestimo() {
             const valUSD = 100000;
             state.pj.caixa += valUSD; state.pj.divida += valUSD;
-            addExtrato('pj', 'Levantamento de Capital Bancário', valUSD);
+            addExtrato('pj', 'Levantamento de Capital (Dívida)', valUSD);
             atualizarUI();
         }
 
@@ -728,7 +755,7 @@
 
         function verificarEventosElena() {
             if (state.mes === 11) {
-                addEmail('Elena (CFO)', 'Lembrete Fiscal: IRPJ Acumulado', `O ano contabilístico fecha no mês que vem. Caso o fluxo de caixa corporativo esteja acima do inicial (${fmt(state.pj.caixaInicial)}), o imposto cobra 15% sobre o lucro retido. Acumule liquidez.`);
+                addEmail('Elena (CFO)', 'Lembrete Fiscal: IRPJ Acumulado', `O ano contabilístico fecha no próximo mês. Caso o fluxo de caixa corporativo esteja acima do inicial (${fmt(state.pj.caixaInicial)}), pagaremos 15% sobre o lucro retido. Acumule liquidez.`);
             }
             if (state.mes === 12) {
                 if (state.pj.caixa > state.pj.caixaInicial) {
@@ -755,10 +782,10 @@
             } else if (mod.type === 'b2b') {
                 const melhorPreco = Math.min(...mod.concorrentes.map(c => c.preco));
                 if (state.precoVendaUSD <= melhorPreco * 1.15) {
-                    vendas = Math.min(mod.loteQtd * 3, state.pj.estoque); // Vende o triplo
+                    vendas = Math.min(mod.loteQtd * 3, state.pj.estoque); 
                 } else {
                     vendas = 0;
-                    if(state.pj.estoque > 0) addEmail('Elena (Vendas B2B)', 'Alerta de Mercado', 'As vendas B2B (grossista) falharam este mês. O nosso preço de contrato está acima das outras companhias.');
+                    if(state.pj.estoque > 0) addEmail('Elena (Vendas B2B)', 'Alerta de Mercado', 'As vendas B2B falharam este mês. O nosso preço de contrato está acima das outras companhias.');
                 }
             }
 
@@ -774,7 +801,7 @@
             if (state.pj.divida > 0) {
                 const juros = state.pj.divida * 0.035;
                 state.pj.divida += juros;
-                addExtrato('pj', 'Juros Bancários (Passivos)', -juros);
+                addExtrato('pj', 'Juros Bancários', -juros);
             }
 
             if (state.pj.caixa >= state.pf.salario) {
@@ -791,13 +818,13 @@
             atualizarUI();
         }
 
-        const lojaPF = [{n: 'Coleção de Arte Moderna', v: 45000}, {n: 'Helicóptero Executivo', v: 850000}, {n: 'Iate Privado (Mónaco)', v: 4500000}];
+        const lojaPF = [{n: 'Coleção de Arte', v: 45000}, {n: 'Helicóptero Executivo', v: 850000}, {n: 'Iate Privado', v: 4500000}];
         
         function renderLojaPF() {
             document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
                 <div class="list-item" style="background: rgba(0,0,0,0.3);">
                     <div><div style="font-size:12px;font-weight:600;">${i.n}</div><div style="font-size:11px;color:var(--text-muted);">${fmt(i.v)}</div></div>
-                    <button class="btn" style="padding:6px 12px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Adquirir Ativo</button>
+                    <button class="btn" style="padding:8px 12px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Adquirir</button>
                 </div>
             `).join('');
         }
@@ -853,7 +880,13 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            el.classList.add('active');
+            if(el) el.classList.add('active');
+            
+            // Fecha menu lateral se estiver no mobile
+            if(window.innerWidth <= 768) {
+                document.querySelector('.sidebar').classList.remove('open');
+                document.querySelector('.sidebar-overlay').classList.remove('active');
+            }
         }
     </script>
 </body>
