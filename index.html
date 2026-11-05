@@ -57,9 +57,6 @@
         .form-input:focus, .form-select:focus { outline: none; border-color: var(--brand-primary); }
         .form-select { appearance: none; cursor: pointer; }
         
-        /* --- TELA DO JOGO (WORKSPACE) --- */
-        #screen-game { display: none; width: 100%; } /* Ativado via JS */
-        
         /* Sidebar */
         .sidebar { width: 280px; background: var(--panel-bg); backdrop-filter: var(--glass-blur); border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; padding: 30px 20px; z-index: 10; }
         .logo { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin-bottom: 5px; padding-left: 10px; }
@@ -373,7 +370,7 @@
             changeScreen('screen-game');
             atualizarUI();
             
-            // Abre o tutorial após 500ms
+            // Abre o tutorial
             setTimeout(() => {
                 document.getElementById('tutorial-modal').classList.add('active');
             }, 500);
