@@ -107,7 +107,6 @@
         td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 12px; }
         .t-val { font-weight: 500; text-align: right; }
 
-        /* Suppliers & Deals */
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.2); }
         .list-item:hover { background: rgba(255,255,255,0.02); border-color: #444; }
         .sup-radio { appearance: none; width: 18px; height: 18px; border: 1px solid #666; border-radius: 50%; outline: none; cursor: pointer; position: relative; }
@@ -117,7 +116,6 @@
         .market-bar-bg { width: 100%; height: 6px; background: #222; border-radius: 3px; overflow: hidden; margin-top: 8px; }
         .market-bar-fill { height: 100%; background: var(--info); border-radius: 3px; }
 
-        /* Emails */
         .e-item { padding: 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.2s; }
         .e-item:hover { background: rgba(255,255,255,0.03); }
         .e-item.unread { border-left: 3px solid var(--info); background: rgba(10, 132, 255, 0.05); }
@@ -143,7 +141,7 @@
     <!-- START -->
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
-        <div class="brand-subtitle">Simulador Executivo Global</div>
+        <div class="brand-subtitle">Simulador Executivo</div>
         <button class="btn btn-primary" style="padding: 14px 32px; font-size: 14px;" onclick="changeScreen('screen-setup')">Fundar Corporação</button>
     </div>
 
@@ -390,7 +388,7 @@
                     </div>
                 </div>
                 
-                <!-- TAB: BRANDING (Teaser) -->
+                <!-- TAB: BRANDING -->
                 <div id="tab-brand" class="tab">
                     <h1 class="page-title">Branding e Cultura</h1>
                     <div class="panel" style="text-align: center; padding: 60px 20px;">
@@ -402,7 +400,7 @@
                     </div>
                 </div>
                 
-                <!-- TAB: STOCK (Bolsa) -->
+                <!-- TAB: STOCK -->
                 <div id="tab-stock" class="tab">
                     <h1 class="page-title">Mercado de Capitais</h1>
                     <div class="panel" style="text-align: center; padding: 60px 20px;">
@@ -423,7 +421,6 @@
         const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
 
         const businessModels = {
-            // TECNOLOGIA
             'tech_retail': {
                 sector: 'tech', type: 'b2c', name: 'Varejo de Eletrónicos (Loja)',
                 loteQtd: 1000, inputLbl: 'Lotes Prontos', outputLbl: 'Smartphones (Venda)', capInicial: 150000,
@@ -454,7 +451,6 @@
                 concorrentes: [ { nome: 'DellCorp', preco: 6000, share: 50 }, { nome: 'HP Enterprise', preco: 12000, share: 50 } ],
                 custoFixo: 80000, precoBase: 6500
             },
-            // MODA
             'fashion_retail': {
                 sector: 'fashion', type: 'b2c', name: 'Boutique de Luxo',
                 loteQtd: 100, inputLbl: 'Coleções Prontas', outputLbl: 'Peças Exclusivas', capInicial: 250000,
@@ -474,7 +470,6 @@
                 concorrentes: [ { nome: 'Zêra Retail', preco: 30, share: 50 }, { nome: 'H&Massa', preco: 25, share: 50 } ],
                 custoFixo: 25000, precoBase: 25
             },
-            // ALIMENTAÇÃO
             'food_fast': {
                 sector: 'food', type: 'b2c', name: 'Rede de Fast Food',
                 loteQtd: 2000, inputLbl: 'Ingredientes Base', outputLbl: 'Refeições', capInicial: 100000,
@@ -501,6 +496,7 @@
         function updateSubSectors() {
             const sec = document.getElementById('setup-sec').value;
             const modelSelect = document.getElementById('setup-model');
+            if(!modelSelect) return;
             modelSelect.innerHTML = '';
             for (const key in businessModels) {
                 if (businessModels[key].sector === sec) {
@@ -511,7 +507,11 @@
                 }
             }
         }
-        updateSubSectors();
+        
+        // Garante execução correta no carregamento
+        window.addEventListener('DOMContentLoaded', () => {
+            updateSubSectors();
+        });
 
         function fmt(usdValue) {
             if(usdValue === undefined || isNaN(usdValue)) return "0";
@@ -582,7 +582,6 @@
             atualizarUI();
             renderEmails();
             
-            // Força a atualização do custo no dropdown inicial
             document.getElementById('ui-volume-compra').value = "1";
             atualizarCustoOP();
         }
@@ -636,7 +635,7 @@
             document.getElementById('ui-op-custounit').innerText = fmt(custoEfetivoUn);
             document.getElementById('ui-op-total').innerText = fmt(totalUSD);
             
-            calcularMargem(custoEfetivoUn); // Passa o custo com desconto para a margem
+            calcularMargem(custoEfetivoUn);
         }
 
         function emitirOrdemProducao() {
