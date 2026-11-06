@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Corp+ | Simulador de Negócios</title>
+    <title>Corp+ | Business OS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Roboto+Mono:wght@500&family=Montserrat:wght@500;700;800&family=Poppins:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 
@@ -179,16 +179,16 @@
             <g id="ic-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></g>
             <g id="ic-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></g>
             <g id="ic-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></g>
+            <g id="ic-settings"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></g>
             <g id="ic-tool"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>
-            <g id="ic-news"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M2 15h10"/><path d="M2 19h10"/></g>
         </defs>
     </svg>
 
     <!-- START -->
     <div id="screen-start" class="screen active">
         <div class="brand-title">CORP+</div>
-        <div class="brand-subtitle">Simulador de Negócios</div>
-        <button class="btn btn-primary" style="padding: 18px 48px; font-size: 16px; border-radius: 30px;" onclick="changeScreen('screen-setup')">Fundar Empresa</button>
+        <div class="brand-subtitle">Simulador de Negócios e Gestão</div>
+        <button class="btn btn-primary" style="padding: 16px 40px; font-size: 16px; border-radius: 30px;" onclick="changeScreen('screen-setup')">Fundar Empresa</button>
     </div>
 
     <!-- SETUP (Dados Base) -->
@@ -205,18 +205,17 @@
                 <input type="text" id="setup-comp" class="input" placeholder="Ex: Horizon Group" autocomplete="off">
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Moeda Base do Caixa</label>
-                <select id="setup-cur" class="select">
-                    <option value="BRL" selected>Real Brasileiro (BRL) - R$</option>
-                    <option value="USD">Dólar Americano (USD) - $</option>
-                    <option value="EUR">Euro (EUR) - €</option>
-                </select>
-            </div>
-
-            <div class="grid-half" style="margin-bottom: 24px;">
-                <div>
-                    <label class="form-label">Setor</label>
+            <div class="grid-half">
+                <div class="form-group">
+                    <label class="form-label">Moeda Base</label>
+                    <select id="setup-cur" class="select">
+                        <option value="BRL" selected>Real Brasileiro (BRL) - R$</option>
+                        <option value="USD">Dólar Americano (USD) - $</option>
+                        <option value="EUR">Euro (EUR) - €</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Setor Primário</label>
                     <select id="setup-sec" class="select" onchange="updateSubSectors()">
                         <option value="tech">Tecnologia</option>
                         <option value="fashion">Moda & Têxtil</option>
@@ -224,13 +223,24 @@
                         <option value="fin">Finanças (Bancos)</option>
                     </select>
                 </div>
-                <div>
-                    <label class="form-label">Modelo de Negócio</label>
-                    <select id="setup-model" class="select"></select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Modelo de Operação</label>
+                <select id="setup-model" class="select"></select>
+            </div>
+            
+            <div class="form-group" style="margin-top: 30px;">
+                <label class="form-label">Identidade Visual Base</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <div class="color-circle active" style="background: #0a84ff;" onclick="setBrandColor('#0a84ff', this)"></div>
+                    <div class="color-circle" style="background: #32d74b;" onclick="setBrandColor('#32d74b', this)"></div>
+                    <div class="color-circle" style="background: #ff9f0a;" onclick="setBrandColor('#ff9f0a', this)"></div>
+                    <div class="color-circle" style="background: #bf5af2;" onclick="setBrandColor('#bf5af2', this)"></div>
                 </div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 15px;" onclick="iniciarOnboarding()">Continuar para Personalização ➔</button>
+            <button class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 15px; margin-top: 10px;" onclick="iniciarNovoJogo()">Registar Empresa na Junta</button>
         </div>
     </div>
 
@@ -308,42 +318,43 @@
                 <span class="badge-count" id="ui-email-badge" style="display:none;">0</span>
             </div>
             <div class="menu-item" onclick="switchTab('tab-rh', 'bg-office', this)">
-                <div class="m-left"><svg><use href="#ic-users"/></svg> RH & Diretoria</div>
+                <div class="m-left"><svg><use href="#ic-users"/></svg> RH & C-Level</div>
             </div>
 
             <div class="menu-section">Logística e Produção</div>
-            <div class="menu-item active" onclick="switchTab('tab-ops', 'bg-factory', this)"><div class="m-left"><svg><use href="#ic-truck"/></svg> Linha de Produção</div></div>
-            <div class="menu-item" onclick="switchTab('tab-rd', 'bg-factory', this)"><div class="m-left"><svg><use href="#ic-tool"/></svg> P&D (Estudos)</div></div>
+            <div class="menu-item active" onclick="switchTab('tab-ops', 'bg-factory', this)"><div class="m-left"><svg><use href="#ic-truck"/></svg> Cadeia de Suprimentos</div></div>
+            <div class="menu-item" onclick="switchTab('tab-rd', 'bg-factory', this)"><div class="m-left"><svg><use href="#ic-tool"/></svg> Pesquisa & Desenvolvimento</div></div>
             
             <div class="menu-section">Mercado e Finanças</div>
-            <div class="menu-item" onclick="switchTab('tab-market', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-globe"/></svg> Estratégia B2C/B2B</div></div>
+            <div class="menu-item" onclick="switchTab('tab-market', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-globe"/></svg> Estratégia de Vendas</div></div>
             <div class="menu-item" onclick="switchTab('tab-fin', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-dollar"/></svg> Tesouraria (PJ)</div></div>
             <div class="menu-item" onclick="switchTab('tab-stock', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-activity"/></svg> Bolsa de Valores</div></div>
             
             <div class="menu-section">A Esfera Privada</div>
-            <div class="menu-item" onclick="switchTab('tab-ceo', 'bg-home', this)"><div class="m-left"><svg><use href="#ic-user"/></svg> Património do CEO</div></div>
+            <div class="menu-item" onclick="switchTab('tab-ceo', 'bg-home', this)"><div class="m-left"><svg><use href="#ic-user"/></svg> Património do Presidente</div></div>
+            <div class="menu-item" onclick="switchTab('tab-brand', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-star"/></svg> Branding & Identidade</div></div>
         </div>
 
         <div class="workspace">
             <div class="loader-overlay" id="loading-overlay">
                 <div class="spinner"></div>
-                <div style="font-weight: 700; font-size: 14px; letter-spacing: 2px;" id="loader-text">A PROCESSAR CICLO...</div>
+                <div style="font-weight: 600; font-size: 14px; letter-spacing: 1px;">A PROCESSAR CICLO...</div>
             </div>
 
             <div class="topbar">
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <button class="btn-menu" onclick="toggleSidebar()"><svg><use href="#ic-menu"/></svg></button>
                     <div>
-                        <div style="font-size: 11px; color: var(--info); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;" id="ui-modelo-info">MOD INFO</div>
-                        <div style="font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                            <span id="ui-data-dia">Dia 1</span> <span style="color: var(--text-muted);">•</span> <span style="color: var(--text-muted); font-weight: 500;" id="ui-data-mes">Mês 1 / Ano 1</span>
+                        <div style="font-size: 11px; color: var(--info); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;" id="ui-modelo-info">MOD INFO</div>
+                        <div style="font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                            <span id="ui-data-dia">Dia 1</span> • <span style="color: var(--text-muted);" id="ui-data-mes">Mês 1 / Ano 1</span>
                         </div>
                     </div>
                 </div>
                 <div class="advance-controls">
                     <button class="btn" onclick="avancarCiclo(1)">1 Dia</button>
-                    <button class="btn btn-primary" onclick="avancarCiclo(7)">1 Semana <span class="tag-premium">FUTURO</span></button>
-                    <button class="btn btn-primary" style="background: var(--premium); border-color: var(--premium);" onclick="avancarCiclo(30)">1 Mês <span class="tag-premium" style="background: rgba(0,0,0,0.5);">FUTURO</span></button>
+                    <button class="btn btn-primary" onclick="avancarCiclo(7)">1 Semana <span class="tag-premium">Futuro</span></button>
+                    <button class="btn btn-primary" style="background: var(--premium); border-color: var(--premium);" onclick="avancarCiclo(30)">1 Mês <span class="tag-premium" style="background: rgba(0,0,0,0.5);">Futuro</span></button>
                 </div>
             </div>
 
@@ -355,14 +366,14 @@
                     
                     <div class="grid-3">
                         <div class="card">
-                            <div class="card-header">Liquidez (Caixa Empresa)</div>
-                            <div class="card-value c-green" id="ui-caixa-pj">0</div>
+                            <div class="card-header">Liquidez Empresarial</div>
+                            <div class="card-value c-green" id="ui-caixa-pj">R$ 0,00</div>
                             <div class="card-sub">OPEX Previsto: <span id="ui-custo-fixo">0</span>/mês</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Armazém / Estoque</div>
+                            <div class="card-header">Produto Final (Armazém)</div>
                             <div class="card-value" id="ui-estoque">0</div>
-                            <div class="card-sub" id="ui-lbl-produto">Unidades prontas</div>
+                            <div class="card-sub" id="ui-lbl-produto">Unidades prontas para venda</div>
                         </div>
                         <div class="card">
                             <div class="card-header">Clima de Mercado Macro</div>
@@ -373,17 +384,19 @@
 
                     <div class="panel" style="margin-bottom: 24px;">
                         <div class="panel-title">1. Inventário de Insumos Brutos</div>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">O seu modelo de negócio exige múltiplos insumos. Negocie as matérias-primas antes de ordenar a produção da fábrica. Compras de 5k ou 20k unidades garantem descontos volumosos.</p>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Os modelos de negócio avançados exigem múltiplos insumos. Compre matérias-primas antes de ordenar a produção da fábrica.</p>
                         
-                        <div id="ui-insumos-list"></div>
+                        <div id="ui-insumos-list">
+                            <!-- Preenchido via JS (ex: Carne, Pão, Vegetais) -->
+                        </div>
                     </div>
 
                     <div class="panel">
-                        <div class="panel-title">2. Linha de Montagem / Cozinha</div>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Converta os seus insumos brutos em <strong id="ui-lbl-produto2" style="color:var(--text-main);">Produto Final</strong>. É estritamente necessário ter saldo de todos os insumos requeridos na receita base.</p>
+                        <div class="panel-title">2. Linha de Produção / Montagem</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Converta os seus insumos brutos em <strong id="ui-lbl-produto2" style="color:var(--text-main);">Produto Final</strong>. É necessário ter saldo de todos os insumos requeridos.</p>
                         
                         <div class="form-group">
-                            <label class="form-label">Quantidade de Produtos Finais a Fabricar</label>
+                            <label class="form-label">Quantidade de Produtos a Fabricar</label>
                             <input type="number" id="ui-qtd-produzir" class="input" value="100">
                         </div>
                         
@@ -395,8 +408,8 @@
                 <div id="tab-rd" class="tab">
                     <h1 class="page-title">Centro de Pesquisa & Desenvolvimento (R&D)</h1>
                     <div class="panel">
-                        <div class="panel-title">Estudos Corporativos Avançados</div>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Invista capital da empresa em estudos profundos para desbloquear bônus passivos permanentes na sua operação fabril e administrativa.</p>
+                        <div class="panel-title">Estudos Corporativos</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 24px;">Invista capital da empresa em estudos profundos para desbloquear bônus passivos permanentes na sua operação.</p>
                         
                         <div id="ui-rd-list"></div>
                     </div>
@@ -404,7 +417,7 @@
 
                 <!-- TAB: MERCADO -->
                 <div id="tab-market" class="tab">
-                    <h1 class="page-title">Estratégia de Mercado e Vendas</h1>
+                    <h1 class="page-title">Posicionamento de Mercado e Vendas</h1>
                     <div class="grid-2">
                         <div class="panel">
                             <div class="panel-title" id="lbl-market-title">Precificação Unitária</div>
@@ -412,19 +425,12 @@
                             
                             <div class="form-group">
                                 <label class="form-label">Preço ao Consumidor (Unitário)</label>
-                                <input type="number" id="ui-preco" class="input" value="0" oninput="calcularMargem()">
+                                <input type="number" id="ui-preco" class="input" value="0">
                             </div>
                             
                             <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span style="font-size: 12px; color: var(--text-muted);">Custo Efetivo Unitário de Produção:</span>
-                                    <span id="ui-margem-custo" style="font-size: 13px; font-weight: 600;">$ 0</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="font-size: 12px; color: var(--text-muted);">Margem Bruta (Lucro/Unidade):</span>
-                                    <span id="ui-margem-lucro" style="font-size: 15px; font-weight: 700;" class="c-green">$ 0</span>
-                                </div>
-                                <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">O custo de produção depende do "blend" de qualidades dos insumos que você comprou e do desconto de volume. Garanta que o preço de venda cobre a matéria-prima e sobra para o OPEX diário.</p>
+                                <p style="font-size: 12px; color: var(--info); margin-bottom: 8px;">Aviso Estratégico:</p>
+                                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">O custo unitário de produção agora depende do "blend" (mistura) de qualidades dos insumos que você comprou. Garanta que o preço de venda cobre a soma de todas as matérias-primas gastas por unidade.</p>
                             </div>
                         </div>
                         <div class="panel">
@@ -440,49 +446,49 @@
                     
                     <div class="panel" style="margin-bottom: 24px;">
                         <div class="panel-title">Conselho Executivo (C-Level)</div>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Diretores otimizam brutalmente a empresa, mas exigem bónus de contratação milionários e salários fixos que incham o OPEX para sempre.</p>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Diretores otimizam brutalmente a empresa, mas inflacionam o OPEX.</p>
                         
-                        <div class="list-item">
+                        <div class="list-item" style="background: rgba(0,0,0,0.4); border-color: #333;">
                             <div>
-                                <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">CMO (Chief Marketing Officer)</div>
-                                <div style="font-size: 12px; color: var(--success); margin-bottom: 6px;">Bónus: +30% Demanda de Vendas. Permite praticar preços mais altos.</div>
-                                <div style="font-size: 11px; color: var(--danger);">Salário Extra: <span id="ui-rh-cmo-val"></span>/mês</div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Diretor de Marketing (CMO)</div>
+                                <div style="font-size: 12px; color: var(--success); margin-bottom: 4px;">Benefício: +30% Demanda/Vendas</div>
+                                <div style="font-size: 11px; color: var(--danger);">Custo: <span id="ui-rh-custo-cmo">-</span>/mês</div>
                             </div>
-                            <button class="btn btn-primary" id="btn-hire-cmo" onclick="contratarRH('cmo')">Recrutar</button>
+                            <button class="btn btn-primary" id="btn-hire-cmo" onclick="contratarDiretor('cmo')">Contratar</button>
                         </div>
                         
-                        <div class="list-item">
+                        <div class="list-item" style="background: rgba(0,0,0,0.4); border-color: #333;">
                             <div>
-                                <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">COO (Chief Operating Officer)</div>
-                                <div style="font-size: 12px; color: var(--success); margin-bottom: 6px;">Bónus: Corta ineficiências e reduz o Custo Fixo Operacional em 20%.</div>
-                                <div style="font-size: 11px; color: var(--danger);">Salário Extra: <span id="ui-rh-coo-val"></span>/mês</div>
+                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Diretor de Operações (COO)</div>
+                                <div style="font-size: 12px; color: var(--success); margin-bottom: 4px;">Benefício: Reduz o Custo Fixo base em 20%</div>
+                                <div style="font-size: 11px; color: var(--danger);">Custo: <span id="ui-rh-custo-coo">-</span>/mês</div>
                             </div>
-                            <button class="btn btn-primary" id="btn-hire-coo" onclick="contratarRH('coo')">Recrutar</button>
+                            <button class="btn btn-primary" id="btn-hire-coo" onclick="contratarDiretor('coo')">Contratar</button>
                         </div>
                     </div>
 
                     <div class="panel">
-                        <div class="panel-title">Staff de Apoio (Contratação Direta)</div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Pessoal essencial para o bom funcionamento físico da empresa.</p>
+                        <div class="panel-title">Staff Operacional</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Pessoal essencial para o bom funcionamento do ecossistema físico.</p>
                         
                         <div class="list-item">
                             <div>
-                                <div style="font-size: 13px; font-weight: 700;">Equipa de Limpeza & Facilities</div>
-                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Mantém o moral. Aumenta a velocidade de produção fabril levemente.</div>
+                                <div style="font-size: 13px; font-weight: 600;">Equipa de Limpeza & Facilities</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">Melhora o moral. Sem eles, as máquinas quebram mais rápido.</div>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div style="font-size: 14px; font-weight: 700;">Qtd: <span id="ui-rh-limp-qtd">0</span></div>
-                                <button class="btn" onclick="contratarStaff('limpeza')">Contratar (+1)</button>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 13px; font-weight: 600;">Qtd: <span id="ui-rh-limp-qtd">0</span></div>
+                                <button class="btn" onclick="contratarStaff('limpeza')">+</button>
                             </div>
                         </div>
                         <div class="list-item">
                             <div>
-                                <div style="font-size: 13px; font-weight: 700;">Segurança Privada Armênia</div>
-                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Inibe eventos macroeconómicos de "Roubo de Armazém" noturnos.</div>
+                                <div style="font-size: 13px; font-weight: 600;">Segurança Privada</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">Inibe eventos macro de "Roubo de Estoque".</div>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div style="font-size: 14px; font-weight: 700;">Qtd: <span id="ui-rh-seg-qtd">0</span></div>
-                                <button class="btn" onclick="contratarStaff('seguranca')">Contratar (+1)</button>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 13px; font-weight: 600;">Qtd: <span id="ui-rh-seg-qtd">0</span></div>
+                                <button class="btn" onclick="contratarStaff('seguranca')">+</button>
                             </div>
                         </div>
                     </div>
@@ -490,27 +496,27 @@
 
                 <!-- TAB: FINANCEIRO PJ -->
                 <div id="tab-fin" class="tab">
-                    <h1 class="page-title">Tesouraria Corporativa</h1>
+                    <h1 class="page-title">Tesouraria e Contabilidade</h1>
                     <div class="grid-2">
                         <div class="card">
-                            <div class="card-header">Dívida Bancária Total</div>
+                            <div class="card-header">Dívida Bancária</div>
                             <div class="card-value c-red" id="ui-divida-pj">0</div>
-                            <div class="card-sub">Custo de Juros: 3.5% ao mês</div>
+                            <div class="card-sub">Custo Diário de Juros: 0.11% ao dia</div>
                         </div>
                         <div class="panel" style="margin:0;">
                             <div class="panel-title">Operações de Dívida</div>
                             <div class="grid-half" style="margin-bottom: 16px;">
                                 <button class="btn" onclick="tomarEmprestimo()">Emitir Dívida</button>
-                                <button class="btn btn-primary" onclick="amortizarDivida()">Amortizar Saldo</button>
+                                <button class="btn btn-primary" onclick="amortizarDivida()">Amortizar</button>
                             </div>
-                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Montante a abater">
+                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Montante a abater da dívida">
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-title">Extrato de Conta (Empresa PJ)</div>
-                        <div style="max-height: 400px; overflow-y: auto; margin: -20px; margin-top: 0;">
+                        <div class="panel-title">Extrato de Movimentação PJ</div>
+                        <div style="max-height: 350px; overflow-y: auto; margin: -20px; margin-top: 0;">
                             <table style="margin-top: 10px;">
-                                <thead><tr><th>Data/Turno</th><th>Descritivo</th><th style="text-align: right;">Montante ($/€/R$)</th></tr></thead>
+                                <thead><tr><th>Data</th><th>Descritivo</th><th style="text-align: right;">Montante</th></tr></thead>
                                 <tbody id="tb-extrato-pj"></tbody>
                             </table>
                         </div>
@@ -519,19 +525,53 @@
 
                 <!-- TAB: INBOX -->
                 <div id="tab-mail" class="tab">
-                    <h1 class="page-title">Caixa de Entrada Oficial</h1>
+                    <h1 class="page-title">Gabinete de Comunicações</h1>
                     <div id="ui-email-list"></div>
+                </div>
+
+                <!-- TAB: BRANDING -->
+                <div id="tab-brand" class="tab">
+                    <h1 class="page-title">Identidade Visual e Sede</h1>
+                    <div class="grid-2">
+                        <div class="panel">
+                            <div class="panel-title">Personalização Dinâmica da Marca</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Modifique a paleta e a fonte. A interface vai adaptar-se instantaneamente para refletir o seu negócio.</p>
+                            
+                            <label class="form-label">Cor Oficial (Accent)</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+                                <div class="color-circle active" style="background: #0a84ff;" onclick="setBrandColor('#0a84ff', this)"></div>
+                                <div class="color-circle" style="background: #32d74b;" onclick="setBrandColor('#32d74b', this)"></div>
+                                <div class="color-circle" style="background: #ff9f0a;" onclick="setBrandColor('#ff9f0a', this)"></div>
+                                <div class="color-circle" style="background: #e0e0e0;" onclick="setBrandColor('#e0e0e0', this)"></div>
+                                <div class="color-circle" style="background: #bf5af2;" onclick="setBrandColor('#bf5af2', this)"></div>
+                                <div class="color-circle" style="background: #ff453a;" onclick="setBrandColor('#ff453a', this)"></div>
+                            </div>
+
+                            <label class="form-label">Tipografia</label>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <button class="btn" style="justify-content: flex-start; font-family: 'Inter', sans-serif;" onclick="setBrandFont('modern')">Modern Sans (Tech/Startup)</button>
+                                <button class="btn" style="justify-content: flex-start; font-family: 'Playfair Display', serif; font-size: 15px;" onclick="setBrandFont('serif')">Classic Serif (Luxo/Moda)</button>
+                                <button class="btn" style="justify-content: flex-start; font-family: 'Roboto Mono', monospace;" onclick="setBrandFont('mono')">Console Mono (Finanças)</button>
+                            </div>
+                        </div>
+
+                        <div class="panel" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Sede Física Corporativa</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Expanda os seus escritórios para alojar mais Staff e Diretores. Operações maiores requerem sedes de prestígio.</p>
+                            <button class="btn btn-disabled">Transferir Sede para Distrito Financeiro - Em Breve</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- TAB: CEO (PF) -->
                 <div id="tab-ceo" class="tab">
-                    <h1 class="page-title">Património e Estilo de Vida</h1>
+                    <h1 class="page-title">Gestão de Património do Presidente</h1>
                     <div class="grid-2">
                         <div>
                             <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
                                 <div class="card-header">Conta Bancária Privada</div>
                                 <div class="card-value c-green" id="ui-caixa-pf">0</div>
-                                <div class="card-sub">Pró-labore Creditado: <span id="ui-salario-pf">0</span>/dia</div>
+                                <div class="card-sub">Pró-labore Diário: <span id="ui-salario-pf">0</span>/dia</div>
                             </div>
                             <div class="panel">
                                 <div class="panel-title">Mercado de Luxo Imobiliário/Auto</div>
@@ -539,9 +579,9 @@
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">Meus Ativos Pessoais (<span id="ui-ceo-nome-display">CEO</span>)</div>
+                            <div class="panel-title">Meus Ativos Pessoais</div>
                             <div id="ui-meus-bens" style="margin-bottom: 24px;"></div>
-                            <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 15px;">Extrato Privado (PF)</div>
+                            <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 15px;">Extrato da Conta Pessoal (PF)</div>
                             <div style="max-height: 250px; overflow-y: auto; margin: -20px; margin-top: 0;">
                                 <table style="margin-top: 10px;"><tbody id="tb-extrato-pf"></tbody></table>
                             </div>
@@ -551,14 +591,14 @@
                 
                 <!-- TAB: STOCK -->
                 <div id="tab-stock" class="tab">
-                    <h1 class="page-title">Mercado de Capitais (B3 / NYSE)</h1>
+                    <h1 class="page-title">Mercado de Capitais (IPO)</h1>
                     <div class="panel" style="text-align: center; padding: 60px 20px;">
-                        <h2 style="font-size: 48px; font-weight: 800; margin-bottom: 10px;" id="ui-valuation">0</h2>
-                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 40px;">Valuation Estimado (Base de Caixa, Inventário e Dívida)</div>
+                        <h2 style="font-size: 42px; font-weight: 700; margin-bottom: 10px;" id="ui-valuation">0</h2>
+                        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation Estimado (Base de Caixa, Inventário e Dívida)</div>
                         <p style="font-size: 14px; color: #aaa; max-width: 500px; margin: 0 auto 30px; line-height: 1.6;">
-                            A sua empresa é de capital fechado. Para abrir capital e realizar o IPO (lançar ações na bolsa), o Valuation deve superar a meta dos bancos de investimento associados ao seu setor.
+                            A sua empresa é de capital privado. Para abrir capital e lançar ações em bolsa, o Valuation deve superar a meta dos bancos de investimento associados ao seu setor.
                         </p>
-                        <button class="btn btn-primary" id="btn-ipo" style="padding: 16px 36px; font-size: 15px; border-radius: 30px;" onclick="realizarIPO()">Preparar Oferta Pública (IPO)</button>
+                        <button class="btn btn-primary" id="btn-ipo" style="padding: 16px 32px; font-size: 15px; border-radius: 30px;" onclick="realizarIPO()">Preparar Oferta Pública (IPO)</button>
                     </div>
                 </div>
 
@@ -779,6 +819,7 @@
             document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
             
+            // Muda fundo
             document.getElementById('bg-layer').className = bgClass;
             
             if(window.innerWidth <= 900) {
@@ -907,7 +948,9 @@
                 addExtrato('pj', `Matéria-prima: ${insumoDef.nome} (${qtd} un)`, -custoReal);
                 syncUI();
                 renderInsumos();
-            } else { alert(`Caixa empresarial insuficiente para faturar ${fmt(custoReal)}.`); }
+            } else {
+                alert(`Caixa empresarial insuficiente para liquidar fatura de fornecedores no valor de ${fmt(custoReal)}.`);
+            }
         }
 
         function executarProducao() {
@@ -927,14 +970,18 @@
 
             if(!possivel) return alert("Falta matéria-prima para a linha de montagem!\nCompre:\n" + falhaMsg);
 
-            for(let k in mod.receita) { state.pj.insumos[k].qtd -= (mod.receita[k] * qtdProd); }
+            for(let k in mod.receita) {
+                state.pj.insumos[k].qtd -= (mod.receita[k] * qtdProd);
+            }
             
             state.pj.estoque += qtdProd;
             addExtrato('pj', `Operação Concluída: ${mod.outputLbl} (${qtdProd} un)`, 0);
+            
             syncUI();
             renderInsumos();
         }
 
+        /* --- PESQUISAS (R&D) --- */
         function renderPesquisas() {
             let h = '';
             pesquisasData.forEach(p => {
@@ -956,11 +1003,13 @@
             if(state.pj.caixa >= custo) {
                 state.pj.caixa -= custo;
                 state.pj.pesquisas.push(id);
-                addExtrato('pj', `Pesquisa & Desenvolvimento`, -custo);
-                addEmail('Departamento de P&D', 'Tecnologia Aplicada com Sucesso', `Senhor Presidente, o investimento milionário surtiu efeito. A pesquisa foi implementada na empresa e os benefícios operacionais já estão ativos na folha de cálculos.`);
+                addExtrato('pj', `Investimento P&D: Novo Estudo`, -custo);
+                addEmail('Departamento P&D', 'Tecnologia Aplicada com Sucesso', `Senhor Presidente, o investimento milionário surtiu efeito. A pesquisa foi implementada na empresa e os benefícios operacionais já estão ativos na folha de cálculos.`);
                 renderPesquisas();
                 syncUI();
-            } else { alert("Capital Corporativo Insuficiente para R&D."); }
+            } else {
+                alert("Capital Corporativo Insuficiente para R&D.");
+            }
         }
 
         /* --- RH --- */
@@ -969,8 +1018,8 @@
             if (state.pj.caixa >= custo) {
                 state.pj.diretores[cargo] = true;
                 state.pj.caixa -= custo;
-                addExtrato('pj', `Bónus de Contratação (Headhunter ${cargo.toUpperCase()})`, -custo);
-                addEmail('Recursos Humanos', `Executivo Adicionado à Diretoria`, `O novo diretor ${cargo.toUpperCase()} assinou o contrato. O salário mensal milionário será integrado no OPEX diário a partir de hoje.`);
+                addExtrato('pj', `Bónus Contratação (${cargo.toUpperCase()})`, -custo);
+                addEmail('Recursos Humanos', `Executivo Adicionado à Diretoria`, `O novo diretor ${cargo.toUpperCase()} foi integrado e terá impacto no OPEX diário a partir deste ciclo.`);
                 syncUI();
             } else { alert("A liquidez é insuficiente para o bónus inicial do Headhunter."); }
         }
@@ -981,9 +1030,12 @@
                 state.pj.staff[tipo]++;
                 addExtrato('pj', `Contratação Operacional (${tipo})`, -c);
                 syncUI();
-            } else { alert("Caixa Insuficiente."); }
+            } else {
+                alert("Caixa Insuficiente.");
+            }
         }
 
+        /* --- MERCADO --- */
         function renderConcorrentes() {
             const mod = businessModels[state.modelo];
             let html = '';
@@ -1090,7 +1142,7 @@
             }
             
             const mBens = document.getElementById('ui-meus-bens');
-            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(0,0,0,0.5); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:12px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:11px;">Sem ativos de luxo reportados.</span>';
+            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(0,0,0,0.5); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:12px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:11px;">Nenhum ativo de luxo na alçada privada.</span>';
             
             calcularMargem(); 
         }
@@ -1142,7 +1194,6 @@
                 let fatorPreco = mediaConc / state.precoVendaUSD;
                 let fatorMkt = state.pj.diretores.cmo || state.pj.pesquisas.includes('p_mkt') ? 1.30 : 1.0; 
                 
-                // Qualidade dos Insumos afeta Venda B2C
                 let qualBonus = 1.0;
                 for(let k in state.pj.insumos) {
                     const fId = state.pj.insumos[k].fornId;
@@ -1154,7 +1205,7 @@
                 let capDiaria = Math.floor(capMensal / 30);
                 vendasDia = Math.min(capDiaria, state.pj.estoque);
             } else if (mod.type === 'b2b') {
-                if (Math.random() < 0.1) { // 10% chance diária de fechar B2B
+                if (Math.random() < 0.1) { 
                     const melhorPreco = Math.min(...mod.conc.map(c => c.preco));
                     const tol = state.pj.diretores.cmo ? 1.25 : 1.10; 
                     if (state.precoVendaUSD <= melhorPreco * tol) {
@@ -1189,7 +1240,6 @@
                 state.pj.caixa -= salarioDia; state.pf.caixa += salarioDia;
             }
 
-            // Virada de Mês e Ano
             state.data.dia++;
             if (state.data.dia > 30) {
                 state.data.dia = 1; state.data.mes++;
@@ -1206,14 +1256,13 @@
                         const lucro = state.pj.caixa - state.pj.caixaInicial;
                         const imp = lucro * 0.15;
                         state.pj.caixa -= imp;
-                        addExtrato('pj', 'Imposto de Renda (IRPJ 15%)', -imp);
-                        addEmail('Receita Federal', 'Tributos Liquidados', `O fisco reteve 15% do seu lucro anual. Pagou: ${fmt(imp)}.`);
+                        addExtrato('pj', 'Leão: IRPJ (15% s/ Lucro)', -imp);
+                        addEmail('Ministério das Finanças', 'Imposto Liquidado', `O fisco recolheu ${fmt(imp)} referente a 15% sobre o crescimento de liquidez anual da sua corporação.`);
                         state.pj.caixaInicial = state.pj.caixa;
                     }
                 }
             }
 
-            // Exibir Modal de Jornal se algo grave aconteceu no loop
             if (journalEventTriggered) {
                 abrirJornal(journalEventTriggered);
             }
@@ -1221,9 +1270,9 @@
 
         /* --- FINANÇAS E BOLSA --- */
         function tomarEmprestimo() {
-            const v = 500000;
+            const v = 250000;
             state.pj.caixa += v; state.pj.divida += v;
-            addExtrato('pj', 'Crédito Adquirido (Emissão Dívida)', v); syncUI();
+            addExtrato('pj', 'Linha de Crédito', v); syncUI();
         }
         function amortizarDivida() {
             const vl = parseFloat(document.getElementById('ui-val-amortizar').value);
@@ -1233,7 +1282,7 @@
             if (vU > state.pj.caixa) return alert("Liquidez corporativa insuficiente.");
             const ab = Math.min(vU, state.pj.divida);
             state.pj.caixa -= ab; state.pj.divida -= ab;
-            addExtrato('pj', 'Amortização Passiva', -ab);
+            addExtrato('pj', 'Amortização de Dívida', -ab);
             document.getElementById('ui-val-amortizar').value = ''; syncUI();
         }
         function realizarIPO() {
@@ -1244,19 +1293,19 @@
             
             if (finalVal >= mod.ipoMeta && !state.pj.aberta) {
                 state.pj.aberta = true;
-                const aporte = finalVal * 0.35; // 35% do valor em caixa
+                const aporte = finalVal * 0.25;
                 state.pj.caixa += aporte;
-                addExtrato('pj', 'Liquidação IPO (Bolsa de Valores)', aporte);
-                addEmail('Mesa de Operações', 'IPO Concluído e Ações Cotadas', `O toque da campainha na Bolsa de Nova Iorque/B3 foi estrondoso. As ações da <strong>${state.empresa}</strong> foram lançadas aos fundos institucionais, injetando <strong>${fmt(aporte)}</strong> em cash puro no nosso cofre.\n\nA partir de hoje, somos públicos. Não dececione os acionistas.`);
+                addExtrato('pj', 'Capital Aberto (IPO)', aporte);
+                addEmail('Bolsa de Valores', 'IPO Consolidado', `Foi um sucesso. O mercado comprou as suas ações, injetando <strong>${fmt(aporte)}</strong> em cash puro no seu balanço.\n\nAgora a empresa é pública. Mantenha os acionistas felizes.`);
                 syncUI();
             }
         }
 
         /* --- LOJA PF --- */
-        const lojaPF = [{n: 'Coleção de Arte Moderna', v: 45000}, {n: 'Superdesportivo Importado', v: 350000}, {n: 'Helicóptero Agusta', v: 1200000}, {n: 'Iate Oceânico', v: 6500000}];
+        const lojaPF = [{n: 'Arte Contemporânea Exclusiva', v: 45000}, {n: 'Automóvel Superdesportivo', v: 350000}, {n: 'Helicóptero Corporativo', v: 1200000}, {n: 'Iate no Mónaco', v: 6500000}];
         function renderLojaPF() {
             document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
-                <div class="list-item" style="background: rgba(0,0,0,0.4);">
+                <div class="list-item" style="background: rgba(0,0,0,0.3);">
                     <div><div style="font-size:12px;font-weight:700;">${i.n}</div><div style="font-size:11px;color:var(--text-muted);">${fmt(i.v)}</div></div>
                     <button class="btn btn-primary" style="padding:10px 14px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Comprar</button>
                 </div>
@@ -1266,7 +1315,7 @@
             if (state.pf.caixa >= v) {
                 state.pf.caixa -= v; state.pf.bens.push({n, v});
                 addExtrato('pf', `Aquisição Patrimonial: ${n}`, -v); syncUI();
-            } else { alert("A sua conta pessoal não suporta esta compra."); }
+            } else { alert("Patrimônio Pessoal Insuficiente. Junte mais pró-labore."); }
         }
 
         /* --- EMAILS --- */
@@ -1291,3 +1340,4 @@
     </script>
 </body>
 </html>
+
