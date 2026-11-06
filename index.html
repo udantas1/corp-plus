@@ -1,167 +1,331 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Corp+ | Business OS</title>
+    <title>Corp+ | Simulador de Negócios</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Roboto+Mono:wght@500&family=Montserrat:wght@500;700;800&family=Poppins:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 
         :root {
-            --bg: #030303; --surface: rgba(15, 15, 15, 0.9); --surface-hover: rgba(30, 30, 30, 0.9);
-            --border: #2a2a2a; --text-main: #f0f0f0; --text-muted: #888888;
-            --danger: #ff453a; --success: #32d74b; --warning: #ff9f0a; --info: #0a84ff; --premium: #bf5af2;
+            --bg: #030303;
+            --surface: rgba(15, 15, 15, 0.92);
+            --surface-hover: rgba(30, 30, 30, 0.95);
+            --border: #2a2a2a;
+            --text-main: #f0f0f0;
+            --text-muted: #888888;
+            --danger: #ff453a;
+            --success: #32d74b;
+            --warning: #ff9f0a;
+            --info: #0a84ff;
+            --premium: #bf5af2;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        html, body { height: 100%; width: 100%; overflow: hidden; position: fixed; font-size: 13px; overscroll-behavior-y: none; background-color: #000; color: var(--text-main); transition: background 0.5s ease; }
-        #bg-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; transition: 0.8s ease; opacity: 0.5; background-size: cover; background-position: center; }
-        .bg-setup { background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%), linear-gradient(#050505, #000); }
-        .bg-office { background: linear-gradient(to bottom, rgba(0,0,0,0.8), #000), repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 100px); }
-        .bg-factory { background: linear-gradient(45deg, rgba(255,69,58,0.05), transparent), repeating-linear-gradient(45deg, #0a0a0a 0px, #0a0a0a 10px, #111 10px, #111 20px); }
-        .bg-home { background: linear-gradient(to bottom, rgba(30, 20, 10, 0.2), #000); }
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-size: 13px;
+            background-color: #050505;
+            color: var(--text-main);
+        }
 
-        .screen { display: none !important; width: 100%; height: 100%; position: relative; z-index: 1; }
-        .screen.active { display: flex !important; animation: fadeIn 0.4s ease; }
+        /* CAMADA DE AMBIENTE DINÂMICO (ESTILO ILUSTRADO/CARTOON CORPORATIVO) */
+        #bg-layer {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            transition: all 0.6s ease;
+            pointer-events: none;
+        }
+        .bg-setup {
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(10, 132, 255, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(191, 90, 242, 0.12) 0%, transparent 45%),
+                linear-gradient(135deg, #070b14 0%, #050508 100%);
+        }
+        .bg-office {
+            background: 
+                linear-gradient(180deg, rgba(8, 15, 30, 0.85) 0%, rgba(5, 8, 16, 0.96) 100%),
+                repeating-linear-gradient(90deg, rgba(56, 189, 248, 0.04) 0px, rgba(56, 189, 248, 0.04) 2px, transparent 2px, transparent 80px),
+                repeating-linear-gradient(0deg, rgba(56, 189, 248, 0.03) 0px, rgba(56, 189, 248, 0.03) 2px, transparent 2px, transparent 50px);
+        }
+        .bg-factory {
+            background: 
+                radial-gradient(circle at 85% 15%, rgba(255, 159, 10, 0.12), transparent 45%),
+                linear-gradient(180deg, rgba(18, 14, 10, 0.92), rgba(8, 8, 10, 0.98)),
+                repeating-linear-gradient(45deg, rgba(255, 159, 10, 0.025) 0px, rgba(255, 159, 10, 0.025) 14px, transparent 14px, transparent 28px);
+        }
+        .bg-home {
+            background: 
+                radial-gradient(circle at 25% 20%, rgba(50, 215, 75, 0.12), transparent 50%),
+                radial-gradient(circle at 80% 85%, rgba(255, 159, 10, 0.1), transparent 50%),
+                linear-gradient(180deg, #10140e 0%, #060806 100%);
+        }
+
+        /* SISTEMA DE TELAS RESPONSIVO (PC E MOBILE) */
+        .screen {
+            display: none !important;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .screen.active {
+            display: flex !important;
+            animation: fadeIn 0.35s ease;
+        }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .btn { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border); padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(5px); }
+        /* Telas de Entrada com Scroll Seguro no PC e Celular */
+        #screen-start, #screen-setup, #screen-onboarding {
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+            overflow-y: auto;
+        }
+        #screen-start { justify-content: center; }
+
+        .brand-title {
+            font-size: 64px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            margin-bottom: 4px;
+            text-align: center;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 36px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-align: center;
+        }
+        .setup-box {
+            background: rgba(14, 14, 18, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 600px;
+            margin: auto 0;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.85);
+        }
+
+        /* BOTÕES E INPUTS */
+        .btn {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
         .btn:hover:not(:disabled) { background: var(--surface-hover); border-color: #555; }
-        .btn-primary { background: var(--info); color: #fff; border: 1px solid var(--info); box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .btn-primary {
+            background: var(--info);
+            color: #fff;
+            border: 1px solid var(--info);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
         .btn-primary:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-1px); }
         .btn:disabled, .btn-disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-        .tag-premium { background: var(--premium); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; margin-left: 6px; }
+        .tag-premium { background: var(--premium); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; margin-left: 4px; }
 
-        .input, .select { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid var(--border); color: var(--text-main); padding: 14px; border-radius: 8px; font-size: 14px; transition: 0.2s; backdrop-filter: blur(5px); }
-        .input:focus, .select:focus { outline: none; border-color: var(--info); box-shadow: 0 0 0 3px rgba(255,255,255,0.1); }
+        .input, .select {
+            width: 100%;
+            background: rgba(0,0,0,0.65);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 13px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .input:focus, .select:focus { outline: none; border-color: var(--info); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15); }
         .form-label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 18px; }
 
         svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; fill: none; flex-shrink: 0; }
 
-        /* Screens */
-        #screen-start, #screen-setup, #screen-onboarding { flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-        .brand-title { font-size: 64px; font-weight: 800; letter-spacing: -3px; margin-bottom: 4px; text-align: center; background: linear-gradient(to bottom, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .brand-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 40px; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; text-align: center; }
-        .setup-box { background: rgba(10, 10, 10, 0.85); border: 1px solid var(--border); border-radius: 20px; padding: 32px; width: 100%; max-width: 550px; backdrop-filter: blur(20px); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        /* PALETA DE CORES CORRIGIDA (TAMANHO FIXO E PROPORCIONAL) */
+        .color-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .color-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: 0.2s;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .color-circle:hover { transform: scale(1.08); }
+        .color-circle.active { border-color: #fff; transform: scale(1.12); box-shadow: 0 0 12px currentColor; }
 
-        /* Workspace */
-        #screen-game { flex-direction: row; }
-        .sidebar { width: 280px; background: rgba(5,5,5,0.9); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; z-index: 20; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0; backdrop-filter: blur(20px); }
-        .sb-header { padding: 0 12px; margin-bottom: 30px; display: flex; flex-direction: column; align-items: flex-start; }
-        .sb-brand { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; color: var(--info); transition: color 0.3s, font-family 0.3s; line-height: 1.1; }
-        .sb-company { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-
-        .menu-section { font-size: 10px; text-transform: uppercase; color: #555; font-weight: 700; margin: 24px 0 8px 12px; letter-spacing: 1px; }
-        .menu-item { padding: 12px 14px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; transition: 0.2s; font-size: 13px; font-weight: 500; }
-        .menu-item .m-left { display: flex; align-items: center; gap: 12px; }
-        .menu-item:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-        .menu-item.active { background: rgba(255,255,255,0.08); color: var(--text-main); border: 1px solid var(--border); border-left: 3px solid var(--info); }
-        .badge-count { background: var(--info); color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 20px; box-shadow: 0 0 10px var(--info); }
-
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 15; backdrop-filter: blur(4px); }
-        .workspace { flex: 1; display: flex; flex-direction: column; height: 100%; width: 100%; overflow: hidden; }
-        
-        .topbar { height: 75px; flex-shrink: 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; background: rgba(5,5,5,0.8); backdrop-filter: blur(20px); z-index: 5; }
-        .btn-menu { display: none; background: transparent; border: none; color: var(--text-main); cursor: pointer; padding: 8px; border-radius: 6px; border: 1px solid var(--border); }
-        .advance-controls { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.5); padding: 6px; border-radius: 10px; border: 1px solid var(--border); }
-        
-        .content { flex: 1; overflow-y: auto; padding: 32px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
-        .tab { display: none !important; animation: fadeIn 0.3s ease; }
-        .tab.active { display: block !important; }
-        .page-title { font-size: 26px; font-weight: 700; margin-bottom: 24px; letter-spacing: -0.5px; }
-
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
-        .grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 24px; }
-        .grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;}
-        
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(10px); }
-        .card-header { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card-value { font-size: 32px; font-weight: 700; margin-bottom: 4px; letter-spacing: -1px; }
-        .card-sub { font-size: 12px; color: var(--text-muted); font-weight: 500;}
-        
-        .c-green { color: var(--success); } .c-red { color: var(--danger); } .c-warn { color: var(--warning); } .c-info { color: var(--info); transition: color 0.3s; }
-
-        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
-        .panel-title { font-size: 15px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
-
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px 10px; font-size: 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;}
-        td { padding: 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
-        .t-val { font-weight: 600; text-align: right; }
-
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.2s; }
-        .list-item:hover { background: rgba(255,255,255,0.05); border-color: #555; }
-        
-        .sup-radio { appearance: none; width: 20px; height: 20px; border: 2px solid #555; border-radius: 50%; outline: none; cursor: pointer; position: relative; flex-shrink: 0; }
-        .sup-radio:checked { border-color: var(--info); }
-        .sup-radio:checked::after { content: ''; position: absolute; top: 4px; left: 4px; width: 8px; height: 8px; background: var(--info); border-radius: 50%; }
-        
-        .market-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; margin-top: 10px; }
-        .market-bar-fill { height: 100%; background: var(--info); border-radius: 4px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        .e-item { padding: 20px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: rgba(0,0,0,0.5); cursor: pointer; transition: 0.2s; }
-        .e-item.unread { border-left: 4px solid var(--info); background: rgba(255, 255, 255, 0.08); }
-        .e-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
-        .e-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-        .e-body { font-size: 13.5px; color: #ccc; line-height: 1.7; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: none; }
-        .e-body p { margin-bottom: 12px; }
-
-        /* JORNAL MODAL */
-        .news-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 20px; }
-        .news-paper { background: #f4f4f0; color: #111; border-radius: 8px; padding: 30px; max-width: 600px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,1); position: relative; overflow-y: auto; max-height: 90vh; }
-        .news-header { border-bottom: 4px solid #111; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
-        .news-brand { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
-        .news-date { font-size: 11px; text-transform: uppercase; font-weight: 600; border-top: 1px solid #111; padding-top: 5px; margin-top: 5px; }
-        .news-headline { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
-        .news-body { font-size: 14px; line-height: 1.6; font-family: 'Inter', serif; margin-bottom: 24px; text-align: justify; }
-
-        /* Personalização */
-        .color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
-        .color-circle { width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .color-circle.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 15px currentColor; }
-        
-        .font-btn { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,0.5); cursor: pointer; color: white; text-align: left; font-size: 16px; transition: 0.2s; }
+        .font-btn {
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.5);
+            cursor: pointer;
+            color: white;
+            text-align: left;
+            font-size: 14px;
+            transition: 0.2s;
+            width: 100%;
+        }
         .font-btn.active { border-color: var(--info); background: rgba(255,255,255,0.1); }
         
-        .avatar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .avatar-card { border: 1px solid var(--border); background: rgba(0,0,0,0.5); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .avatar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .avatar-card { border: 1px solid var(--border); background: rgba(0,0,0,0.5); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer; transition: 0.2s; }
         .avatar-card.active { border-color: var(--info); background: rgba(255,255,255,0.1); }
 
-        .insumo-box { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-        .insumo-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--info); display: flex; justify-content: space-between; }
+        /* WORKSPACE PRINCIPAL */
+        #screen-game { flex-direction: row; }
+        .sidebar {
+            width: 270px;
+            background: rgba(8, 8, 12, 0.94);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 22px 14px;
+            z-index: 20;
+            height: 100%;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .sb-header { padding: 0 12px; margin-bottom: 24px; }
+        .sb-brand { font-size: 26px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; color: var(--info); line-height: 1.1; word-break: break-word; }
+        .sb-company { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+
+        .menu-section { font-size: 10px; text-transform: uppercase; color: #666; font-weight: 700; margin: 18px 0 6px 12px; letter-spacing: 1px; }
+        .menu-item { padding: 11px 12px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; transition: 0.2s; font-size: 13px; font-weight: 500; }
+        .menu-item .m-left { display: flex; align-items: center; gap: 10px; }
+        .menu-item:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+        .menu-item.active { background: rgba(255,255,255,0.08); color: var(--text-main); border: 1px solid var(--border); border-left: 3px solid var(--info); }
+        .badge-count { background: var(--info); color: white; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; }
+
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 15; backdrop-filter: blur(4px); }
+        .workspace { flex: 1; display: flex; flex-direction: column; height: 100%; width: 100%; overflow: hidden; position: relative; }
         
-        .loader-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 50; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px); }
-        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--info); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        .topbar {
+            min-height: 72px;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 24px;
+            background: rgba(8, 8, 12, 0.88);
+            backdrop-filter: blur(20px);
+            z-index: 5;
+            gap: 16px;
+        }
+        .btn-menu { display: none; background: transparent; border: 1px solid var(--border); color: var(--text-main); cursor: pointer; padding: 8px; border-radius: 6px; }
+        .advance-controls { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 6px; border-radius: 10px; border: 1px solid var(--border); }
+        
+        .content { flex: 1; overflow-y: auto; padding: 28px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; padding-bottom: 100px; }
+        .tab { display: none !important; animation: fadeIn 0.25s ease; max-width: 1200px; margin: 0 auto; }
+        .tab.active { display: block !important; }
+        .page-title { font-size: 24px; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.5px; }
+
+        /* GRIDS & CARDS */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 22px; }
+        .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; margin-bottom: 22px; }
+        .grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+        
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+        .card-header { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-value { font-size: 28px; font-weight: 700; margin-bottom: 4px; letter-spacing: -1px; }
+        .card-sub { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        
+        .c-green { color: var(--success); } .c-red { color: var(--danger); } .c-warn { color: var(--warning); } .c-info { color: var(--info); }
+
+        .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; box-shadow: 0 10px 35px rgba(0,0,0,0.35); margin-bottom: 20px; }
+        .panel-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 10px; font-size: 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700; text-transform: uppercase; }
+        td { padding: 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+        .t-val { font-weight: 600; text-align: right; }
+
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: rgba(0,0,0,0.4); gap: 16px; }
+        .market-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+        .market-bar-fill { height: 100%; background: var(--info); border-radius: 4px; transition: width 0.4s ease; }
+
+        /* EMAILS EXPANSÍVEIS CORRIGIDOS */
+        .e-item { padding: 18px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; background: rgba(0,0,0,0.55); cursor: pointer; transition: 0.2s; }
+        .e-item:hover { border-color: #444; }
+        .e-item.unread { border-left: 4px solid var(--info); background: rgba(255, 255, 255, 0.06); }
+        .e-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
+        .e-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
+        .e-body { font-size: 13.5px; color: #d4d4d8; line-height: 1.7; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); display: none; }
+        .e-item.open .e-body { display: block; }
+
+        /* JORNAL MODAL */
+        .news-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.88); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 20px; }
+        .news-paper { background: #f4f1ea; color: #111; border-radius: 10px; padding: 28px; max-width: 580px; width: 100%; box-shadow: 0 25px 60px rgba(0,0,0,0.95); max-height: 90vh; overflow-y: auto; border: 2px solid #d6d0c4; }
+        .news-header { border-bottom: 3px solid #111; padding-bottom: 10px; margin-bottom: 18px; text-align: center; }
+        .news-brand { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; color: #111; }
+        .news-date { font-size: 11px; text-transform: uppercase; font-weight: 700; border-top: 1px solid #111; padding-top: 6px; margin-top: 6px; color: #444; }
+        .news-headline { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 800; line-height: 1.25; margin-bottom: 14px; color: #111; }
+        .news-body { font-size: 14px; line-height: 1.65; color: #222; margin-bottom: 22px; }
+
+        .insumo-box { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+        .insumo-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--info); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .insumo-controls { display: flex; gap: 10px; align-items: center; }
+
+        .loader-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.82); z-index: 50; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px); }
+        .spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--info); border-radius: 50%; animation: spin 0.9s linear infinite; margin-bottom: 16px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Fontes */
-        .f-modern { font-family: 'Inter', sans-serif; }
-        .f-serif { font-family: 'Playfair Display', serif; }
-        .f-mono { font-family: 'Roboto Mono', monospace; letter-spacing: -1px; }
-        .f-mont { font-family: 'Montserrat', sans-serif; }
-        .f-pop { font-family: 'Poppins', sans-serif; }
-        .f-space { font-family: 'Space Grotesk', sans-serif; }
+        /* Fontes da Marca */
+        .f-modern { font-family: 'Inter', sans-serif !important; }
+        .f-serif { font-family: 'Playfair Display', serif !important; }
+        .f-mono { font-family: 'Roboto Mono', monospace !important; letter-spacing: -1px; }
+        .f-mont { font-family: 'Montserrat', sans-serif !important; }
+        .f-space { font-family: 'Space Grotesk', sans-serif !important; }
 
+        /* RESPONSIVIDADE MOBILE E TELAS MENORES */
         @media (max-width: 900px) {
             .btn-menu { display: flex; }
-            .hide-mobile { display: none !important; }
-            .sidebar { position: absolute; transform: translateX(-100%); top: 0; bottom: 0; left: 0; }
+            .sidebar { position: fixed; transform: translateX(-100%); top: 0; bottom: 0; left: 0; }
             .sidebar.open { transform: translateX(0); box-shadow: 5px 0 30px rgba(0,0,0,0.9); }
             .sidebar-overlay.active { display: block; }
             .grid-3, .grid-2, .grid-half { grid-template-columns: 1fr; }
-            .content { padding: 16px; padding-bottom: 120px; }
-            .topbar { padding: 0 16px; flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; gap: 12px; }
+            .content { padding: 16px; padding-bottom: 110px; }
+            .topbar { flex-wrap: wrap; padding: 12px 16px; }
             .advance-controls { width: 100%; justify-content: space-between; }
-            .setup-box { padding: 24px; border: none; background: transparent; box-shadow: none; max-height: none; }
-            #screen-setup, #screen-onboarding { justify-content: flex-start; padding-top: 20px; }
-            .card-value { font-size: 26px; }
-            .page-title { font-size: 20px; margin-bottom: 16px; }
-            .list-item { flex-direction: column; align-items: stretch; gap: 12px; }
-            .list-item > div:last-child { text-align: left; padding-top: 12px; border-top: 1px solid var(--border); }
-            .brand-title { font-size: 42px; }
-            .color-grid { grid-template-columns: repeat(4, 1fr); }
+            .advance-controls .btn { flex: 1; padding: 10px 8px; font-size: 12px; }
+            .setup-box { padding: 22px; }
+            .card-value { font-size: 24px; }
+            .page-title { font-size: 20px; }
+            .list-item { flex-direction: column; align-items: flex-start; }
+            .list-item > button, .list-item > div:last-child { width: 100%; }
+            .insumo-controls { flex-direction: column; align-items: stretch; }
+            .brand-title { font-size: 46px; }
         }
     </style>
 </head>
@@ -179,426 +343,465 @@
             <g id="ic-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></g>
             <g id="ic-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></g>
             <g id="ic-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></g>
-            <g id="ic-settings"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></g>
             <g id="ic-tool"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></g>
         </defs>
     </svg>
 
-    <!-- START -->
+    <!-- TELA 1: START -->
     <div id="screen-start" class="screen active">
-        <div class="brand-title">CORP+</div>
-        <div class="brand-subtitle">Simulador de Negócios e Gestão</div>
-        <button class="btn btn-primary" style="padding: 16px 40px; font-size: 16px; border-radius: 30px;" onclick="changeScreen('screen-setup')">Fundar Empresa</button>
+        <div class="brand-title" id="start-logo-preview">CORP+</div>
+        <div class="brand-subtitle">Simulador de Negócios e Mercado</div>
+        <button class="btn btn-primary" style="padding: 16px 42px; font-size: 15px; border-radius: 30px;" onclick="changeScreen('screen-setup')">Abrir Nova Empresa</button>
     </div>
 
-    <!-- SETUP (Dados Base) -->
+    <!-- TELA 2: SETUP INICIAL -->
     <div id="screen-setup" class="screen">
         <div class="setup-box">
-            <h2 style="font-size: 26px; margin-bottom: 24px; font-weight: 700;">Ato Constitutivo</h2>
+            <h2 style="font-size: 24px; margin-bottom: 6px; font-weight: 700;">Registro da Empresa</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 22px;">Defina os dados principais e o ramo de atuação do seu negócio.</p>
             
-            <div class="form-group">
-                <label class="form-label">Nome do Presidente</label>
-                <input type="text" id="setup-ceo" class="input" placeholder="O seu nome..." autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Razão Social da Empresa</label>
-                <input type="text" id="setup-comp" class="input" placeholder="Ex: Horizon Group" autocomplete="off">
+            <div class="grid-half">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Seu Nome (Fundador)</label>
+                    <input type="text" id="setup-ceo" class="input" placeholder="Ex: Daniel Campos" autocomplete="off">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Nome da Empresa / Marca</label>
+                    <input type="text" id="setup-comp" class="input" placeholder="Ex: Campos Corp" autocomplete="off">
+                </div>
             </div>
 
             <div class="grid-half">
-                <div class="form-group">
-                    <label class="form-label">Moeda Base</label>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Moeda de Operação</label>
                     <select id="setup-cur" class="select">
-                        <option value="BRL" selected>Real Brasileiro (BRL) - R$</option>
-                        <option value="USD">Dólar Americano (USD) - $</option>
-                        <option value="EUR">Euro (EUR) - €</option>
+                        <option value="BRL" selected>Real Brasileiro (R$)</option>
+                        <option value="USD">Dólar Americano ($)</option>
+                        <option value="EUR">Euro (€)</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Setor Primário</label>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Setor de Atuação</label>
                     <select id="setup-sec" class="select" onchange="updateSubSectors()">
-                        <option value="tech">Tecnologia</option>
-                        <option value="fashion">Moda & Têxtil</option>
-                        <option value="food">Alimentação</option>
-                        <option value="fin">Finanças (Bancos)</option>
+                        <option value="tech">Tecnologia & Eletrônicos</option>
+                        <option value="fashion">Moda, Têxtil & Beleza</option>
+                        <option value="food">Alimentação & Bebidas</option>
+                        <option value="fin">Setor Financeiro</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Modelo de Operação</label>
-                <select id="setup-model" class="select"></select>
-            </div>
-            
-            <div class="form-group" style="margin-top: 30px;">
-                <label class="form-label">Identidade Visual Base</label>
-                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-                    <div class="color-circle active" style="background: #0a84ff;" onclick="setBrandColor('#0a84ff', this)"></div>
-                    <div class="color-circle" style="background: #32d74b;" onclick="setBrandColor('#32d74b', this)"></div>
-                    <div class="color-circle" style="background: #ff9f0a;" onclick="setBrandColor('#ff9f0a', this)"></div>
-                    <div class="color-circle" style="background: #bf5af2;" onclick="setBrandColor('#bf5af2', this)"></div>
-                </div>
+                <label class="form-label">Ramo e Modelo de Operação</label>
+                <select id="setup-model" class="select" onchange="mostrarResumoModelo()"></select>
+                <div id="setup-model-desc" style="margin-top: 10px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; color: var(--text-muted); line-height: 1.5;"></div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 15px; margin-top: 10px;" onclick="iniciarNovoJogo()">Registar Empresa na Junta</button>
+            <button class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 14px; margin-top: 6px;" onclick="irParaPersonalizacao()">Avançar para Marca e Personagem ➔</button>
         </div>
     </div>
 
-    <!-- ONBOARDING (Personalização Imersiva) -->
+    <!-- TELA 3: PERSONALIZAÇÃO DE MARCA E PERSONAGEM -->
     <div id="screen-onboarding" class="screen">
-        <div class="setup-box" style="max-width: 700px;">
-            <h2 style="font-size: 26px; margin-bottom: 8px; font-weight: 700;">Identidade Visual & CEO</h2>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 30px;">Defina a cara do seu império. A interface irá adaptar-se ao seu estilo.</p>
+        <div class="setup-box" style="max-width: 680px;">
+            <h2 style="font-size: 24px; margin-bottom: 6px; font-weight: 700;">Identidade da Marca & Estilo</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Personalize a cor da sua marca, a fonte do logotipo e o seu visual inicial.</p>
             
             <div class="grid-half">
                 <div>
-                    <label class="form-label">Paleta de Cores (Brand)</label>
-                    <div class="color-grid" id="color-picker-grid">
-                        <!-- Gerado via JS (12 cores) -->
-                    </div>
+                    <label class="form-label">Paleta de Cores da Marca</label>
+                    <div class="color-grid" id="color-picker-grid"></div>
 
-                    <label class="form-label" style="margin-top: 20px;">Tipografia do Logotipo</label>
+                    <label class="form-label" style="margin-top: 14px;">Fonte do Logotipo</label>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <button class="font-btn f-modern active" onclick="setSetupFont('f-modern', this)">Modern Sans (Tech/Clean)</button>
-                        <button class="font-btn f-serif" onclick="setSetupFont('f-serif', this)">Classic Serif (Luxo/Elegância)</button>
-                        <button class="font-btn f-mono" onclick="setSetupFont('f-mono', this)">Console Mono (Finanças/Dev)</button>
-                        <button class="font-btn f-mont" onclick="setSetupFont('f-mont', this)">Montserrat (Corporativo)</button>
-                        <button class="font-btn f-space" onclick="setSetupFont('f-space', this)">Space Grotesk (Futurista)</button>
+                        <button type="button" class="font-btn f-modern active" onclick="setSetupFont('f-modern', this)">Inter Sans (Moderna)</button>
+                        <button type="button" class="font-btn f-serif" onclick="setSetupFont('f-serif', this)">Playfair (Clássica / Grife)</button>
+                        <button type="button" class="font-btn f-mono" onclick="setSetupFont('f-mono', this)">Roboto Mono (Tech / Dados)</button>
+                        <button type="button" class="font-btn f-mont" onclick="setSetupFont('f-mont', this)">Montserrat (Corporativa)</button>
+                        <button type="button" class="font-btn f-space" onclick="setSetupFont('f-space', this)">Space Grotesk (Startup)</button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="form-label">Estilo Pessoal do Presidente (Avatar)</label>
+                    <label class="form-label">Prévia da Sua Marca</label>
+                    <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 18px;">
+                        <div id="onboard-logo-preview" class="f-modern" style="font-size: 28px; font-weight: 800; color: var(--info);">SUA MARCA</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Logotipo Oficial</div>
+                    </div>
+
+                    <label class="form-label">Traje Inicial do Fundador</label>
                     <div class="avatar-grid">
-                        <div class="avatar-card active" onclick="setAvatar('Terno Alta Costura', this)">
-                            <div style="font-size: 30px; margin-bottom: 8px;">👔</div>
-                            <div style="font-size: 12px; font-weight: 600;">Terno Sob Medida</div>
-                            <div style="font-size: 10px; color: #888;">Wall Street Vibe</div>
+                        <div class="avatar-card active" onclick="setAvatar('Terno Executivo', this)">
+                            <div style="font-size: 26px; margin-bottom: 6px;">👔</div>
+                            <div style="font-size: 12px; font-weight: 600;">Terno Clássico</div>
+                            <div style="font-size: 10px; color: #888;">Faria Lima / Wall St</div>
                         </div>
-                        <div class="avatar-card" onclick="setAvatar('Casual Tech (Moletom)', this)">
-                            <div style="font-size: 30px; margin-bottom: 8px;">🧥</div>
+                        <div class="avatar-card" onclick="setAvatar('Casual Tech', this)">
+                            <div style="font-size: 26px; margin-bottom: 6px;">🧥</div>
                             <div style="font-size: 12px; font-weight: 600;">Casual Tech</div>
-                            <div style="font-size: 10px; color: #888;">Startup CEO</div>
+                            <div style="font-size: 10px; color: #888;">Vale do Silício</div>
                         </div>
-                        <div class="avatar-card" onclick="setAvatar('Streetwear Descolado', this)">
-                            <div style="font-size: 30px; margin-bottom: 8px;">🧢</div>
-                            <div style="font-size: 12px; font-weight: 600;">Streetwear</div>
-                            <div style="font-size: 10px; color: #888;">Marca Jovem</div>
+                        <div class="avatar-card" onclick="setAvatar('Visual Criativo', this)">
+                            <div style="font-size: 26px; margin-bottom: 6px;">🕶️</div>
+                            <div style="font-size: 12px; font-weight: 600;">Estilo Criativo</div>
+                            <div style="font-size: 10px; color: #888;">Moda & Design</div>
                         </div>
-                        <div class="avatar-card" onclick="setAvatar('Social Fino (Minimalista)', this)">
-                            <div style="font-size: 30px; margin-bottom: 8px;">👕</div>
+                        <div class="avatar-card" onclick="setAvatar('Social Minimalista', this)">
+                            <div style="font-size: 26px; margin-bottom: 6px;">👕</div>
                             <div style="font-size: 12px; font-weight: 600;">Minimalista</div>
-                            <div style="font-size: 10px; color: #888;">Gola Alta Preta</div>
+                            <div style="font-size: 10px; color: #888;">Prático & Direto</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style="margin-top: 30px; text-align: center;">
-                <button class="btn btn-primary" style="padding: 16px 48px; font-size: 15px; border-radius: 30px;" onclick="finalizarOnboarding()">Assinar Papéis e Começar</button>
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button type="button" class="btn" style="flex: 1; padding: 15px;" onclick="changeScreen('screen-setup')">← Voltar</button>
+                <button type="button" class="btn btn-primary" style="flex: 2; padding: 15px; font-size: 15px;" onclick="finalizarOnboarding()">Assinar Contrato e Abrir Empresa</button>
             </div>
         </div>
     </div>
 
-    <!-- WORKSPACE (JOGO) -->
+    <!-- TELA 4: JOGO PRINCIPAL -->
     <div id="screen-game" class="screen">
-        
         <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-        <!-- SIDEBAR -->
+        <!-- MENU LATERAL -->
         <div class="sidebar">
             <div class="sb-header">
-                <div class="sb-brand" id="ui-main-logo">CORP+</div>
-                <div class="sb-company" id="ui-sb-comp">COMPANY NAME</div>
+                <div class="sb-brand f-modern" id="ui-main-logo">CORP+</div>
+                <div class="sb-company" id="ui-sb-comp">EMPRESA</div>
             </div>
 
-            <div class="menu-section">Gabinete Executivo</div>
+            <div class="menu-section">Administração</div>
             <div class="menu-item" onclick="switchTab('tab-mail', 'bg-office', this)">
-                <div class="m-left"><svg><use href="#ic-mail"/></svg> Caixa de Entrada</div>
+                <div class="m-left"><svg><use href="#ic-mail"/></svg> Caixa de E-mail</div>
                 <span class="badge-count" id="ui-email-badge" style="display:none;">0</span>
             </div>
             <div class="menu-item" onclick="switchTab('tab-rh', 'bg-office', this)">
-                <div class="m-left"><svg><use href="#ic-users"/></svg> RH & C-Level</div>
+                <div class="m-left"><svg><use href="#ic-users"/></svg> Equipe & Cargos</div>
             </div>
 
-            <div class="menu-section">Logística e Produção</div>
-            <div class="menu-item active" onclick="switchTab('tab-ops', 'bg-factory', this)"><div class="m-left"><svg><use href="#ic-truck"/></svg> Cadeia de Suprimentos</div></div>
-            <div class="menu-item" onclick="switchTab('tab-rd', 'bg-factory', this)"><div class="m-left"><svg><use href="#ic-tool"/></svg> Pesquisa & Desenvolvimento</div></div>
+            <div class="menu-section">Operação e Produto</div>
+            <div class="menu-item active" id="menu-ops-btn" onclick="switchTab('tab-ops', 'bg-factory', this)">
+                <div class="m-left"><svg><use href="#ic-truck"/></svg> Insumos & Produção</div>
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-rd', 'bg-factory', this)">
+                <div class="m-left"><svg><use href="#ic-tool"/></svg> Estudos & Projetos</div>
+            </div>
             
-            <div class="menu-section">Mercado e Finanças</div>
-            <div class="menu-item" onclick="switchTab('tab-market', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-globe"/></svg> Estratégia de Vendas</div></div>
-            <div class="menu-item" onclick="switchTab('tab-fin', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-dollar"/></svg> Tesouraria (PJ)</div></div>
-            <div class="menu-item" onclick="switchTab('tab-stock', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-activity"/></svg> Bolsa de Valores</div></div>
+            <div class="menu-section">Mercado e Caixa</div>
+            <div class="menu-item" onclick="switchTab('tab-market', 'bg-office', this)">
+                <div class="m-left"><svg><use href="#ic-globe"/></svg> Preços & Concorrência</div>
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-fin', 'bg-office', this)">
+                <div class="m-left"><svg><use href="#ic-dollar"/></svg> Banco & Extrato</div>
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-stock', 'bg-office', this)">
+                <div class="m-left"><svg><use href="#ic-activity"/></svg> Bolsa de Valores</div>
+            </div>
             
-            <div class="menu-section">A Esfera Privada</div>
-            <div class="menu-item" onclick="switchTab('tab-ceo', 'bg-home', this)"><div class="m-left"><svg><use href="#ic-user"/></svg> Património do Presidente</div></div>
-            <div class="menu-item" onclick="switchTab('tab-brand', 'bg-office', this)"><div class="m-left"><svg><use href="#ic-star"/></svg> Branding & Identidade</div></div>
+            <div class="menu-section">Marca & Vida Pessoal</div>
+            <div class="menu-item" onclick="switchTab('tab-brand', 'bg-office', this)">
+                <div class="m-left"><svg><use href="#ic-star"/></svg> Marca & Imóveis</div>
+            </div>
+            <div class="menu-item" onclick="switchTab('tab-ceo', 'bg-home', this)">
+                <div class="m-left"><svg><use href="#ic-user"/></svg> Conta Pessoal</div>
+            </div>
         </div>
 
         <div class="workspace">
             <div class="loader-overlay" id="loading-overlay">
                 <div class="spinner"></div>
-                <div style="font-weight: 600; font-size: 14px; letter-spacing: 1px;">A PROCESSAR CICLO...</div>
+                <div style="font-weight: 700; font-size: 14px; letter-spacing: 1.5px;" id="loader-text">FECHANDO BALANÇO...</div>
             </div>
 
+            <!-- BARRA SUPERIOR -->
             <div class="topbar">
-                <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
                     <button class="btn-menu" onclick="toggleSidebar()"><svg><use href="#ic-menu"/></svg></button>
                     <div>
-                        <div style="font-size: 11px; color: var(--info); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;" id="ui-modelo-info">MOD INFO</div>
-                        <div style="font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                            <span id="ui-data-dia">Dia 1</span> • <span style="color: var(--text-muted);" id="ui-data-mes">Mês 1 / Ano 1</span>
+                        <div style="font-size: 11px; color: var(--info); font-weight: 700; text-transform: uppercase;" id="ui-modelo-info">SETOR</div>
+                        <div style="font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                            <span id="ui-data-dia">Dia 1</span>
+                            <span style="color: var(--text-muted);">•</span>
+                            <span style="color: var(--text-muted); font-weight: 500;" id="ui-data-mes">Mês 1 / Ano 1</span>
                         </div>
                     </div>
                 </div>
                 <div class="advance-controls">
-                    <button class="btn" onclick="avancarCiclo(1)">1 Dia</button>
-                    <button class="btn btn-primary" onclick="avancarCiclo(7)">1 Semana <span class="tag-premium">Futuro</span></button>
-                    <button class="btn btn-primary" style="background: var(--premium); border-color: var(--premium);" onclick="avancarCiclo(30)">1 Mês <span class="tag-premium" style="background: rgba(0,0,0,0.5);">Futuro</span></button>
+                    <button class="btn" onclick="avancarCiclo(1)">+1 Dia</button>
+                    <button class="btn btn-primary" onclick="avancarCiclo(7)">+1 Semana <span class="tag-premium">PRO</span></button>
+                    <button class="btn btn-primary" style="background: var(--premium); border-color: var(--premium);" onclick="avancarCiclo(30)">+1 Mês <span class="tag-premium" style="background: rgba(0,0,0,0.4);">PRO</span></button>
                 </div>
             </div>
 
             <div class="content">
                 
-                <!-- TAB: SUPRIMENTOS E PRODUÇÃO -->
+                <!-- ABA 1: INSUMOS E PRODUÇÃO -->
                 <div id="tab-ops" class="tab active">
-                    <h1 class="page-title">Gestão da Cadeia de Produção</h1>
+                    <h1 class="page-title">Insumos e Linha de Produção</h1>
                     
                     <div class="grid-3">
                         <div class="card">
-                            <div class="card-header">Liquidez Empresarial</div>
+                            <div class="card-header">Caixa da Empresa</div>
                             <div class="card-value c-green" id="ui-caixa-pj">R$ 0,00</div>
-                            <div class="card-sub">OPEX Previsto: <span id="ui-custo-fixo">0</span>/mês</div>
+                            <div class="card-sub">Despesa Mensal Fixa: <span id="ui-custo-fixo">R$ 0,00</span></div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Produto Final (Armazém)</div>
+                            <div class="card-header">Produtos Prontos</div>
                             <div class="card-value" id="ui-estoque">0</div>
-                            <div class="card-sub" id="ui-lbl-produto">Unidades prontas para venda</div>
+                            <div class="card-sub" id="ui-lbl-produto">Unidades em estoque</div>
                         </div>
                         <div class="card">
-                            <div class="card-header">Clima de Mercado Macro</div>
-                            <div class="card-value" id="ui-macro-status" style="color: var(--text-main); font-size: 22px; padding-top: 4px;">Estável</div>
-                            <div class="card-sub" id="ui-macro-desc">A economia flui normalmente.</div>
-                        </div>
-                    </div>
-
-                    <div class="panel" style="margin-bottom: 24px;">
-                        <div class="panel-title">1. Inventário de Insumos Brutos</div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Os modelos de negócio avançados exigem múltiplos insumos. Compre matérias-primas antes de ordenar a produção da fábrica.</p>
-                        
-                        <div id="ui-insumos-list">
-                            <!-- Preenchido via JS (ex: Carne, Pão, Vegetais) -->
+                            <div class="card-header">Cenário Econômico</div>
+                            <div class="card-value" id="ui-macro-status" style="font-size: 22px; padding-top: 4px;">Estável</div>
+                            <div class="card-sub" id="ui-macro-desc">Consumo e fretes normais.</div>
                         </div>
                     </div>
 
                     <div class="panel">
-                        <div class="panel-title">2. Linha de Produção / Montagem</div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Converta os seus insumos brutos em <strong id="ui-lbl-produto2" style="color:var(--text-main);">Produto Final</strong>. É necessário ter saldo de todos os insumos requeridos.</p>
+                        <div class="panel-title">Como Funciona a Sua Produção (Guia do Setor)</div>
+                        <p id="ui-guia-producao" style="font-size: 13px; color: #ccc; line-height: 1.6;"></p>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-title">1. Compra de Matéria-Prima e Componentes</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Compre cada componente necessário. Lotes de 5.000 unidades têm 10% de desconto e contêineres de 20.000 unidades têm 20% de desconto.</p>
+                        <div id="ui-insumos-list"></div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-title">2. Ordem de Produção / Montagem Final</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Transforme os componentes comprados em <strong id="ui-lbl-produto2" style="color:var(--text-main);">Produto Final</strong> pronto para venda.</p>
                         
-                        <div class="form-group">
-                            <label class="form-label">Quantidade de Produtos a Fabricar</label>
-                            <input type="number" id="ui-qtd-produzir" class="input" value="100">
+                        <div class="grid-half" style="align-items: end; margin-bottom: 0;">
+                            <div>
+                                <label class="form-label">Quantidade a Produzir Agora</label>
+                                <input type="number" id="ui-qtd-produzir" class="input" value="200" min="1">
+                            </div>
+                            <button class="btn btn-primary" style="padding: 15px; font-size: 14px;" onclick="executarProducao()">Iniciar Produção no Galpão</button>
                         </div>
-                        
-                        <button class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 14px;" onclick="executarProducao()">Processar Produção Interna</button>
                     </div>
                 </div>
 
-                <!-- TAB: R&D (PESQUISA) -->
+                <!-- ABA 2: ESTUDOS & PROJETOS -->
                 <div id="tab-rd" class="tab">
-                    <h1 class="page-title">Centro de Pesquisa & Desenvolvimento (R&D)</h1>
+                    <h1 class="page-title">Estudos e Melhoria de Processos</h1>
                     <div class="panel">
-                        <div class="panel-title">Estudos Corporativos</div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 24px;">Invista capital da empresa em estudos profundos para desbloquear bônus passivos permanentes na sua operação.</p>
-                        
+                        <div class="panel-title">Projetos de Eficiência e Redução de Custos</div>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Quanto mais profundo o estudo contratado, maior será o desconto permanente nos seus custos mensais e operacionais.</p>
                         <div id="ui-rd-list"></div>
                     </div>
                 </div>
 
-                <!-- TAB: MERCADO -->
+                <!-- ABA 3: MERCADO E PREÇOS -->
                 <div id="tab-market" class="tab">
-                    <h1 class="page-title">Posicionamento de Mercado e Vendas</h1>
+                    <h1 class="page-title">Preços e Concorrência</h1>
                     <div class="grid-2">
                         <div class="panel">
-                            <div class="panel-title" id="lbl-market-title">Precificação Unitária</div>
+                            <div class="panel-title" id="lbl-market-title">Definição de Preço</div>
                             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="lbl-market-desc">-</p>
                             
                             <div class="form-group">
-                                <label class="form-label">Preço ao Consumidor (Unitário)</label>
-                                <input type="number" id="ui-preco" class="input" value="0">
+                                <label class="form-label">Preço de Venda por Unidade</label>
+                                <input type="number" id="ui-preco" class="input" value="0" oninput="calcularMargem()">
                             </div>
                             
-                            <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
-                                <p style="font-size: 12px; color: var(--info); margin-bottom: 8px;">Aviso Estratégico:</p>
-                                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">O custo unitário de produção agora depende do "blend" (mistura) de qualidades dos insumos que você comprou. Garanta que o preço de venda cobre a soma de todas as matérias-primas gastas por unidade.</p>
+                            <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="font-size: 12px; color: var(--text-muted);">Custo dos Insumos por Unidade:</span>
+                                    <span id="ui-margem-custo" style="font-size: 13px; font-weight: 600;">R$ 0,00</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 12px; color: var(--text-muted);">Lucro Bruto por Unidade:</span>
+                                    <span id="ui-margem-lucro" style="font-size: 15px; font-weight: 700;" class="c-green">R$ 0,00</span>
+                                </div>
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">Market Share (Concorrentes Base)</div>
+                            <div class="panel-title">Preços e Fatia das Marcas Concorrentes</div>
                             <div id="ui-concorrentes"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB: RH -->
+                <!-- ABA 4: EQUIPE & CARGOS ESPECÍFICOS DO SETOR -->
                 <div id="tab-rh" class="tab">
-                    <h1 class="page-title">Recursos Humanos e Diretoria</h1>
+                    <h1 class="page-title">Quadros de Funcionários e Diretoria</h1>
                     
-                    <div class="panel" style="margin-bottom: 24px;">
-                        <div class="panel-title">Conselho Executivo (C-Level)</div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Diretores otimizam brutalmente a empresa, mas inflacionam o OPEX.</p>
-                        
-                        <div class="list-item" style="background: rgba(0,0,0,0.4); border-color: #333;">
-                            <div>
-                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Diretor de Marketing (CMO)</div>
-                                <div style="font-size: 12px; color: var(--success); margin-bottom: 4px;">Benefício: +30% Demanda/Vendas</div>
-                                <div style="font-size: 11px; color: var(--danger);">Custo: <span id="ui-rh-custo-cmo">-</span>/mês</div>
-                            </div>
-                            <button class="btn btn-primary" id="btn-hire-cmo" onclick="contratarDiretor('cmo')">Contratar</button>
-                        </div>
-                        
-                        <div class="list-item" style="background: rgba(0,0,0,0.4); border-color: #333;">
-                            <div>
-                                <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Diretor de Operações (COO)</div>
-                                <div style="font-size: 12px; color: var(--success); margin-bottom: 4px;">Benefício: Reduz o Custo Fixo base em 20%</div>
-                                <div style="font-size: 11px; color: var(--danger);">Custo: <span id="ui-rh-custo-coo">-</span>/mês</div>
-                            </div>
-                            <button class="btn btn-primary" id="btn-hire-coo" onclick="contratarDiretor('coo')">Contratar</button>
-                        </div>
+                    <div class="panel">
+                        <div class="panel-title">Profissionais Especializados do Seu Ramo</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Cada segmento exige especialistas diferentes (ex: Engenheiros e UI Designers em Tech, Consultores em Bancos, Operadores e Chefs em Restaurantes). Contrate conforme sua estratégia.</p>
+                        <div id="ui-rh-especialistas"></div>
                     </div>
 
                     <div class="panel">
-                        <div class="panel-title">Staff Operacional</div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Pessoal essencial para o bom funcionamento do ecossistema físico.</p>
+                        <div class="panel-title">Diretoria e Apoio Geral</div>
+                        <div class="list-item">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 700;">Secretária Executiva (Elena)</div>
+                                <div style="font-size: 12px; color: var(--success); margin-top: 2px;">Organiza relatórios detalhados, agenda e alertas fiscais na Caixa de Entrada.</div>
+                            </div>
+                            <span style="color: var(--success); font-weight: 700; font-size: 12px;">ATIVA NA EMPRESA</span>
+                        </div>
+
+                        <div class="list-item">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 700;">Diretor de Marketing (CMO)</div>
+                                <div style="font-size: 12px; color: var(--success);">Aumenta a procura dos clientes em +30%.</div>
+                                <div style="font-size: 11px; color: var(--danger); margin-top: 4px;">Salário Mensal: <span id="ui-rh-cmo-val"></span></div>
+                            </div>
+                            <button class="btn btn-primary" id="btn-hire-cmo" onclick="contratarRH('cmo')">Contratar</button>
+                        </div>
                         
                         <div class="list-item">
                             <div>
-                                <div style="font-size: 13px; font-weight: 600;">Equipa de Limpeza & Facilities</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">Melhora o moral. Sem eles, as máquinas quebram mais rápido.</div>
+                                <div style="font-size: 14px; font-weight: 700;">Diretor de Operações (COO)</div>
+                                <div style="font-size: 12px; color: var(--success);">Reduz os custos operacionais fixos da estrutura em 20%.</div>
+                                <div style="font-size: 11px; color: var(--danger); margin-top: 4px;">Salário Mensal: <span id="ui-rh-coo-val"></span></div>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="font-size: 13px; font-weight: 600;">Qtd: <span id="ui-rh-limp-qtd">0</span></div>
-                                <button class="btn" onclick="contratarStaff('limpeza')">+</button>
-                            </div>
+                            <button class="btn btn-primary" id="btn-hire-coo" onclick="contratarRH('coo')">Contratar</button>
                         </div>
+
                         <div class="list-item">
                             <div>
-                                <div style="font-size: 13px; font-weight: 600;">Segurança Privada</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">Inibe eventos macro de "Roubo de Estoque".</div>
+                                <div style="font-size: 13px; font-weight: 700;">Equipe de Limpeza e Manutenção</div>
+                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Mantém lojas e galpões limpos (+3% vendas por equipe).</div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="font-size: 13px; font-weight: 600;">Qtd: <span id="ui-rh-seg-qtd">0</span></div>
-                                <button class="btn" onclick="contratarStaff('seguranca')">+</button>
+                                <div style="font-size: 13px; font-weight: 700;">Equipes: <span id="ui-rh-limp-qtd">0</span></div>
+                                <button class="btn" onclick="contratarStaff('limpeza')">Contratar (+1)</button>
+                            </div>
+                        </div>
+
+                        <div class="list-item">
+                            <div>
+                                <div style="font-size: 13px; font-weight: 700;">Segurança Patrimonial</div>
+                                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Protege o estoque e reduz perdas operacionais.</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="font-size: 13px; font-weight: 700;">Equipes: <span id="ui-rh-seg-qtd">0</span></div>
+                                <button class="btn" onclick="contratarStaff('seguranca')">Contratar (+1)</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB: FINANCEIRO PJ -->
+                <!-- ABA 5: BANCO E EXTRATO -->
                 <div id="tab-fin" class="tab">
-                    <h1 class="page-title">Tesouraria e Contabilidade</h1>
+                    <h1 class="page-title">Banco e Extrato da Empresa</h1>
                     <div class="grid-2">
                         <div class="card">
                             <div class="card-header">Dívida Bancária</div>
-                            <div class="card-value c-red" id="ui-divida-pj">0</div>
-                            <div class="card-sub">Custo Diário de Juros: 0.11% ao dia</div>
+                            <div class="card-value c-red" id="ui-divida-pj">R$ 0,00</div>
+                            <div class="card-sub">Juros do contrato: 3.5% ao mês</div>
                         </div>
                         <div class="panel" style="margin:0;">
-                            <div class="panel-title">Operações de Dívida</div>
-                            <div class="grid-half" style="margin-bottom: 16px;">
-                                <button class="btn" onclick="tomarEmprestimo()">Emitir Dívida</button>
-                                <button class="btn btn-primary" onclick="amortizarDivida()">Amortizar</button>
+                            <div class="panel-title">Linha de Crédito Empresarial</div>
+                            <div class="grid-half" style="margin-bottom: 12px;">
+                                <button class="btn" onclick="tomarEmprestimo()">Pegar Empréstimo</button>
+                                <button class="btn btn-primary" onclick="amortizarDivida()">Pagar Dívida</button>
                             </div>
-                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Montante a abater da dívida">
+                            <input type="number" id="ui-val-amortizar" class="input" placeholder="Valor para abater da dívida">
                         </div>
                     </div>
                     <div class="panel">
-                        <div class="panel-title">Extrato de Movimentação PJ</div>
-                        <div style="max-height: 350px; overflow-y: auto; margin: -20px; margin-top: 0;">
-                            <table style="margin-top: 10px;">
-                                <thead><tr><th>Data</th><th>Descritivo</th><th style="text-align: right;">Montante</th></tr></thead>
+                        <div class="panel-title">Extrato Completo da Empresa</div>
+                        <div style="max-height: 380px; overflow-y: auto;">
+                            <table>
+                                <thead><tr><th>Data</th><th>Histórico</th><th style="text-align: right;">Valor</th></tr></thead>
                                 <tbody id="tb-extrato-pj"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB: INBOX -->
+                <!-- ABA 6: CAIXA DE E-MAIL -->
                 <div id="tab-mail" class="tab">
-                    <h1 class="page-title">Gabinete de Comunicações</h1>
+                    <h1 class="page-title">Caixa de Entrada (E-mails e Relatórios)</h1>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Clique em qualquer mensagem abaixo para expandir e ler o relatório completo.</p>
                     <div id="ui-email-list"></div>
                 </div>
 
-                <!-- TAB: BRANDING -->
+                <!-- ABA 7: MARCA E IMÓVEIS -->
                 <div id="tab-brand" class="tab">
-                    <h1 class="page-title">Identidade Visual e Sede</h1>
+                    <h1 class="page-title">Personalização da Marca & Instalações</h1>
                     <div class="grid-2">
                         <div class="panel">
-                            <div class="panel-title">Personalização Dinâmica da Marca</div>
-                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Modifique a paleta e a fonte. A interface vai adaptar-se instantaneamente para refletir o seu negócio.</p>
+                            <div class="panel-title">Alterar Identidade Visual da Marca</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Você pode redefinir as cores e a tipografia da sua empresa a qualquer momento.</p>
                             
-                            <label class="form-label">Cor Oficial (Accent)</label>
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
-                                <div class="color-circle active" style="background: #0a84ff;" onclick="setBrandColor('#0a84ff', this)"></div>
-                                <div class="color-circle" style="background: #32d74b;" onclick="setBrandColor('#32d74b', this)"></div>
-                                <div class="color-circle" style="background: #ff9f0a;" onclick="setBrandColor('#ff9f0a', this)"></div>
-                                <div class="color-circle" style="background: #e0e0e0;" onclick="setBrandColor('#e0e0e0', this)"></div>
-                                <div class="color-circle" style="background: #bf5af2;" onclick="setBrandColor('#bf5af2', this)"></div>
-                                <div class="color-circle" style="background: #ff453a;" onclick="setBrandColor('#ff453a', this)"></div>
-                            </div>
+                            <label class="form-label">Cor Oficial</label>
+                            <div class="color-grid" id="in-game-color-grid"></div>
 
-                            <label class="form-label">Tipografia</label>
+                            <label class="form-label" style="margin-top: 14px;">Fonte do Logotipo</label>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <button class="btn" style="justify-content: flex-start; font-family: 'Inter', sans-serif;" onclick="setBrandFont('modern')">Modern Sans (Tech/Startup)</button>
-                                <button class="btn" style="justify-content: flex-start; font-family: 'Playfair Display', serif; font-size: 15px;" onclick="setBrandFont('serif')">Classic Serif (Luxo/Moda)</button>
-                                <button class="btn" style="justify-content: flex-start; font-family: 'Roboto Mono', monospace;" onclick="setBrandFont('mono')">Console Mono (Finanças)</button>
+                                <button class="font-btn f-modern" onclick="mudarFonteNoJogo('f-modern')">Inter Sans (Moderna)</button>
+                                <button class="font-btn f-serif" onclick="mudarFonteNoJogo('f-serif')">Playfair (Clássica / Grife)</button>
+                                <button class="font-btn f-mono" onclick="mudarFonteNoJogo('f-mono')">Roboto Mono (Tech / Dados)</button>
+                                <button class="font-btn f-mont" onclick="mudarFonteNoJogo('f-mont')">Montserrat (Corporativa)</button>
+                                <button class="font-btn f-space" onclick="mudarFonteNoJogo('f-space')">Space Grotesk (Startup)</button>
                             </div>
                         </div>
 
-                        <div class="panel" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
-                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 12px; color: var(--text-main);">Sede Física Corporativa</h2>
-                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Expanda os seus escritórios para alojar mais Staff e Diretores. Operações maiores requerem sedes de prestígio.</p>
-                            <button class="btn btn-disabled">Transferir Sede para Distrito Financeiro - Em Breve</button>
+                        <div class="panel">
+                            <div class="panel-title">Expansão de Instalações / Franquias</div>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Invista na estrutura física da empresa para aumentar suas vendas diárias.</p>
+                            <div class="list-item">
+                                <div>
+                                    <div style="font-weight: 700;">Sala Comercial / Galpão Básico</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Instalada inicialmente</div>
+                                </div>
+                                <span class="c-green" style="font-size: 12px; font-weight: 700;">ATUAL</span>
+                            </div>
+                            <div class="list-item">
+                                <div>
+                                    <div style="font-weight: 700;">Abrir Nova Filial / Franquia (+25% Demanda)</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Expande alcance regional da marca</div>
+                                </div>
+                                <button class="btn btn-primary" onclick="expandirFilial()">Investir (<span id="ui-custo-filial"></span>)</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB: CEO (PF) -->
+                <!-- ABA 8: CONTA PESSOAL DO FUNDADOR -->
                 <div id="tab-ceo" class="tab">
-                    <h1 class="page-title">Gestão de Património do Presidente</h1>
+                    <h1 class="page-title">Conta Pessoal e Patrimônio (<span id="ui-ceo-nome-display">Fundador</span>)</h1>
                     <div class="grid-2">
                         <div>
-                            <div class="card" style="margin-bottom: 16px; border-color: #333; background: #080808;">
-                                <div class="card-header">Conta Bancária Privada</div>
-                                <div class="card-value c-green" id="ui-caixa-pf">0</div>
-                                <div class="card-sub">Pró-labore Diário: <span id="ui-salario-pf">0</span>/dia</div>
+                            <div class="card" style="margin-bottom: 18px;">
+                                <div class="card-header">Saldo Bancário Pessoal (Inicia Zerado)</div>
+                                <div class="card-value c-green" id="ui-caixa-pf">R$ 0,00</div>
+                                <div class="card-sub">Retirada Diária (Pró-labore): <span id="ui-salario-pf">R$ 0,00</span>/dia</div>
                             </div>
                             <div class="panel">
-                                <div class="panel-title">Mercado de Luxo Imobiliário/Auto</div>
+                                <div class="panel-title">Aquisição de Bens Pessoais (Imóveis e Veículos)</div>
                                 <div id="ui-loja-pf"></div>
                             </div>
                         </div>
                         <div class="panel">
-                            <div class="panel-title">Meus Ativos Pessoais</div>
+                            <div class="panel-title">Meus Bens e Estilo (<span id="ui-ceo-traje">Terno</span>)</div>
                             <div id="ui-meus-bens" style="margin-bottom: 24px;"></div>
-                            <div class="panel-title" style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 15px;">Extrato da Conta Pessoal (PF)</div>
-                            <div style="max-height: 250px; overflow-y: auto; margin: -20px; margin-top: 0;">
-                                <table style="margin-top: 10px;"><tbody id="tb-extrato-pf"></tbody></table>
+                            <div class="panel-title">Extrato da Conta Pessoal</div>
+                            <div style="max-height: 250px; overflow-y: auto;">
+                                <table><tbody id="tb-extrato-pf"></tbody></table>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- TAB: STOCK -->
+                <!-- ABA 9: BOLSA DE VALORES -->
                 <div id="tab-stock" class="tab">
-                    <h1 class="page-title">Mercado de Capitais (IPO)</h1>
-                    <div class="panel" style="text-align: center; padding: 60px 20px;">
-                        <h2 style="font-size: 42px; font-weight: 700; margin-bottom: 10px;" id="ui-valuation">0</h2>
-                        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 40px;">Valuation Estimado (Base de Caixa, Inventário e Dívida)</div>
-                        <p style="font-size: 14px; color: #aaa; max-width: 500px; margin: 0 auto 30px; line-height: 1.6;">
-                            A sua empresa é de capital privado. Para abrir capital e lançar ações em bolsa, o Valuation deve superar a meta dos bancos de investimento associados ao seu setor.
+                    <h1 class="page-title">Bolsa de Valores e Abertura de Capital (IPO)</h1>
+                    <div class="panel" style="text-align: center; padding: 48px 20px;">
+                        <h2 style="font-size: 42px; font-weight: 800; margin-bottom: 8px;" id="ui-valuation">R$ 0,00</h2>
+                        <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 30px;">Valor de Mercado Estimado da Sua Empresa (Valuation)</div>
+                        <p style="font-size: 14px; color: #aaa; max-width: 520px; margin: 0 auto 28px; line-height: 1.6;">
+                            Quando a sua empresa atingir a meta de valor de mercado do setor, você poderá lançar ações na Bolsa de Valores e captar uma injeção milionária no caixa.
                         </p>
-                        <button class="btn btn-primary" id="btn-ipo" style="padding: 16px 32px; font-size: 15px; border-radius: 30px;" onclick="realizarIPO()">Preparar Oferta Pública (IPO)</button>
+                        <button class="btn btn-primary" id="btn-ipo" style="padding: 16px 36px; font-size: 15px; border-radius: 30px;" onclick="realizarIPO()">Realizar Oferta Pública (IPO)</button>
                     </div>
                 </div>
 
@@ -606,126 +809,179 @@
         </div>
     </div>
 
-    <!-- MODAL DE JORNAL / NOTÍCIAS MACRO -->
+    <!-- MODAL DE JORNAL -->
     <div class="news-overlay" id="news-modal">
         <div class="news-paper">
             <div class="news-header">
-                <div class="news-brand">The Global Executive</div>
-                <div class="news-date" id="news-date">Quinta-feira, Mercado Global</div>
+                <div class="news-brand">Diário Econômico</div>
+                <div class="news-date" id="news-date">Edição Extraordinária • Economia & Política</div>
             </div>
-            <h1 class="news-headline" id="news-headline">Mercados em Colapso após Decisão do BC</h1>
-            <div class="news-body" id="news-body">
-                Os analistas alertam para uma retração histórica. As cadeias de suprimentos globais foram cortadas devido à escassez.
-            </div>
-            <button class="btn" style="width: 100%; border-color: #ccc; color: #111;" onclick="fecharJornal()">Minimizar e Voltar ao Escritório</button>
+            <h1 class="news-headline" id="news-headline">Manchete</h1>
+            <div class="news-body" id="news-body">Texto da notícia.</div>
+            <button class="btn" style="width: 100%; background: #111; color: #fff; padding: 14px;" onclick="fecharJornal()">Guardar na Caixa de E-mail e Continuar</button>
         </div>
     </div>
 
     <script>
-        // Câmbios Realistas
-        const exchangeRates = { 'USD': 1.0, 'EUR': 0.9, 'BRL': 5.0 };
+        const exchangeRates = { 'USD': 1.0, 'EUR': 0.92, 'BRL': 5.0 };
 
-        // BANCO DE DADOS MACRO - CADEIAS DE PRODUÇÃO MASSIVAS
+        // TODOS OS SETORES, MODALIDADES, RECEITAS E PROFISSIONAIS ESPECÍFICOS
         const businessModels = {
             'tech_ind': { 
-                sector: 'tech', type: 'b2b', name: 'Fábrica de Hardware B2B', capInicial: 5000000, custoFixoBase: 80000, precoBase: 600,
+                sector: 'tech', type: 'b2b', name: 'Desenvolvimento e Fábrica de Celulares', capInicial: 2500000, custoFixoBase: 45000, precoBase: 650,
+                guia: 'Para construir um smartphone, você precisa comprar Processadores, Telas OLED e Baterias de Lítio na seção 1 abaixo. Depois, clique em "Iniciar Produção" na seção 2. Contrate Engenheiros de Hardware e UI Designers na aba Equipe para valorizar seus aparelhos.',
                 insumos: {
-                    'processador': { nome: 'Chips SoC', forn: [ {id:'p1', nome:'Taiwan Fab (Básico)', custo: 50, q:'Baixa'}, {id:'p2', nome:'Silicon Core (Ultra)', custo: 150, q:'Alta'} ] },
-                    'tela': { nome: 'Ecrãs OLED/LCD', forn: [ {id:'t1', nome:'China Glass', custo: 30, q:'Baixa'}, {id:'t2', nome:'K-Display Retina', custo: 90, q:'Alta'} ] },
-                    'bateria': { nome: 'Baterias de Lítio', forn: [ {id:'b1', nome:'GigaCell Energy', custo: 20, q:'Média'} ] }
+                    'processador': { nome: 'Processadores (Chips SoC)', forn: [ {id:'p1', nome:'Taiwan Micro (Básico)', custo: 60, q:'Baixa'}, {id:'p2', nome:'Silicon Core (Alta Performance)', custo: 150, q:'Alta'} ] },
+                    'tela': { nome: 'Telas Touch OLED/Retina', forn: [ {id:'t1', nome:'Display Padrão', custo: 40, q:'Baixa'}, {id:'t2', nome:'Super Retina Gorila', custo: 95, q:'Alta'} ] },
+                    'bateria': { nome: 'Baterias de Lítio', forn: [ {id:'b1', nome:'GigaCell Energy', custo: 25, q:'Média'} ] }
                 },
-                receita: { 'processador': 1, 'tela': 1, 'bateria': 1 }, outputLbl: 'Smartphones Encaixotados', ipoMeta: 50000000,
-                conc: [ { nome: 'Samtech Corp', preco: 700, share: 50 }, { nome: 'Pear Assemblers', preco: 850, share: 50 } ]
+                cargos: [
+                    { id: 'eng_comp', nome: 'Engenheiro de Computação', salario: 4500, bonusDesc: '+8% capacidade produtiva e qualidade' },
+                    { id: 'ui_des', nome: 'Designer de UI / Produto', salario: 3200, bonusDesc: '+6% atratividade de vendas' }
+                ],
+                receita: { 'processador': 1, 'tela': 1, 'bateria': 1 }, outputLbl: 'Smartphones Prontos', ipoMeta: 25000000,
+                conc: [ { nome: 'Pear Inc.', preco: 890, share: 45 }, { nome: 'Samtech Mobile', preco: 680, share: 35 }, { nome: 'Xiaomeng', preco: 420, share: 20 } ]
+            },
+            'tech_retail': { 
+                sector: 'tech', type: 'b2c', name: 'Rede de Lojas de Eletrônicos (Varejo)', capInicial: 800000, custoFixoBase: 18000, precoBase: 520,
+                guia: 'Como loja varejista, você compra lotes de aparelhos prontos de distribuidoras e embalagens personalizadas para revender ao consumidor final.',
+                insumos: {
+                    'lote_eletronico': { nome: 'Aparelhos no Atacado', forn: [ {id:'le1', nome:'Importadora Shenzhen', custo: 220, q:'Baixa'}, {id:'le2', nome:'Distribuidora Oficial Premium', custo: 360, q:'Alta'} ] },
+                    'sacola_tech': { nome: 'Embalagens e Garantia', forn: [ {id:'st1', nome:'Caixa Simples', custo: 5, q:'Média'} ] }
+                },
+                cargos: [
+                    { id: 'op_caixa', nome: 'Operador de Caixa', salario: 1200, bonusDesc: 'Atende mais clientes na loja (+5% vendas)' },
+                    { id: 'vend_tec', nome: 'Vendedor Técnico', salario: 1800, bonusDesc: 'Aumenta conversão de clientes (+7% vendas)' }
+                ],
+                receita: { 'lote_eletronico': 1, 'sacola_tech': 1 }, outputLbl: 'Kits Prontos na Vitrine', ipoMeta: 8000000,
+                conc: [ { nome: 'MegaEletrônicos', preco: 550, share: 55 }, { nome: 'FastShop Parody', preco: 620, share: 45 } ]
             },
             'tech_soft': { 
-                sector: 'tech', type: 'b2b', name: 'Estúdio de Software (SaaS)', capInicial: 2000000, custoFixoBase: 40000, precoBase: 150,
+                sector: 'tech', type: 'b2b', name: 'Empresa de Software & SaaS', capInicial: 1200000, custoFixoBase: 28000, precoBase: 180,
+                guia: 'Contrate servidores em nuvem e licenças de dados para empacotar assinaturas de software corporativo.',
                 insumos: {
-                    'server': { nome: 'Servidores Dedicados', forn: [ {id:'sv1', nome:'Cloud Básica', custo: 10, q:'Baixa'}, {id:'sv2', nome:'Enterprise Servers', custo: 40, q:'Alta'} ] },
-                    'api': { nome: 'Licenças API de Terceiros', forn: [ {id:'ap1', nome:'API Standard', custo: 5, q:'Média'} ] }
+                    'server': { nome: 'Infraestrutura Cloud', forn: [ {id:'sv1', nome:'Cloud Básica', custo: 15, q:'Baixa'}, {id:'sv2', nome:'Cluster Alta Disponibilidade', custo: 40, q:'Alta'} ] },
+                    'api': { nome: 'Licenças de Segurança', forn: [ {id:'ap1', nome:'Auth & Criptografia', custo: 8, q:'Média'} ] }
                 },
-                receita: { 'server': 1, 'api': 2 }, outputLbl: 'Licenças de Software B2B', ipoMeta: 20000000,
-                conc: [ { nome: 'MicroSystem', preco: 200, share: 60 }, { nome: 'CloudSales', preco: 180, share: 40 } ]
+                cargos: [
+                    { id: 'dev_full', nome: 'Desenvolvedor Full-Stack', salario: 4200, bonusDesc: '+8% estabilidade e vendas' },
+                    { id: 'ux_res', nome: 'Especialista em UI/UX', salario: 3000, bonusDesc: '+6% retenção de clientes' }
+                ],
+                receita: { 'server': 1, 'api': 1 }, outputLbl: 'Licenças Anuais SaaS', ipoMeta: 15000000,
+                conc: [ { nome: 'MicroSystem Cloud', preco: 210, share: 60 }, { nome: 'SalesForce Parody', preco: 175, share: 40 } ]
             },
-            'tech_ai': { 
-                sector: 'tech', type: 'b2b', name: 'Pesquisa em Inteligência Artificial', capInicial: 8000000, custoFixoBase: 120000, precoBase: 5000,
+            'fashion_beauty': { 
+                sector: 'fashion', type: 'b2c', name: 'Marca de Cosméticos e Beleza (Estilo Wepink)', capInicial: 1200000, custoFixoBase: 22000, precoBase: 65,
+                guia: 'Compre essências, bases dermatológicas e frascos para produzir seus kits de beleza. Investir em marketing e influenciadores faz as vendas decolarem.',
                 insumos: {
-                    'gpu': { nome: 'Clusters de GPUs', forn: [ {id:'g1', nome:'Nvidia A100', custo: 1000, q:'Média'}, {id:'g2', nome:'Nvidia H100 (Blackwell)', custo: 2500, q:'Alta'} ] },
-                    'dados': { nome: 'Datasets Estruturados', forn: [ {id:'d1', nome:'Scraping Público', custo: 500, q:'Baixa'}, {id:'d2', nome:'Dados Proprietários Limpos', custo: 1500, q:'Alta'} ] }
+                    'essencia': { nome: 'Essência e Base Cosmética', forn: [ {id:'es1', nome:'Laboratório Nacional', custo: 8, q:'Média'}, {id:'es2', nome:'Fragância Importada França', custo: 22, q:'Alta'} ] },
+                    'frasco': { nome: 'Frascos e Embalagens', forn: [ {id:'fr1', nome:'Frasco Acrílico', custo: 3, q:'Baixa'}, {id:'fr2', nome:'Vidro Lapidado Rosa/Gold', custo: 9, q:'Alta'} ] }
                 },
-                receita: { 'gpu': 1, 'dados': 1 }, outputLbl: 'Modelos de Linguagem (LLM)', ipoMeta: 100000000,
-                conc: [ { nome: 'OpenAI Labs', preco: 6000, share: 50 }, { nome: 'Anthropic Core', preco: 5500, share: 50 } ]
+                cargos: [
+                    { id: 'quim_cos', nome: 'Químico de Cosméticos', salario: 3100, bonusDesc: '+7% qualidade percebida' },
+                    { id: 'gest_inf', nome: 'Gestor de Influenciadores', salario: 2800, bonusDesc: '+9% tração de vendas online' }
+                ],
+                receita: { 'essencia': 1, 'frasco': 1 }, outputLbl: 'Kits de Beleza & Perfumaria', ipoMeta: 12000000,
+                conc: [ { nome: 'PinkGlow Beauty', preco: 75, share: 50 }, { nome: 'Boticário Parody', preco: 68, share: 50 } ]
             },
             'fashion_ind': { 
-                sector: 'fashion', type: 'b2b', name: 'Manufatura Têxtil', capInicial: 2000000, custoFixoBase: 35000, precoBase: 120,
+                sector: 'fashion', type: 'b2b', name: 'Fábrica e Confecção Têxtil', capInicial: 1800000, custoFixoBase: 32000, precoBase: 110,
+                guia: 'Adquira rolos de tecido e aviamentos para confeccionar peças no atacado para redes de lojas.',
                 insumos: {
-                    'tecido': { nome: 'Rolos de Tecido', forn: [ {id:'te1', nome:'Algodão Asiático', custo: 10, q:'Baixa'}, {id:'te2', nome:'Seda Italiana', custo: 45, q:'Alta'} ] },
-                    'aviamento': { nome: 'Fios e Zíperes', forn: [ {id:'av1', nome:'Plásticos & Fios Básicos', custo: 5, q:'Média'} ] }
+                    'tecido': { nome: 'Rolos de Tecido', forn: [ {id:'te1', nome:'Algodão Padrão', custo: 12, q:'Baixa'}, {id:'te2', nome:'Linho e Seda Pura', custo: 38, q:'Alta'} ] },
+                    'aviamento': { nome: 'Linhas, Botões e Zíperes', forn: [ {id:'av1', nome:'Metal & Costura', custo: 5, q:'Média'} ] }
                 },
-                receita: { 'tecido': 2, 'aviamento': 1 }, outputLbl: 'Lotes de Vestuário (Atacado)', ipoMeta: 15000000,
-                conc: [ { nome: 'EuroTextile', preco: 150, share: 60 }, { nome: 'AsiaSew', preco: 90, share: 40 } ]
+                cargos: [
+                    { id: 'estilista', nome: 'Estilista de Moda', salario: 2900, bonusDesc: '+7% valor da coleção' },
+                    { id: 'op_maq', nome: 'Operador Têxtil', salario: 1400, bonusDesc: '+5% ritmo de confecção' }
+                ],
+                receita: { 'tecido': 2, 'aviamento': 1 }, outputLbl: 'Lotes de Vestuário', ipoMeta: 14000000,
+                conc: [ { nome: 'EuroTextile', preco: 135, share: 60 }, { nome: 'AsiaFashion', preco: 95, share: 40 } ]
             },
             'fashion_ret': { 
-                sector: 'fashion', type: 'b2c', name: 'Boutique de Alta Costura', capInicial: 1000000, custoFixoBase: 25000, precoBase: 1200,
+                sector: 'fashion', type: 'b2c', name: 'Loja de Roupas e Boutique', capInicial: 900000, custoFixoBase: 19000, precoBase: 160,
+                guia: 'Compre peças de vestuário e embalagens de grife para vender diretamente aos clientes da sua loja.',
                 insumos: {
-                    'roupa': { nome: 'Peças de Grife Prontas', forn: [ {id:'rp1', nome:'Atelier Padrão', custo: 300, q:'Média'}, {id:'rp2', nome:'Costura Parisiense Premium', custo: 700, q:'Alta'} ] },
-                    'embalagem': { nome: 'Embalagem de Luxo', forn: [ {id:'emb1', nome:'Saco Ecológico', custo: 10, q:'Baixa'}, {id:'emb2', nome:'Caixa de Camurça e Ouro', custo: 50, q:'Alta'} ] }
+                    'roupa': { nome: 'Coleção de Roupas', forn: [ {id:'rp1', nome:'Confecção Popular', custo: 35, q:'Baixa'}, {id:'rp2', nome:'Atelier Alta Costura', custo: 85, q:'Alta'} ] },
+                    'embalagem': { nome: 'Sacolas Personalizadas', forn: [ {id:'emb1', nome:'Sacola Kraft', custo: 2, q:'Média'}, {id:'emb2', nome:'Caixa de Luxo', custo: 8, q:'Alta'} ] }
                 },
-                receita: { 'roupa': 1, 'embalagem': 1 }, outputLbl: 'Peças Exclusivas na Vitrine', ipoMeta: 12000000,
-                conc: [ { nome: 'Loui V. Stores', preco: 1500, share: 70 }, { nome: 'Pradd', preco: 1400, share: 30 } ]
+                cargos: [
+                    { id: 'op_caixa_m', nome: 'Operador de Caixa', salario: 1200, bonusDesc: '+5% agilidade na loja' },
+                    { id: 'cons_moda', nome: 'Consultor de Estilo', salario: 1900, bonusDesc: '+8% vendas por cliente' }
+                ],
+                receita: { 'roupa': 1, 'embalagem': 1 }, outputLbl: 'Peças Prontas na Loja', ipoMeta: 10000000,
+                conc: [ { nome: 'Zêra Retail', preco: 150, share: 60 }, { nome: 'Loui V. Boutique', preco: 280, share: 40 } ]
             },
             'food_fast': { 
-                sector: 'food', type: 'b2c', name: 'Rede de Fast Food (Franquia)', capInicial: 1500000, custoFixoBase: 25000, precoBase: 12,
+                sector: 'food', type: 'b2c', name: 'Rede de Fast Food & Hamburgueria', capInicial: 1000000, custoFixoBase: 20000, precoBase: 14,
+                guia: 'Compre Hambúrguer (Carne), Pão e Alface/Tomate para montar seus combos na cozinha. Contrate Operadores de Caixa e Cozinheiros na aba Equipe.',
                 insumos: {
-                    'carne': { nome: 'Proteína (Hambúrguer)', forn: [ {id:'c1', nome:'Frigorífico Padrão', custo: 2, q:'Baixa'}, {id:'c2', nome:'Angus Premium Farms', custo: 4.5, q:'Alta'} ] },
-                    'pao': { nome: 'Pão de Gergelim', forn: [ {id:'pa1', nome:'Padaria Industrial', custo: 0.5, q:'Média'} ] },
-                    'vegetais': { nome: 'Alface e Tomate', forn: [ {id:'v1', nome:'Agricultura Local', custo: 0.5, q:'Baixa'}, {id:'v2', nome:'Orgânicos Certificados', custo: 1.5, q:'Alta'} ] }
+                    'carne': { nome: 'Hambúrguer Bovino', forn: [ {id:'c1', nome:'Frigorífico Padrão', custo: 2.2, q:'Baixa'}, {id:'c2', nome:'Blend Angus Puro', custo: 4.5, q:'Alta'} ] },
+                    'pao': { nome: 'Pão Brioche / Gergelim', forn: [ {id:'pa1', nome:'Panificadora Central', custo: 0.8, q:'Média'} ] },
+                    'vegetais': { nome: 'Alface, Tomate e Queijo', forn: [ {id:'v1', nome:'Ceasa Local', custo: 0.9, q:'Baixa'}, {id:'v2', nome:'Fazenda Orgânica', custo: 1.8, q:'Alta'} ] }
                 },
-                receita: { 'carne': 1, 'pao': 1, 'vegetais': 1 }, outputLbl: 'Combos de Refeição Rápida', ipoMeta: 10000000,
-                conc: [ { nome: 'McBurger', preco: 10, share: 60 }, { nome: 'Burger Lord', preco: 14, share: 40 } ]
+                cargos: [
+                    { id: 'op_caixa_f', nome: 'Operador de Caixa', salario: 1100, bonusDesc: '+5% atendimento no balcão' },
+                    { id: 'chef_coz', nome: 'Cozinheiro / Chapeiro', salario: 1600, bonusDesc: '+7% qualidade e rapidez' }
+                ],
+                receita: { 'carne': 1, 'pao': 1, 'vegetais': 1 }, outputLbl: 'Combos de Fast Food', ipoMeta: 9000000,
+                conc: [ { nome: 'McBurger', preco: 13, share: 60 }, { nome: 'Burger Lord', preco: 15, share: 40 } ]
             },
-            'food_agro': { 
-                sector: 'food', type: 'b2b', name: 'Fazenda Agroindustrial', capInicial: 4000000, custoFixoBase: 60000, precoBase: 80,
+            'food_alta': { 
+                sector: 'food', type: 'b2c', name: 'Restaurante de Alta Gastronomia', capInicial: 1400000, custoFixoBase: 28000, precoBase: 120,
+                guia: 'Compre cortes nobres e ingredientes importados para preparar pratos executivos.',
                 insumos: {
-                    'semente': { nome: 'Sementes / Grãos', forn: [ {id:'s1', nome:'Semente Transgênica', custo: 10, q:'Baixa'}, {id:'s2', nome:'Semente Orgânica Pura', custo: 30, q:'Alta'} ] },
-                    'fertilizante': { nome: 'Fertilizantes Defensivos', forn: [ {id:'f1', nome:'Químico Padrão', custo: 15, q:'Média'} ] }
+                    'cortes': { nome: 'Carnes Nobres e Frutos do Mar', forn: [ {id:'cn1', nome:'Fornecedor Selecionado', custo: 28, q:'Média'}, {id:'cn2', nome:'Wagyu & Importados', custo: 55, q:'Alta'} ] },
+                    'vinho': { nome: 'Guarnições e Especiarias', forn: [ {id:'vn1', nome:'Adega & Horta', custo: 12, q:'Alta'} ] }
                 },
-                receita: { 'semente': 1, 'fertilizante': 2 }, outputLbl: 'Toneladas de Soja/Grãos', ipoMeta: 25000000,
-                conc: [ { nome: 'AgroGlobal', preco: 90, share: 50 }, { nome: 'Fazendas Unidas', preco: 85, share: 50 } ]
+                cargos: [
+                    { id: 'chef_exec', nome: 'Chef Executivo', salario: 4000, bonusDesc: '+10% prestígio e vendas' },
+                    { id: 'sommelier', nome: 'Maître / Sommelier', salario: 2200, bonusDesc: '+6% ticket médio' }
+                ],
+                receita: { 'cortes': 1, 'vinho': 1 }, outputLbl: 'Pratos de Alta Gastronomia', ipoMeta: 12000000,
+                conc: [ { nome: 'Fasano Parody', preco: 145, share: 100 } ]
             },
             'fin_bank': {
-                sector: 'fin', type: 'b2c', name: 'Banco Digital (Fintech)', capInicial: 8000000, custoFixoBase: 150000, precoBase: 50,
+                sector: 'fin', type: 'b2c', name: 'Banco Digital & Cartões (Fintech)', capInicial: 4000000, custoFixoBase: 65000, precoBase: 45,
+                guia: 'Capte liquidez interbancária e servidores seguros para emitir cartões de crédito e pacotes financeiros aos clientes.',
                 insumos: {
-                    'capital': { nome: 'Captação de Mercado (CDI)', forn: [ {id:'ca1', nome:'Interbancário Risco Médio', custo: 15, q:'Média'} ] },
-                    'nuvem': { nome: 'Servidores Cloud (AWS/GCP)', forn: [ {id:'nu1', nome:'Servidor Básico', custo: 5, q:'Baixa'}, {id:'nu2', nome:'Cloud Enterprise Blindada', custo: 15, q:'Alta'} ] }
+                    'capital': { nome: 'Funding / Liquidez (CDI)', forn: [ {id:'ca1', nome:' Tesouraria Interbancária', custo: 12, q:'Média'} ] },
+                    'nuvem': { nome: 'Cibersegurança & Processadora', forn: [ {id:'nu1', nome:'Processadora Padrão', custo: 4, q:'Baixa'}, {id:'nu2', nome:'Segurança Bancária Nível Máximo', custo: 11, q:'Alta'} ] }
                 },
-                receita: { 'capital': 1, 'nuvem': 1 }, outputLbl: 'Cartões/Créditos Aprovados', ipoMeta: 100000000,
-                conc: [ { nome: 'NuBank', preco: 45, share: 50 }, { nome: 'Itaú Digital', preco: 60, share: 50 } ]
+                cargos: [
+                    { id: 'cons_fin', nome: 'Consultor Financeiro', salario: 3500, bonusDesc: '+7% captação de clientes' },
+                    { id: 'ger_fin', nome: 'Gerente de Risco e Crédito', salario: 4800, bonusDesc: '+9% rentabilidade das carteiras' }
+                ],
+                receita: { 'capital': 1, 'nuvem': 1 }, outputLbl: 'Contas e Cartões Ativos', ipoMeta: 45000000,
+                conc: [ { nome: 'Roxinho Bank', preco: 42, share: 55 }, { nome: 'Banco Itaú Parody', preco: 58, share: 45 } ]
             }
         };
 
         const pesquisasData = [
-            { id: 'p_log', nome: 'Otimização Logística Nv. 1', custo: 50000, desc: 'Reduz permanentemente o custo fixo operacional (OPEX) em 15% através da Inteligência Artificial em rotas logísticas.' },
-            { id: 'p_mkt', nome: 'Algoritmos de Growth & SEO', custo: 80000, desc: 'Aumenta a perceção de marca. Clientes B2C aceitam preços mais caros sem perder a taxa de conversão mensal.' },
-            { id: 'p_aut', nome: 'Automação Robótica / Indústria 4.0', custo: 200000, desc: 'A linha de produção converte insumos em produto final de forma instantânea. Otimiza o rendimento e elimina roubos de estoque.' }
+            { id: 'p_log', nome: 'Estudo de Malha Logística (Nível 1)', custo: 35000, desc: 'Mapeia fornecedores e reduz o custo fixo mensal em 10% permanentemente.' },
+            { id: 'p_mkt', nome: 'Pesquisa de Comportamento do Consumidor (Nível 2)', custo: 70000, desc: 'Aumenta a procura pelos seus produtos em +20% todos os dias.' },
+            { id: 'p_aut', nome: 'Estudo Profundo de Automação e Eficiência (Nível 3)', custo: 150000, desc: 'Estudo completo: reduz mais 15% do custo mensal e melhora a margem operacional.' }
         ];
 
         const macroEvents = [
-            { tipo: 'ruim', nome: 'Crise Logística Global', dMod: 1.0, cMod: 1.5, news: 'O encarecimento brutal dos fretes marítimos fez explodir o custo das importações em 50%. A indústria sofre.' },
-            { tipo: 'ruim', nome: 'Recessão Económica Severa', dMod: 0.6, cMod: 1.0, news: 'Os juros altos contraíram o mercado. Os clientes cortaram gastos não essenciais. Prevê-se uma quebra nas vendas de 40%.' },
-            { tipo: 'bom', nome: 'Boom Tecnológico e Retalho', dMod: 1.5, cMod: 1.0, news: 'A confiança do consumidor está em alta máxima. As pessoas estão a comprar sem olhar a preços. O mercado vive uma euforia irracional!' },
-            { tipo: 'bom', nome: 'Queda nas Commodities', dMod: 1.0, cMod: 0.7, news: 'A superprodução de matérias-primas na Ásia derrubou os custos de fabrico. Excelente altura para estocar insumos.' },
-            { tipo: 'misto', nome: 'Pandemia Virulenta', dMod: 1.3, cMod: 1.8, news: 'A procura por certos bens disparou, mas as fábricas fecharam. Os custos logísticos duplicaram da noite para o dia.' }
+            { tipo: 'ruim', nome: 'Alta nas Tarifas de Importação e Frete', dMod: 1.0, cMod: 1.35, news: 'O governo anunciou novas alíquotas para matérias-primas e combustíveis. O custo nos fornecedores subiu 35% temporariamente. Empresas com bom estoque sairão na frente.' },
+            { tipo: 'ruim', nome: 'Banco Central Sobe Juros e Consumo Desacelera', dMod: 0.7, cMod: 1.0, news: 'Com o crédito mais caro na praça, as famílias estão segurando o orçamento. As vendas do comércio e indústria recuaram cerca de 30% neste período.' },
+            { tipo: 'bom', nome: 'Crescimento Econômico e Consumo Aquecido', dMod: 1.45, cMod: 1.0, news: 'A queda no desemprego e a liberação de crédito impulsionaram as compras no país! A procura por produtos subiu 45%.' },
+            { tipo: 'bom', nome: 'Safra Recorde e Queda no Preço de Insumos', dMod: 1.1, cMod: 0.75, news: 'O excesso de oferta nos produtores derrubou o preço das matérias-primas em 25%. Momento excelente para abastecer o galpão pagando menos!' }
         ];
 
+        const baseColors = ['#0a84ff', '#32d74b', '#ff9f0a', '#bf5af2', '#ff453a', '#00c7b1', '#e91e63', '#6366f1', '#14b8a6', '#eab308', '#ec4899', '#38bdf8'];
+        let tempColor = '#0a84ff';
+        let tempFont = 'f-modern';
+        let tempAvatar = 'Terno Executivo';
         let state = null;
 
-        // INICIA UI SETUP E CORES
-        const baseColors = ['#0a84ff', '#32d74b', '#ff9f0a', '#bf5af2', '#ff453a', '#00C7B1', '#E91E63', '#607D8B', '#795548', '#FFEB3B', '#9C27B0', '#00BCD4'];
-        
         function initColorPicker() {
-            const grid = document.getElementById('color-picker-grid');
-            if(!grid) return;
-            grid.innerHTML = baseColors.map((c, i) => `<div class="color-circle ${i===0?'active':''}" style="background: ${c};" onclick="setSetupColor('${c}', this)"></div>`).join('');
+            const html = baseColors.map((c, i) => `<div class="color-circle ${i===0?'active':''}" style="background: ${c};" onclick="setSetupColor('${c}', this)"></div>`).join('');
+            const g1 = document.getElementById('color-picker-grid');
+            const g2 = document.getElementById('in-game-color-grid');
+            if(g1) g1.innerHTML = html;
+            if(g2) g2.innerHTML = html;
         }
         
         function updateSubSectors() {
@@ -736,35 +992,52 @@
             for (const key in businessModels) {
                 if (businessModels[key].sector === sec) {
                     const opt = document.createElement('option');
-                    opt.value = key; opt.innerText = businessModels[key].name;
+                    opt.value = key;
+                    opt.innerText = businessModels[key].name;
                     modelSelect.appendChild(opt);
                 }
             }
+            mostrarResumoModelo();
         }
-        window.addEventListener('DOMContentLoaded', () => { updateSubSectors(); initColorPicker(); });
 
-        let tempColor = '#0a84ff';
-        let tempFont = 'f-modern';
-        let tempAvatar = 'Terno Alta Costura';
+        function mostrarResumoModelo() {
+            const modId = document.getElementById('setup-model').value;
+            const cur = document.getElementById('setup-cur').value;
+            const mod = businessModels[modId];
+            if(!mod) return;
+            const capFmt = fmt(mod.capInicial, cur);
+            document.getElementById('setup-model-desc').innerHTML = `<strong>Caixa Inicial da Empresa:</strong> <span style="color:var(--success);">${capFmt}</span> (Conta pessoal inicia em zero)<br><strong>Resumo:</strong> ${mod.guia}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initColorPicker();
+            updateSubSectors();
+            document.getElementById('setup-cur').addEventListener('change', mostrarResumoModelo);
+        });
 
         function setSetupColor(hex, el) {
             tempColor = hex;
             document.documentElement.style.setProperty('--info', hex);
-            document.querySelectorAll('#color-picker-grid .color-circle').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
+            if(state) state.branding.color = hex;
         }
+
         function setSetupFont(f, el) {
             tempFont = f;
             document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            // Preview no titulo
-            const logo = document.querySelector('.brand-title');
-            if(f === 'f-modern') logo.style.fontFamily = "'Inter', sans-serif";
-            else if(f === 'f-serif') logo.style.fontFamily = "'Playfair Display', serif";
-            else if(f === 'f-mono') logo.style.fontFamily = "'Roboto Mono', monospace";
-            else if(f === 'f-mont') logo.style.fontFamily = "'Montserrat', sans-serif";
-            else if(f === 'f-space') logo.style.fontFamily = "'Space Grotesk', sans-serif";
+            if(el) el.classList.add('active');
+            const preview = document.getElementById('onboard-logo-preview');
+            if(preview) preview.className = f;
         }
+
+        function mudarFonteNoJogo(f) {
+            tempFont = f;
+            const logo = document.getElementById('ui-main-logo');
+            if(logo) logo.className = 'sb-brand ' + f;
+            if(state) state.branding.font = f;
+        }
+
         function setAvatar(name, el) {
             tempAvatar = name;
             document.querySelectorAll('.avatar-card').forEach(c => c.classList.remove('active'));
@@ -772,38 +1045,14 @@
         }
 
         function fmt(usdValue, curOverride) {
-            const cur = curOverride || (state ? state.moeda : 'USD');
-            if(typeof usdValue !== 'number' || isNaN(usdValue)) return "-";
-            const converted = usdValue * exchangeRates[cur];
+            const cur = curOverride || (state ? state.moeda : 'BRL');
+            const num = Number(usdValue);
+            if(isNaN(num)) return "R$ 0,00";
+            const converted = num * exchangeRates[cur];
             return new Intl.NumberFormat(cur === 'BRL' ? 'pt-BR' : cur === 'EUR' ? 'de-DE' : 'en-US', { style: 'currency', currency: cur }).format(converted);
         }
-        function toUSD(loc) { return loc / exchangeRates[state.moeda]; }
-        function toLoc(usd) { return usd * exchangeRates[state.moeda]; }
-
-        function gerarEstadoNovo(ceo, comp, cur, modId) {
-            const mod = businessModels[modId];
-            
-            let insumosState = {};
-            for(let key in mod.insumos) {
-                insumosState[key] = { qtd: 0, fornId: mod.insumos[key].forn[0].id };
-            }
-
-            return {
-                ceo, empresa: comp, moeda: cur, modelo: modId, 
-                data: { dia: 1, mes: 1, ano: 1 },
-                precoVendaUSD: mod.precoBase,
-                branding: { color: tempColor, font: tempFont, avatar: tempAvatar },
-                pj: { 
-                    caixa: mod.capInicial, caixaInicial: mod.capInicial, divida: 0, estoque: 0, extrato: [],
-                    insumos: insumosState,
-                    diretores: { cmo: false, coo: false }, staff: { limpeza: 0, seguranca: 0 },
-                    pesquisas: [], aberta: false,
-                    macro: { ativo: false, demandMod: 1.0, costMod: 1.0, nome: 'Estável', diasRestantes: 0 }
-                },
-                pf: { caixa: 0, salario: 8000, bens: [], extrato: [] },
-                emails: []
-            };
-        }
+        function toUSD(loc) { return (Number(loc) || 0) / exchangeRates[state.moeda]; }
+        function toLoc(usd) { return (Number(usd) || 0) * exchangeRates[state.moeda]; }
 
         function changeScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -818,86 +1067,119 @@
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
-            
-            // Muda fundo
             document.getElementById('bg-layer').className = bgClass;
-            
             if(window.innerWidth <= 900) {
                 document.querySelector('.sidebar').classList.remove('open');
                 document.querySelector('.sidebar-overlay').classList.remove('active');
             }
         }
 
-        function iniciarOnboarding() {
+        function irParaPersonalizacao() {
             const ceo = document.getElementById('setup-ceo').value.trim();
             const comp = document.getElementById('setup-comp').value.trim();
-            if(!ceo || !comp) return alert("O Estatuto Social exige todos os dados preenchidos.");
+            if(!ceo || !comp) return alert("Por favor, preencha o seu nome e o nome da sua empresa para continuar.");
+            document.getElementById('onboard-logo-preview').innerText = comp.toUpperCase();
             changeScreen('screen-onboarding');
         }
 
+        function gerarEstadoNovo(ceo, comp, cur, modId) {
+            const mod = businessModels[modId];
+            let insumosState = {};
+            for(let key in mod.insumos) {
+                insumosState[key] = { qtd: 0, fornId: mod.insumos[key].forn[0].id };
+            }
+            let cargosState = {};
+            mod.cargos.forEach(c => { cargosState[c.id] = 0; });
+
+            return {
+                ceo, empresa: comp, moeda: cur, modelo: modId,
+                data: { dia: 1, mes: 1, ano: 1 },
+                precoVendaUSD: mod.precoBase,
+                branding: { color: tempColor, font: tempFont, avatar: tempAvatar },
+                pj: { 
+                    caixa: mod.capInicial, caixaInicial: mod.capInicial, divida: 0, estoque: 0, extrato: [],
+                    insumos: insumosState,
+                    cargosEspec: cargosState,
+                    diretores: { cmo: false, coo: false },
+                    staff: { limpeza: 0, seguranca: 0 },
+                    filiais: 1,
+                    pesquisas: [], aberta: false,
+                    macro: { ativo: false, demandMod: 1.0, costMod: 1.0, nome: 'Estável', diasRestantes: 0 },
+                    _receitaB2C_acumulada: 0
+                },
+                pf: { caixa: 0, salario: 9000, bens: [], extrato: [] },
+                emails: []
+            };
+        }
+
         function finalizarOnboarding() {
-            const ceo = document.getElementById('setup-ceo').value.trim();
-            const comp = document.getElementById('setup-comp').value.trim();
+            const ceo = document.getElementById('setup-ceo').value.trim() || "Fundador";
+            const comp = document.getElementById('setup-comp').value.trim() || "Nova Empresa";
             const cur = document.getElementById('setup-cur').value;
             const modId = document.getElementById('setup-model').value;
             
             state = gerarEstadoNovo(ceo, comp, cur, modId);
             const mod = businessModels[modId];
             
-            const p1 = `Bem-vindo à Diretoria, <strong>Presidente ${ceo}</strong>.<br><br>As formalidades legais da <strong>${comp}</strong> estão concluídas. O banco libertou o aporte inicial de <strong>${fmt(mod.capInicial)}</strong> na nossa conta corporativa.<br><br>`;
-            const p2 = `<strong>Instruções Operacionais:</strong><br>A nossa cadeia produtiva é exigente. Antes de vender, vá ao separador <em>Cadeia de Produção</em> e compre as matérias-primas exigidas pelo nosso setor. Após ter saldo em todos os insumos, clique em <em>Processar Produção Interna</em>.<br><br>`;
-            const p3 = `O seu pró-labore será pago à taxa diária para a sua conta privada (PF).<br><br>Bom trabalho.<br>Elena (Secretariado Executivo)`;
-            addEmail('Elena (Head of Staff)', `O Início da ${comp}`, p1+p2+p3);
-            
-            // Applica Branding Global
-            document.documentElement.style.setProperty('--info', state.branding.color);
-            const logo = document.getElementById('ui-main-logo');
-            if(state.branding.font === 'f-modern') logo.style.fontFamily = "'Inter', sans-serif";
-            else if(state.branding.font === 'f-serif') logo.style.fontFamily = "'Playfair Display', serif";
-            else if(state.branding.font === 'f-mono') logo.style.fontFamily = "'Roboto Mono', monospace";
-            else if(state.branding.font === 'f-mont') logo.style.fontFamily = "'Montserrat', sans-serif";
-            else if(state.branding.font === 'f-space') logo.style.fontFamily = "'Space Grotesk', sans-serif";
+            addExtrato('pj', 'Capital Inicial Depositado no Banco', mod.capInicial);
 
+            const ListaInsumosTxt = Object.values(mod.insumos).map(i => i.nome).join(', ');
+            const corpoEmailBoasVindas = `
+                <p>Olá, <strong>${ceo}</strong>! Aqui é a Elena, sua secretária executiva. Já organizei a sua sala e conferi a abertura da conta bancária da <strong>${comp}</strong>.</p>
+                <p><strong>1. Situação Financeira Inicial:</strong><br>
+                • Caixa da Empresa disponível para investimentos: <strong>${fmt(mod.capInicial)}</strong><br>
+                • Sua Conta Pessoal: <strong>${fmt(0)}</strong> (Você receberá seu pró-labore diariamente conforme a empresa operar).</p>
+                <p><strong>2. Passo a Passo para Produzir e Vender (${mod.name}):</strong><br>
+                • Na aba <em>Insumos & Produção</em>, você precisa comprar: <strong>${ListaInsumosTxt}</strong>.<br>
+                • Assim que comprar os itens, desça até a seção 2 da mesma página e clique em <strong>Iniciar Produção no Galpão</strong>.<br>
+                • Na aba <em>Equipe & Cargos</em>, você pode contratar profissionais específicos do nosso ramo para aumentar nossas vendas.</p>
+                <p>Sempre que avançar o tempo, enviarei relatórios econômicos e guardarei os recortes do jornal aqui na sua Caixa de Entrada.</p>
+            `;
+            addEmail('Elena (Secretária Executiva)', `Guia de Abertura e Relatório Inicial: ${comp}`, corpoEmailBoasVindas);
+            
             montarJogo();
         }
 
         function montarJogo() {
             changeScreen('screen-game');
-            switchTab('tab-ops', 'bg-factory', document.querySelector('.menu-item.active'));
-            
             const mod = businessModels[state.modelo];
             
-            document.getElementById('ui-sb-comp').innerText = state.empresa;
-            document.getElementById('ui-main-logo').innerText = state.empresa.split(' ')[0].toUpperCase();
-            document.getElementById('ui-modelo-info').innerText = `${mod.name} • Câmbio: ${state.moeda}`;
+            document.documentElement.style.setProperty('--info', state.branding.color);
+            const logo = document.getElementById('ui-main-logo');
+            logo.className = 'sb-brand ' + state.branding.font;
+            logo.innerText = state.empresa.toUpperCase();
+            
+            document.getElementById('ui-sb-comp').innerText = mod.name;
+            document.getElementById('ui-modelo-info').innerText = `${mod.name} • Moeda: ${state.moeda}`;
+            document.getElementById('ui-guia-producao').innerText = mod.guia;
             
             document.getElementById('ui-lbl-produto').innerText = mod.outputLbl;
             document.getElementById('ui-lbl-produto2').innerText = mod.outputLbl;
             
             if(mod.type === 'b2b') {
-                document.getElementById('lbl-market-title').innerText = "Contratos B2B (Atacado)";
-                document.getElementById('lbl-market-desc').innerText = "Venda em grandes volumes para outras corporações. A concorrência é agressiva no preço.";
+                document.getElementById('lbl-market-title').innerText = "Contratos para Empresas (Atacado B2B)";
+                document.getElementById('lbl-market-desc').innerText = "Empresas compram grandes lotes de uma vez, mas exigem preços competitivos em relação aos concorrentes ao lado.";
             } else {
-                document.getElementById('lbl-market-title').innerText = "Varejo ao Consumidor (B2C)";
-                document.getElementById('lbl-market-desc').innerText = "A procura é sensível ao preço, mas insumos Premium atraem clientes que pagam mais.";
+                document.getElementById('lbl-market-title').innerText = "Preço de Venda ao Consumidor (Varejo B2C)";
+                document.getElementById('lbl-market-desc').innerText = "Clientes compram todos os dias. Usar matérias-primas de alta qualidade e contratar especialistas permite cobrar mais caro.";
             }
 
             document.getElementById('ui-rh-cmo-val').innerText = fmt(25000);
             document.getElementById('ui-rh-coo-val').innerText = fmt(22000);
-            document.getElementById('ui-preco').value = Math.round(toLocal(state.precoVendaUSD));
+            document.getElementById('ui-custo-filial').innerText = fmt(250000);
+            document.getElementById('ui-preco').value = Math.round(toLoc(state.precoVendaUSD));
             document.getElementById('ui-ceo-nome-display').innerText = state.ceo;
+            document.getElementById('ui-ceo-traje').innerText = state.branding.avatar;
 
-            renderInsumos(); 
+            renderInsumos();
+            renderCargosEspecificos();
             renderPesquisas();
-            renderConcorrentes(); 
-            renderLojaPF(); 
-            
-            // A SALVAÇÃO DO ZERO BUG!
-            syncUI(); 
+            renderConcorrentes();
+            renderLojaPF();
             renderEmails();
+            syncUI();
         }
 
-        /* --- CADEIA DE PRODUÇÃO MULTI-INSUMOS --- */
         function renderInsumos() {
             const mod = businessModels[state.modelo];
             let html = '';
@@ -906,20 +1188,23 @@
                 const insumo = mod.insumos[key];
                 const fornecedoresOpt = insumo.forn.map(f => {
                     const sel = state.pj.insumos[key].fornId === f.id ? 'selected' : '';
-                    return `<option value="${f.id}" ${sel}>${f.nome} (${f.q}) - ${fmt(f.custo)}/un</option>`;
+                    return `<option value="${f.id}" ${sel}>${f.nome} (Qualidade ${f.q}) - ${fmt(f.custo * state.pj.macro.costMod)}/un</option>`;
                 }).join('');
 
                 html += `
                 <div class="insumo-box">
-                    <div class="insumo-title"><span>${insumo.nome}</span> <span>Estoque Bruto: <strong style="color:var(--text-main); font-size:15px;">${state.pj.insumos[key].qtd.toLocaleString()}</strong> un</span></div>
-                    <div style="display: flex; gap: 12px; margin-bottom: 8px;">
-                        <select class="select" id="forn-${key}" onchange="atualizarFornInsumo('${key}')" style="flex: 2; padding: 12px;">${fornecedoresOpt}</select>
-                        <select class="select" id="qtd-${key}" style="flex: 1; padding: 12px;">
-                            <option value="1000">1.000 un</option>
-                            <option value="5000">5.000 un (-10%)</option>
-                            <option value="20000">20.000 un (-20%)</option>
+                    <div class="insumo-title">
+                        <span>${insumo.nome}</span>
+                        <span style="color:var(--text-main);">Em Estoque: <strong>${state.pj.insumos[key].qtd.toLocaleString()}</strong> un</span>
+                    </div>
+                    <div class="insumo-controls">
+                        <select class="select" id="forn-${key}" onchange="atualizarFornInsumo('${key}')" style="flex: 2;">${fornecedoresOpt}</select>
+                        <select class="select" id="qtd-${key}" style="flex: 1;">
+                            <option value="500">Lote 500 un (Preço Normal)</option>
+                            <option value="5000">Lote 5.000 un (10% Desconto)</option>
+                            <option value="20000">Contêiner 20.000 un (20% Desconto)</option>
                         </select>
-                        <button class="btn btn-primary" onclick="comprarInsumo('${key}')">Aprovisionar</button>
+                        <button class="btn btn-primary" onclick="comprarInsumo('${key}')">Comprar Lote</button>
                     </div>
                 </div>`;
             }
@@ -939,17 +1224,16 @@
             
             const forn = insumoDef.forn.find(f => f.id === fornId);
             let desconto = qtd === 20000 ? 0.8 : (qtd === 5000 ? 0.9 : 1.0);
-            
             const custoReal = (forn.custo * state.pj.macro.costMod) * desconto * qtd;
 
             if (state.pj.caixa >= custoReal) {
                 state.pj.caixa -= custoReal;
                 state.pj.insumos[key].qtd += qtd;
-                addExtrato('pj', `Matéria-prima: ${insumoDef.nome} (${qtd} un)`, -custoReal);
-                syncUI();
+                addExtrato('pj', `Compra: ${insumoDef.nome} (${qtd} un)`, -custoReal);
                 renderInsumos();
+                syncUI();
             } else {
-                alert(`Caixa empresarial insuficiente para liquidar fatura de fornecedores no valor de ${fmt(custoReal)}.`);
+                alert(`Caixa insuficiente! Você precisa de ${fmt(custoReal)} para comprar este lote.`);
             }
         }
 
@@ -964,36 +1248,65 @@
                 const nec = mod.receita[k] * qtdProd;
                 if(state.pj.insumos[k].qtd < nec) {
                     possivel = false;
-                    falhaMsg += `- ${nec - state.pj.insumos[k].qtd} unid. de ${mod.insumos[k].nome}\n`;
+                    falhaMsg += `• Faltam ${(nec - state.pj.insumos[k].qtd).toLocaleString()} un. de ${mod.insumos[k].nome}\n`;
                 }
             }
 
-            if(!possivel) return alert("Falta matéria-prima para a linha de montagem!\nCompre:\n" + falhaMsg);
+            if(!possivel) return alert("Faltam insumos no galpão para produzir essa quantidade:\n\n" + falhaMsg);
 
             for(let k in mod.receita) {
                 state.pj.insumos[k].qtd -= (mod.receita[k] * qtdProd);
             }
             
             state.pj.estoque += qtdProd;
-            addExtrato('pj', `Operação Concluída: ${mod.outputLbl} (${qtdProd} un)`, 0);
-            
-            syncUI();
+            addExtrato('pj', `Produção Finalizada: +${qtdProd} ${mod.outputLbl}`, 0);
             renderInsumos();
+            syncUI();
         }
 
-        /* --- PESQUISAS (R&D) --- */
+        function renderCargosEspecificos() {
+            const mod = businessModels[state.modelo];
+            const box = document.getElementById('ui-rh-especialistas');
+            box.innerHTML = mod.cargos.map(c => `
+                <div class="list-item">
+                    <div>
+                        <div style="font-size: 14px; font-weight: 700;">${c.nome}</div>
+                        <div style="font-size: 12px; color: var(--success); margin-top: 2px;">${c.bonusDesc}</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Salário Mensal: ${fmt(c.salario)} por profissional</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="font-size: 14px; font-weight: 700;">Contratados: ${state.pj.cargosEspec[c.id]}</div>
+                        <button class="btn btn-primary" onclick="contratarEspecialista('${c.id}', ${c.salario})">Contratar (+1)</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function contratarEspecialista(id, salario) {
+            const taxaAdmissao = salario * 0.5;
+            if(state.pj.caixa >= taxaAdmissao) {
+                state.pj.caixa -= taxaAdmissao;
+                state.pj.cargosEspec[id]++;
+                addExtrato('pj', `Admissão de Especialista (${id})`, -taxaAdmissao);
+                renderCargosEspecificos();
+                syncUI();
+            } else {
+                alert("Caixa insuficiente para os custos de contratação.");
+            }
+        }
+
         function renderPesquisas() {
             let h = '';
             pesquisasData.forEach(p => {
                 const comp = state.pj.pesquisas.includes(p.id);
                 h += `
-                <div class="list-item" style="background: rgba(0,0,0,0.5);">
+                <div class="list-item">
                     <div>
-                        <div style="font-size: 14px; font-weight: 600; color: var(--info);">${p.nome}</div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; max-width: 85%;">${p.desc}</div>
+                        <div style="font-size: 14px; font-weight: 700; color: var(--info);">${p.nome}</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${p.desc}</div>
                     </div>
-                    ${comp ? '<span style="color:var(--success); font-weight:700; font-size:11px; margin-right:10px;">PESQUISA CONCLUÍDA</span>' 
-                           : `<button class="btn btn-primary" style="padding:10px 14px; font-size:11px;" onclick="financiarPesquisa('${p.id}', ${p.custo})">Investir ${fmt(p.custo)}</button>`}
+                    ${comp ? '<span style="color:var(--success); font-weight:700; font-size:12px;">ATIVO</span>' 
+                           : `<button class="btn btn-primary" onclick="financiarPesquisa('${p.id}', ${p.custo})">Contratar Estudo (${fmt(p.custo)})</button>`}
                 </div>`;
             });
             document.getElementById('ui-rd-list').innerHTML = h;
@@ -1003,58 +1316,65 @@
             if(state.pj.caixa >= custo) {
                 state.pj.caixa -= custo;
                 state.pj.pesquisas.push(id);
-                addExtrato('pj', `Investimento P&D: Novo Estudo`, -custo);
-                addEmail('Departamento P&D', 'Tecnologia Aplicada com Sucesso', `Senhor Presidente, o investimento milionário surtiu efeito. A pesquisa foi implementada na empresa e os benefícios operacionais já estão ativos na folha de cálculos.`);
+                addExtrato('pj', `Estudo Implementado (${id})`, -custo);
+                addEmail('Equipe de Estudos', 'Novo Estudo Concluído com Sucesso', `<p>Presidente, concluímos a implantação do estudo na empresa. Os descontos operacionais e ganhos de produtividade já estão reduzindo nossas despesas mensais.</p>`);
                 renderPesquisas();
                 syncUI();
             } else {
-                alert("Capital Corporativo Insuficiente para R&D.");
+                alert("Caixa da empresa insuficiente para bancar este estudo.");
             }
         }
 
-        /* --- RH --- */
         function contratarRH(cargo) {
             const custo = cargo === 'cmo' ? 25000 : 22000;
             if (state.pj.caixa >= custo) {
                 state.pj.diretores[cargo] = true;
                 state.pj.caixa -= custo;
-                addExtrato('pj', `Bónus Contratação (${cargo.toUpperCase()})`, -custo);
-                addEmail('Recursos Humanos', `Executivo Adicionado à Diretoria`, `O novo diretor ${cargo.toUpperCase()} foi integrado e terá impacto no OPEX diário a partir deste ciclo.`);
+                addExtrato('pj', `Contratação Diretoria (${cargo.toUpperCase()})`, -custo);
+                addEmail('Recursos Humanos', `Novo Diretor ${cargo.toUpperCase()} Contratado`, `<p>O executivo assumiu a cadeira hoje e já iniciou a reestruturação da área.</p>`);
                 syncUI();
-            } else { alert("A liquidez é insuficiente para o bónus inicial do Headhunter."); }
+            } else { alert("Caixa insuficiente para pagar o bônus de contratação."); }
         }
+
         function contratarStaff(tipo) {
-            const c = tipo === 'limpeza' ? 2000 : 3500;
+            const c = tipo === 'limpeza' ? 1500 : 2500;
             if (state.pj.caixa >= c) {
                 state.pj.caixa -= c;
                 state.pj.staff[tipo]++;
-                addExtrato('pj', `Contratação Operacional (${tipo})`, -c);
+                addExtrato('pj', `Contratação Equipe (${tipo})`, -c);
+                syncUI();
+            } else { alert("Caixa insuficiente."); }
+        }
+
+        function expandirFilial() {
+            const custo = 250000;
+            if(state.pj.caixa >= custo) {
+                state.pj.caixa -= custo;
+                state.pj.filiais++;
+                addExtrato('pj', `Abertura da Filial #${state.pj.filiais}`, -custo);
+                addEmail('Expansão Física', `Nova Unidade Inaugurada!`, `<p>Parabéns! Nossa marca agora conta com <strong>${state.pj.filiais} unidades operacionais</strong>, aumentando nossa capacidade de vendas diárias em +25%.</p>`);
                 syncUI();
             } else {
-                alert("Caixa Insuficiente.");
+                alert(`Caixa insuficiente. É necessário ${fmt(custo)} para abrir uma nova unidade.`);
             }
         }
 
-        /* --- MERCADO --- */
         function renderConcorrentes() {
             const mod = businessModels[state.modelo];
-            let html = '';
-            mod.conc.forEach(c => {
-                html += `
-                <div style="margin-bottom: 12px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px;">
-                        <span style="font-weight:600;">${c.nome}</span><span>${fmt(c.preco)}</span>
+            document.getElementById('ui-concorrentes').innerHTML = mod.conc.map(c => `
+                <div style="margin-bottom: 14px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
+                        <span style="font-weight:700;">${c.nome}</span><span>Preço praticado: <strong>${fmt(c.preco)}</strong></span>
                     </div>
                     <div class="market-bar-bg"><div class="market-bar-fill" style="width: ${c.share}%"></div></div>
-                </div>`;
-            });
-            document.getElementById('ui-concorrentes').innerHTML = html;
+                </div>
+            `).join('');
         }
 
         function calcularMargem() {
             if(!state) return;
             const precoLocal = parseFloat(document.getElementById('ui-preco').value) || 0;
-            state.precoVendaUSD = parseToUSD(precoLocal);
+            state.precoVendaUSD = toUSD(precoLocal);
             
             const mod = businessModels[state.modelo];
             let custoSoma = 0;
@@ -1066,27 +1386,40 @@
             }
             
             const lucroUniUSD = state.precoVendaUSD - custoSoma;
-
             document.getElementById('ui-margem-custo').innerText = fmt(custoSoma);
             const lblLucro = document.getElementById('ui-margem-lucro');
             lblLucro.innerText = fmt(lucroUniUSD);
-            if (lucroUniUSD < 0) { lblLucro.className = 'c-red'; } else { lblLucro.className = 'c-green'; }
+            lblLucro.className = lucroUniUSD < 0 ? 'c-red' : 'c-green';
         }
 
-        /* --- SINCRONIZAÇÃO UI SÍNCRONA --- */
+        function calcularOpexMensal() {
+            const mod = businessModels[state.modelo];
+            let opex = mod.custoFixoBase * state.pj.filiais;
+            if (state.pj.diretores.coo) opex *= 0.80;
+            if (state.pj.pesquisas.includes('p_log')) opex *= 0.90;
+            if (state.pj.pesquisas.includes('p_aut')) opex *= 0.85;
+
+            if (state.pj.diretores.cmo) opex += 25000;
+            if (state.pj.diretores.coo) opex += 22000;
+            opex += (state.pj.staff.limpeza * 1500) + (state.pj.staff.seguranca * 2500);
+
+            mod.cargos.forEach(c => {
+                opex += (state.pj.cargosEspec[c.id] || 0) * c.salario;
+            });
+            return opex;
+        }
+
         function syncUI() {
             if(!state) return;
             const mod = businessModels[state.modelo];
             
             document.getElementById('ui-data-dia').innerText = `Dia ${state.data.dia}`;
             document.getElementById('ui-data-mes').innerText = `Mês ${state.data.mes} / Ano ${state.data.ano}`;
-            const mobileData = document.getElementById('ui-data-mobile');
-            if(mobileData) mobileData.innerText = `D${state.data.dia} M${state.data.mes}`;
             
             const btnCmo = document.getElementById('btn-hire-cmo');
-            if (state.pj.diretores.cmo) { btnCmo.innerText = 'Em Funções'; btnCmo.classList.add('btn-disabled'); }
+            if (state.pj.diretores.cmo) { btnCmo.innerText = 'Contratado'; btnCmo.classList.add('btn-disabled'); }
             const btnCoo = document.getElementById('btn-hire-coo');
-            if (state.pj.diretores.coo) { btnCoo.innerText = 'Em Funções'; btnCoo.classList.add('btn-disabled'); }
+            if (state.pj.diretores.coo) { btnCoo.innerText = 'Contratado'; btnCoo.classList.add('btn-disabled'); }
             
             document.getElementById('ui-rh-limp-qtd').innerText = state.pj.staff.limpeza;
             document.getElementById('ui-rh-seg-qtd').innerText = state.pj.staff.seguranca;
@@ -1095,17 +1428,13 @@
             mStatus.innerText = state.pj.macro.nome;
             if(state.pj.macro.ativo) {
                 mStatus.className = state.pj.macro.demandMod > 1.0 || state.pj.macro.costMod < 1.0 ? "card-value c-green" : "card-value c-warn";
-                document.getElementById('ui-macro-desc').innerText = `Faltam ${state.pj.macro.diasRestantes} dias para terminar.`; 
+                document.getElementById('ui-macro-desc').innerText = `Duração estimada: ${state.pj.macro.diasRestantes} dias.`; 
             } else {
-                mStatus.className = "card-value"; mStatus.style.color = "var(--text-main)";
-                document.getElementById('ui-macro-desc').innerText = 'Demanda e Custos logísticos estabilizados.';
+                mStatus.className = "card-value";
+                document.getElementById('ui-macro-desc').innerText = 'Consumo e fretes operando normalmente.';
             }
 
-            let opexMensal = mod.custoFixoBase;
-            if (state.pj.diretores.coo || state.pj.pesquisas.includes('p_log')) opexMensal *= 0.8;
-            if (state.pj.diretores.cmo) opexMensal += 25000;
-            if (state.pj.diretores.coo) opexMensal += 22000;
-            opexMensal += (state.pj.staff.limpeza * 2000) + (state.pj.staff.seguranca * 3500);
+            const opexMensal = calcularOpexMensal();
             
             document.getElementById('ui-caixa-pj').innerText = fmt(state.pj.caixa);
             document.getElementById('ui-custo-fixo').innerText = fmt(opexMensal);
@@ -1113,9 +1442,9 @@
             document.getElementById('ui-divida-pj').innerText = fmt(state.pj.divida);
             
             document.getElementById('ui-caixa-pf').innerText = fmt(state.pf.caixa);
-            document.getElementById('ui-salario-pf').innerText = fmt(state.pf.salario / 30); 
+            document.getElementById('ui-salario-pf').innerText = fmt(state.pf.salario / 30);
 
-            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#666;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3" style="text-align:center;">Não existem movimentos na conta.</td></tr>';
+            const buildTb = (arr) => arr.length ? arr.map(t => `<tr><td style="color:#888;">${t.d}</td><td>${t.desc}</td><td class="t-val ${t.val >= 0 ? 'c-green' : 'c-red'}">${t.val >= 0 ? '+' : ''}${fmt(t.val)}</td></tr>`).join('') : '<tr><td colspan="3" style="text-align:center; color:#666;">Nenhuma movimentação registrada ainda.</td></tr>';
             document.getElementById('tb-extrato-pj').innerHTML = buildTb(state.pj.extrato);
             document.getElementById('tb-extrato-pf').innerHTML = buildTb(state.pf.extrato);
 
@@ -1125,45 +1454,67 @@
                 const forn = mod.insumos[k].forn.find(f => f.id === fId);
                 somaInventario += state.pj.insumos[k].qtd * forn.custo; 
             }
-            const valuation = state.pj.caixa + somaInventario + (state.pj.estoque * (mod.precoBase * 0.5)) - state.pj.divida;
-            const finalVal = Math.max(0, valuation * 5.5);
-
+            const valuation = state.pj.caixa + somaInventario + (state.pj.estoque * (mod.precoBase * 0.6)) - state.pj.divida;
+            const finalVal = Math.max(0, valuation * 4.5);
             document.getElementById('ui-valuation').innerText = fmt(finalVal);
             
             const btnIpo = document.getElementById('btn-ipo');
             if (state.pj.aberta) {
-                btnIpo.innerText = 'Ações Cotadas em Bolsa (NYSE)';
+                btnIpo.innerText = 'Empresa Listada na Bolsa';
                 btnIpo.classList.add('btn-disabled');
-                btnIpo.style.background = 'transparent'; btnIpo.style.color = 'var(--success)'; btnIpo.style.borderColor = 'var(--success)';
             } else if (finalVal >= mod.ipoMeta) {
-                btnIpo.classList.remove('btn-disabled'); btnIpo.innerText = 'Executar Oferta Pública Inicial (IPO)';
+                btnIpo.classList.remove('btn-disabled');
+                btnIpo.innerText = 'Lançar Ações na Bolsa (IPO)';
             } else {
-                btnIpo.classList.add('btn-disabled'); btnIpo.innerText = `IPO Indisponível (Faltam ${fmt(mod.ipoMeta - finalVal)})`;
+                btnIpo.classList.add('btn-disabled');
+                btnIpo.innerText = `Meta para IPO: ${fmt(mod.ipoMeta)}`;
             }
             
             const mBens = document.getElementById('ui-meus-bens');
-            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(0,0,0,0.5); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:12px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#555;font-size:11px;">Nenhum ativo de luxo na alçada privada.</span>';
+            mBens.innerHTML = state.pf.bens.length ? state.pf.bens.map(b => `<div style="padding: 10px 12px; background: rgba(0,0,0,0.5); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; font-size:12px; display:flex; justify-content:space-between;"><span>${b.n}</span> <span class="c-info">${fmt(b.v)}</span></div>`).join('') : '<span style="color:#666;font-size:12px;">Nenhum imóvel ou veículo adquirido na conta pessoal.</span>';
             
-            calcularMargem(); 
+            calcularMargem();
         }
 
-        /* --- MOTOR DE TEMPO (O Coração do Jogo) --- */
+        function addExtrato(tipo, desc, val) {
+            if(!state) return;
+            state[tipo].extrato.unshift({ d: `D${state.data.dia}/M${state.data.mes}`, desc, val });
+            if (state[tipo].extrato.length > 40) state[tipo].extrato.pop();
+        }
+
         function avancarCiclo(dias) {
             const loader = document.getElementById('loading-overlay');
             loader.style.display = 'flex';
             
             setTimeout(() => {
+                let ultimoEvento = null;
+                let totalVendidoPeriodo = 0;
+                let receitaPeriodo = 0;
+
                 for(let i = 0; i < dias; i++) {
-                    processarDia();
+                    const res = processarDia();
+                    totalVendidoPeriodo += res.vendasDia;
+                    receitaPeriodo += res.recDia;
+                    if(res.evento) ultimoEvento = res.evento;
                 }
                 loader.style.display = 'none';
                 syncUI();
-            }, dias > 1 ? 900 : 300); 
+
+                // Sempre mostra o Jornal ou Resumo ao avançar Semana/Mês ou quando há notícia
+                if (ultimoEvento) {
+                    abrirJornal(ultimoEvento.nome, ultimoEvento.news);
+                } else if (dias >= 7) {
+                    const resumoTxt = `Durante estes ${dias} dias, a ${state.empresa} comercializou ${totalVendidoPeriodo.toLocaleString()} unidades, gerando uma receita bruta de ${fmt(receitaPeriodo)}. O cenário político e cambial segue estável, e o relatório contábil foi arquivado na sua Caixa de Entrada.`;
+                    addEmail('Diário Econômico & Elena', `Resumo do Período (${dias} dias)`, `<p>${resumoTxt}</p>`);
+                    abrirJornal(`Balanço de Mercado: ${state.empresa}`, resumoTxt);
+                }
+            }, 350);
         }
 
-        function abrirJornal(evento) {
-            document.getElementById('news-headline').innerText = evento.nome;
-            document.getElementById('news-body').innerText = evento.news;
+        function abrirJornal(titulo, texto) {
+            document.getElementById('news-date').innerText = `Dia ${state.data.dia}, Mês ${state.data.mes} do Ano ${state.data.ano} • Economia & Negócios`;
+            document.getElementById('news-headline').innerText = titulo;
+            document.getElementById('news-body').innerText = texto;
             document.getElementById('news-modal').style.display = 'flex';
         }
         function fecharJornal() {
@@ -1172,154 +1523,159 @@
 
         function processarDia() {
             const mod = businessModels[state.modelo];
-            let journalEventTriggered = null;
+            let eventoDisparado = null;
 
             if (state.pj.macro.ativo) {
                 state.pj.macro.diasRestantes--;
                 if (state.pj.macro.diasRestantes <= 0) {
                     state.pj.macro = { ativo: false, demandMod: 1.0, costMod: 1.0, nome: 'Estável', diasRestantes: 0 };
-                    addEmail('Bloomberg News', 'Clima Macro Normalizado', 'O choque nos mercados chegou ao fim. As cadeias logísticas voltaram à normalidade.');
+                    addEmail('Elena (Relatório de Mercado)', 'Economia Normalizada', '<p>Presidente, os custos de frete e a procura dos consumidores voltaram ao patamar normal hoje.</p>');
                 }
-            } else {
-                if (Math.random() < 0.015) { 
-                    const e = macroEvents[Math.floor(Math.random() * macroEvents.length)];
-                    state.pj.macro = { ativo: true, demandMod: e.dMod, costMod: e.cMod, nome: e.nome, diasRestantes: (Math.floor(Math.random() * 3) + 2) * 30 };
-                    journalEventTriggered = e;
-                }
+            } else if (Math.random() < 0.04) {
+                const e = macroEvents[Math.floor(Math.random() * macroEvents.length)];
+                state.pj.macro = { ativo: true, demandMod: e.dMod, costMod: e.cMod, nome: e.nome, diasRestantes: 30 };
+                addEmail('Diário Econômico (Urgente)', `MANCHETE: ${e.nome}`, `<p>${e.news}</p><p><strong>Nota da Elena:</strong> Ajustei nossas projeções no painel. Fique atento ao preço de compra dos insumos e ao nosso caixa.</p>`);
+                eventoDisparado = e;
             }
+
+            // Bônus de Equipe Especializada e Filiais
+            let bonusEquipe = 1.0 + ((state.pj.filiais - 1) * 0.25) + (state.pj.staff.limpeza * 0.03);
+            mod.cargos.forEach(c => {
+                bonusEquipe += (state.pj.cargosEspec[c.id] || 0) * 0.07;
+            });
 
             let vendasDia = 0;
+            const mediaConc = mod.conc.reduce((a, b) => a + b.preco, 0) / mod.conc.length;
+            let fatorPreco = mediaConc / Math.max(1, state.precoVendaUSD);
+            let fatorMkt = (state.pj.diretores.cmo ? 1.3 : 1.0) * (state.pj.pesquisas.includes('p_mkt') ? 1.2 : 1.0);
+
             if (mod.type === 'b2c') {
-                const mediaConc = mod.conc.reduce((a, b) => a + b.preco, 0) / mod.conc.length;
-                let fatorPreco = mediaConc / state.precoVendaUSD;
-                let fatorMkt = state.pj.diretores.cmo || state.pj.pesquisas.includes('p_mkt') ? 1.30 : 1.0; 
-                
-                let qualBonus = 1.0;
-                for(let k in state.pj.insumos) {
-                    const fId = state.pj.insumos[k].fornId;
-                    const f = mod.insumos[k].forn.find(x => x.id === fId);
-                    if(f.q === 'Alta' || f.q === 'Luxo') qualBonus += 0.15;
-                }
-
-                let capMensal = Math.floor(1000 * fatorPreco * state.pj.macro.demandMod * fatorMkt * qualBonus);
-                let capDiaria = Math.floor(capMensal / 30);
-                vendasDia = Math.min(capDiaria, state.pj.estoque);
-            } else if (mod.type === 'b2b') {
-                if (Math.random() < 0.1) { 
-                    const melhorPreco = Math.min(...mod.conc.map(c => c.preco));
-                    const tol = state.pj.diretores.cmo ? 1.25 : 1.10; 
-                    if (state.precoVendaUSD <= melhorPreco * tol) {
-                        vendasDia = Math.min(2000, state.pj.estoque); 
-                    }
+                let demandaDiaria = Math.floor(45 * fatorPreco * state.pj.macro.demandMod * fatorMkt * bonusEquipe);
+                vendasDia = Math.min(demandaDiaria, state.pj.estoque);
+            } else {
+                // B2B fecha pedidos maiores
+                if (state.precoVendaUSD <= mediaConc * 1.25) {
+                    let demandaDiariaB2B = Math.floor(35 * fatorPreco * state.pj.macro.demandMod * fatorMkt * bonusEquipe);
+                    vendasDia = Math.min(demandaDiariaB2B, state.pj.estoque);
                 }
             }
 
+            let recDia = 0;
             if (vendasDia > 0) {
-                const rec = vendasDia * state.precoVendaUSD;
-                state.pj.caixa += rec; state.pj.estoque -= vendasDia;
-                if(mod.type === 'b2b') addExtrato('pj', `Contrato Fechado B2B (${vendasDia} un)`, rec);
-                else state.pj._receitaB2C_acumulada = (state.pj._receitaB2C_acumulada || 0) + rec;
+                recDia = vendasDia * state.precoVendaUSD;
+                state.pj.caixa += recDia;
+                state.pj.estoque -= vendasDia;
+                state.pj._receitaB2C_acumulada += recDia;
             }
 
-            let opexMensal = mod.custoFixoBase;
-            if (state.pj.diretores.coo || state.pj.pesquisas.includes('p_log')) opexMensal *= 0.8;
-            if (state.pj.diretores.cmo) opexMensal += 25000;
-            if (state.pj.diretores.coo) opexMensal += 22000;
-            opexMensal += (state.pj.staff.limpeza * 2000) + (state.pj.staff.seguranca * 3500);
-            
-            const opexDia = opexMensal / 30;
-            state.pj.caixa -= opexDia;
+            const opexMensal = calcularOpexMensal();
+            state.pj.caixa -= (opexMensal / 30);
 
             if (state.pj.divida > 0) {
-                const jurosMensal = state.pj.divida * 0.035;
-                state.pj.divida += (jurosMensal / 30);
+                state.pj.divida += (state.pj.divida * 0.035) / 30;
             }
 
             const salarioDia = state.pf.salario / 30;
             if (state.pj.caixa >= salarioDia) {
-                state.pj.caixa -= salarioDia; state.pf.caixa += salarioDia;
+                state.pj.caixa -= salarioDia;
+                state.pf.caixa += salarioDia;
             }
 
             state.data.dia++;
             if (state.data.dia > 30) {
-                state.data.dia = 1; state.data.mes++;
+                state.data.dia = 1;
+                state.data.mes++;
                 
-                if (mod.type === 'b2c' && state.pj._receitaB2C_acumulada > 0) {
-                    addExtrato('pj', `Faturação Retail Varejo (Mês ${state.data.mes-1})`, state.pj._receitaB2C_acumulada);
+                if (state.pj._receitaB2C_acumulada > 0) {
+                    addExtrato('pj', `Faturamento Consolidado Mês ${state.data.mes-1}`, state.pj._receitaB2C_acumulada);
                     state.pj._receitaB2C_acumulada = 0;
                 }
-                addExtrato('pj', `OPEX Fecho (Mês ${state.data.mes-1})`, -opexMensal);
+                addExtrato('pj', `Folha Salarial e OPEX Mês ${state.data.mes-1}`, -opexMensal);
+                addExtrato('pf', `Pró-labore Acumulado Mês ${state.data.mes-1}`, state.pf.salario);
                 
                 if (state.data.mes > 12) {
-                    state.data.mes = 1; state.data.ano++;
+                    state.data.mes = 1;
+                    state.data.ano++;
                     if (state.pj.caixa > state.pj.caixaInicial) {
-                        const lucro = state.pj.caixa - state.pj.caixaInicial;
-                        const imp = lucro * 0.15;
+                        const imp = (state.pj.caixa - state.pj.caixaInicial) * 0.15;
                         state.pj.caixa -= imp;
-                        addExtrato('pj', 'Leão: IRPJ (15% s/ Lucro)', -imp);
-                        addEmail('Ministério das Finanças', 'Imposto Liquidado', `O fisco recolheu ${fmt(imp)} referente a 15% sobre o crescimento de liquidez anual da sua corporação.`);
+                        addExtrato('pj', 'Imposto Anual sobre Lucro (15%)', -imp);
+                        addEmail('Contabilidade Fiscal', 'Fechamento Anual de Impostos', `<p>O exercício anual foi encerrado com lucro. Foi recolhido o valor de <strong>${fmt(imp)}</strong> referente ao imposto corporativo.</p>`);
                         state.pj.caixaInicial = state.pj.caixa;
                     }
                 }
             }
 
-            if (journalEventTriggered) {
-                abrirJornal(journalEventTriggered);
-            }
+            return { vendasDia, recDia, evento: eventoDisparado };
         }
 
-        /* --- FINANÇAS E BOLSA --- */
         function tomarEmprestimo() {
-            const v = 250000;
-            state.pj.caixa += v; state.pj.divida += v;
-            addExtrato('pj', 'Linha de Crédito', v); syncUI();
+            const v = 200000;
+            state.pj.caixa += v;
+            state.pj.divida += v;
+            addExtrato('pj', 'Empréstimo Bancário Liberado', v);
+            syncUI();
         }
         function amortizarDivida() {
             const vl = parseFloat(document.getElementById('ui-val-amortizar').value);
-            if (!vl || vl <= 0) return;
-            const vU = parseToUSD(vl);
-            if (state.pj.divida <= 0) return;
-            if (vU > state.pj.caixa) return alert("Liquidez corporativa insuficiente.");
+            if (!vl || vl <= 0 || state.pj.divida <= 0) return;
+            const vU = toUSD(vl);
+            if (vU > state.pj.caixa) return alert("Caixa insuficiente para esse pagamento.");
             const ab = Math.min(vU, state.pj.divida);
-            state.pj.caixa -= ab; state.pj.divida -= ab;
-            addExtrato('pj', 'Amortização de Dívida', -ab);
-            document.getElementById('ui-val-amortizar').value = ''; syncUI();
+            state.pj.caixa -= ab;
+            state.pj.divida -= ab;
+            addExtrato('pj', 'Amortização de Dívida Bancária', -ab);
+            document.getElementById('ui-val-amortizar').value = '';
+            syncUI();
         }
+
         function realizarIPO() {
             const mod = businessModels[state.modelo];
-            let somaInventario = 0; for(let k in state.pj.insumos) { somaInventario += state.pj.insumos[k].qtd * 2; }
-            const valuation = state.pj.caixa + somaInventario + (state.pj.estoque * 10) - state.pj.divida;
-            const finalVal = Math.max(0, valuation * 5.5);
-            
+            const valuation = state.pj.caixa + (state.pj.estoque * mod.precoBase * 0.6) - state.pj.divida;
+            const finalVal = Math.max(0, valuation * 4.5);
             if (finalVal >= mod.ipoMeta && !state.pj.aberta) {
                 state.pj.aberta = true;
-                const aporte = finalVal * 0.25;
+                const aporte = finalVal * 0.30;
                 state.pj.caixa += aporte;
-                addExtrato('pj', 'Capital Aberto (IPO)', aporte);
-                addEmail('Bolsa de Valores', 'IPO Consolidado', `Foi um sucesso. O mercado comprou as suas ações, injetando <strong>${fmt(aporte)}</strong> em cash puro no seu balanço.\n\nAgora a empresa é pública. Mantenha os acionistas felizes.`);
+                addExtrato('pj', 'Captação de Recursos na Bolsa (IPO)', aporte);
+                addEmail('Bolsa de Valores', 'IPO Realizado com Sucesso!', `<p>As ações da <strong>${state.empresa}</strong> estrearam em forte alta! A operação injetou <strong>${fmt(aporte)}</strong> diretamente no caixa da companhia.</p>`);
                 syncUI();
             }
         }
 
-        /* --- LOJA PF --- */
-        const lojaPF = [{n: 'Arte Contemporânea Exclusiva', v: 45000}, {n: 'Automóvel Superdesportivo', v: 350000}, {n: 'Helicóptero Corporativo', v: 1200000}, {n: 'Iate no Mónaco', v: 6500000}];
+        const lojaPF = [
+            {n: 'Apartamento Studio no Centro', v: 45000, bg: 'bg-home'},
+            {n: 'Sedã Executivo Blindado', v: 95000, bg: 'bg-home'},
+            {n: 'Cobertura Duplex Panorâmica', v: 380000, bg: 'bg-home'},
+            {n: 'Jato Executivo Particular', v: 2200000, bg: 'bg-home'}
+        ];
         function renderLojaPF() {
             document.getElementById('ui-loja-pf').innerHTML = lojaPF.map(i => `
-                <div class="list-item" style="background: rgba(0,0,0,0.3);">
-                    <div><div style="font-size:12px;font-weight:700;">${i.n}</div><div style="font-size:11px;color:var(--text-muted);">${fmt(i.v)}</div></div>
-                    <button class="btn btn-primary" style="padding:10px 14px;font-size:11px;" onclick="comprarPF('${i.n}', ${i.v})">Comprar</button>
+                <div class="list-item">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;">${i.n}</div>
+                        <div style="font-size:11px;color:var(--text-muted);">${fmt(i.v)}</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="comprarPF('${i.n}', ${i.v})">Comprar Bem</button>
                 </div>
             `).join('');
         }
         function comprarPF(n, v) {
             if (state.pf.caixa >= v) {
-                state.pf.caixa -= v; state.pf.bens.push({n, v});
-                addExtrato('pf', `Aquisição Patrimonial: ${n}`, -v); syncUI();
-            } else { alert("Patrimônio Pessoal Insuficiente. Junte mais pró-labore."); }
+                state.pf.caixa -= v;
+                state.pf.bens.push({n, v});
+                addExtrato('pf', `Aquisição Pessoal: ${n}`, -v);
+                syncUI();
+            } else {
+                alert("Saldo pessoal insuficiente! Avance os dias para acumular seu pró-labore.");
+            }
         }
 
-        /* --- EMAILS --- */
-        function addEmail(r, t, c) { state.emails.unshift({ id: Date.now(), remetente: r, titulo: t, corpo: c, lido: false }); renderEmails(); }
+        /* SISTEMA DE E-MAIL CORRIGIDO (EXPANDE E NÃO FECHA SOZINHO) */
+        function addEmail(r, t, c) {
+            state.emails.unshift({ id: Date.now() + Math.random(), remetente: r, titulo: t, corpo: c, lido: false, aberto: true });
+            renderEmails();
+        }
         function renderEmails() {
             const list = document.getElementById('ui-email-list');
             const nLidos = state.emails.filter(e => !e.lido).length;
@@ -1327,15 +1683,19 @@
             if (nLidos > 0) { badge.style.display = 'inline-block'; badge.innerText = nLidos; } else { badge.style.display = 'none'; }
             
             list.innerHTML = state.emails.map((e, i) => `
-                <div class="e-item ${e.lido?'':'unread'}" onclick="toggleMail(${i})">
-                    <div class="e-head"><span>De: ${e.remetente}</span></div>
+                <div class="e-item ${e.lido ? '' : 'unread'} ${e.aberto ? 'open' : ''}" onclick="toggleMail(${i})">
+                    <div class="e-head">
+                        <span>Remetente: ${e.remetente}</span>
+                        <span>${e.aberto ? '▼ Recolher' : '▶ Ler Relatório Completo'}</span>
+                    </div>
                     <div class="e-title">${e.titulo}</div>
-                    <div class="e-body" id="mail-body-${i}">${e.corpo}</div>
+                    <div class="e-body">${e.corpo}</div>
                 </div>`).join('');
         }
         function toggleMail(i) {
             state.emails[i].lido = true;
-            document.getElementById(`mail-body-${i}`).style.display = 'block'; renderEmails();
+            state.emails[i].aberto = !state.emails[i].aberto;
+            renderEmails();
         }
     </script>
 </body>
